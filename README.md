@@ -1,6 +1,6 @@
 # Q's Design Casino 🎲
 
-> Designing in multi-agent systems is like a casino: sometimes you win with efficiency and insights, sometimes you fail and learn even more.
+> Designing in multi-agent systems is like a casino: sometimes you win with efficiency and insights, sometimes you fail and learn even more. Every experiment teaches us something valuable about what works and what doesn't.
 
 ## Why This Exists
 
