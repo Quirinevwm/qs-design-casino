@@ -1,6 +1,6 @@
 # Q's Design Casino 🎲
 
-> Experimenting with design in the AI space — sharing thoughts, processes, and guidelines
+> Designing for AI is a bit like a casino — sometimes you win, sometimes you learn. But every experiment teaches us something valuable about what works and what doesn't.
 
 ## Why This Exists
 
@@ -58,10 +58,6 @@ This repository serves as:
 - A space for testing new approaches to AI design
 - A resource for others navigating design in AI
 - A place for open thinking about what design means in this space
-
-## Why "Design Casino"?
-
-Designing for AI is a bit like a casino — sometimes you win, sometimes you learn. But every experiment teaches us something valuable about what works and what doesn't.
 
 ---
 
