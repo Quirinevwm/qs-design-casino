@@ -4,21 +4,18 @@
 
 This space documents thoughts and experiments around:
 
-## 🎨 Design Thinking in AI
-- How traditional design processes adapt to AI contexts
-- New patterns emerging in AI-first design
-- Iteration cycles and validation methods
-
-## 🔄 Process Frameworks
+## Design frameworks
 - End-to-end design workflows for AI features
 - Collaboration between designers and AI
-- Documentation and handoff practices
+- How traditional design processes adapt to AI contexts
+- New patterns emerging in AI-first design
 
-## 📊 Iteration Methods
+## Evaluation methods
 - Testing and learning cycles
+- Iteration cycles and validation methods
 - Prototyping with AI
 - Measuring design effectiveness
 
 ---
 
-*This is a living collection — expect updates, revisions, and new directions as I learn.*
+*This is a living collection: expect updates, revisions, and new directions as I learn.*
