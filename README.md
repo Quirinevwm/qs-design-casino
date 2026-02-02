@@ -1,6 +1,6 @@
 # Q's Design Casino 🎲
 
-> Designing for AI is a bit like a casino — sometimes you win, sometimes you learn. But every experiment teaches us something valuable about what works and what doesn't.
+> Designing for AI is a bit like a casino: sometimes you win, failing means learning. Every experiment teaches us something valuable about what works and what doesn't.
 
 ## Why This Exists
 
