@@ -4,11 +4,11 @@
 
 ## Why This Exists
 
-The pace of AI innovation is relentless. Chasing every update can distract from solving real user problems.
+The pace of AI innovation is relentless, and chasing every update can distract from solving real user problems.
 
-**The challenge isn't keeping up with change** — it's applying judgment and shaping context so tools serve our craft, our industry, and most importantly, our users.
+**For designers, the challenge isn't just keeping up with change.** It's applying judgment and shaping context so tools serve our craft, our industry, and most importantly, our users.
 
-This keeps **creativity and oversight at the center** while enabling speed and trust.
+This approach keeps **creativity and oversight at the center** while enabling speed and trust. Cross-functional collaboration and principled frameworks help teams deliver better outcomes. I'll explore why openness matters more than mastery and how to build workflows that amplify creativity.
 
 ### What I'm Exploring Here
 
