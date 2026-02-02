@@ -1,6 +1,6 @@
 # Q's Design Casino 🎲
 
-> Designing for AI is a bit like a casino: sometimes you win, failing means learning. Every experiment teaches us something valuable about what works and what doesn't.
+> Designing in multi-agent systems is like a casino: sometimes you win with efficiency and insights, sometimes you fail and learn even more.
 
 ## Why This Exists
 
