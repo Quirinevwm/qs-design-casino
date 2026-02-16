@@ -1,6 +1,6 @@
 # Q's Design Casino 🎲
 
-[![Content License: CC BY-NC 4.0](https://img.shields.io/badge/Content-CC_BY--NC_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/) [![Code License: MIT](https://img.shields.io/badge/Code-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > Designing in multi-agent systems is like a casino: sometimes you win with efficiency and insights, sometimes you fail and learn even more. Every experiment teaches us something valuable about what works and what doesn't.
 
