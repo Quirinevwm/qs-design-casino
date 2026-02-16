@@ -31,6 +31,7 @@ Judgment, transparency, and human oversight in AI-driven workflows. Building pro
 graph TD
     A[Q's Design Casino] --> B[Design Process]
     A --> C[Skills and Guidelines]
+    A --> D[Agents]
     
     B --> B1[Design Thinking in AI]
     B --> B2[Process Frameworks]
@@ -40,9 +41,13 @@ graph TD
     C --> C2[Best Practices]
     C --> C3[Quality Standards]
     
+    D --> D1[AInews-fordesign-agent]
+    D --> D2[Automation Tools]
+    
     style A fill:#c4b5fd,stroke:#9333ea,stroke-width:3px,color:#000
     style B fill:#1e293b,stroke:#c4b5fd,stroke-width:2px,color:#e2e8f0
     style C fill:#1e293b,stroke:#c4b5fd,stroke-width:2px,color:#e2e8f0
+    style D fill:#1e293b,stroke:#c4b5fd,stroke-width:2px,color:#e2e8f0
 ```
 
 ## What's inside
@@ -52,6 +57,9 @@ Exploring design methodologies, frameworks, and approaches for working in the AI
 
 ### [Skills and Guidelines](./skills-and-guidelines)
 Core capabilities, principles, and best practices for creating thoughtful AI-driven experiences.
+
+### [Agents](./agents)
+Autonomous tools and workflows that automate insights gathering, analysis, and delivery for design intelligence.
 
 ## Purpose
 
