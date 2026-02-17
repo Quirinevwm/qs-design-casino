@@ -30,7 +30,7 @@ Judgment, transparency, and human oversight in AI-driven workflows. Building pro
 ```mermaid
 graph TD
     A[Q's Design Casino] --> B[Design Process]
-    A --> C[Skills and Guidelines]
+    A --> C[Skills]
     A --> D[Agents]
     
     B --> B1[Design Thinking in AI]
@@ -55,7 +55,7 @@ graph TD
 ### [Design Process](./design-process)
 Exploring design methodologies, frameworks, and approaches for working in the AI space.
 
-### [Skills and Guidelines](./skills-and-guidelines)
+### [Skills](./skills)
 Core capabilities, principles, and best practices for creating thoughtful AI-driven experiences.
 
 ### [Agents](./agents)
