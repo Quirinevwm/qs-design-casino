@@ -2,23 +2,27 @@
 
 > Core capabilities and principles for thoughtful AI design
 
-This space captures agent skills and guidelines for working with AI tools, including Figma make templates.
+This space captures skills and guidelines for working with AI tools and designing AI-driven experiences.
 
-## Agent skills
-- What designers need to know about AI
+## Skills
+
+Practical skills for working with AI in design contexts:
 - Prompting as a design skill
 - Evaluating AI outputs with a design lens
 - Critical thinking in AI contexts
-- Guidelines.md files for Figma make templates
+- Design review and quality assessment
 
-## Best practices
+## Principles
+
+Core principles that guide design work:
 - Patterns that work across different AI contexts
 - Anti-patterns to avoid
 - Accessibility and inclusive design considerations
 - Ethical design in AI
 
 ## Quality standards
-- What makes good AI design?
+
+What makes good AI design:
 - Evaluation criteria for AI experiences
 - Quality benchmarks and metrics
 - User-centered AI principles
