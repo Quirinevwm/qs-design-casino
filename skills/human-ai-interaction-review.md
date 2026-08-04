@@ -1,9 +1,9 @@
 ---
-name: hax-guidelines
+name: human-ai-interaction-review
 description: Evaluate AI-powered interfaces using Microsoft's HAX guidelines and newer Microsoft Research frameworks for generative AI reliance and human-agent collaboration. Use this skill to review capabilities, limitations, verification, correction, transparency, oversight, and user control.
 ---
 
-# HAX guidelines
+# Human-AI interaction review
 
 Review AI-powered interfaces using Microsoft's 18 Guidelines for Human-AI Interaction as the foundation, then apply newer Microsoft Research guidance for generative AI and agentic systems.
 
@@ -199,7 +199,7 @@ Use this skill when reviewing any interface where AI generates, recommends, deci
 ### Review output format
 
 ```
-## HAX Review: [Feature/Surface Name]
+## Human-AI interaction review: [Feature/Surface Name]
 
 ### AI surface
 [What the AI does in this interface]
