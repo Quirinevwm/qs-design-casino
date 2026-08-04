@@ -29,7 +29,8 @@ Judgment, transparency, and human oversight in AI-driven workflows. Building pro
 
 ```mermaid
 graph TD
-    A[Q's Design Casino] --> B[Design Process]
+    A[Q's Design Casino] --> E[Weekly Eval Bets]
+    A --> B[Design Process]
     A --> C[Skills]
     A --> D[Agents]
     
@@ -43,14 +44,23 @@ graph TD
     
     D --> D1[AInews-fordesign-agent]
     D --> D2[Automation Tools]
+
+    E --> E1[Skills]
+    E --> E2[Rubrics and Evals]
+    E --> E3[Frameworks]
     
     style A fill:#c4b5fd,stroke:#9333ea,stroke-width:3px,color:#000
     style B fill:#1e293b,stroke:#c4b5fd,stroke-width:2px,color:#e2e8f0
     style C fill:#1e293b,stroke:#c4b5fd,stroke-width:2px,color:#e2e8f0
     style D fill:#1e293b,stroke:#c4b5fd,stroke-width:2px,color:#e2e8f0
+    style E fill:#1e293b,stroke:#c4b5fd,stroke-width:2px,color:#e2e8f0
 ```
 
 ## What's inside
+
+### [Q's weekly eval bets](./weekly-eval-bets)
+
+Focused weekly experiments that connect reusable skills, evaluation lenses, and practical frameworks.
 
 ### [Design Process](./design-process)
 Exploring design methodologies, frameworks, and approaches for working in the AI space.
