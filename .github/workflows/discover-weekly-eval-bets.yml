@@ -1,0 +1,30 @@
+name: Discover weekly eval bets
+
+on:
+  schedule:
+    - cron: "0 8 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: discover-weekly-eval-bets
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    name: Discover public design signals
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Create candidate eval bets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node .github/scripts/discover-weekly-eval-bets.mjs

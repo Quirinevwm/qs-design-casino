@@ -53,4 +53,19 @@ Stack package -> Specialized runners -> Actionable stack report
 
 The report should show whether the work is ready for review, needs craft attention, or is blocked, with links to the evidence and remediation for every lens.
 
+## Automated discovery
+
+A GitHub Actions workflow runs every Monday and searches active public repositories across design systems, accessibility, user experience, human-computer interaction, and AI design.
+
+The workflow turns recent public signals into attributed backlog issues labeled `weekly-eval-bet` and `status:ready`. Each candidate includes a proposed lens, design question, evaluator class, evidence type, and link to the original source.
+
+The backlog is also the memory:
+
+- Existing weekly eval bet issues prevent the same source or theme from being proposed again.
+- Completed folders in `weekly-eval-bets/` preserve reviewed themes and source links.
+- Every generated candidate keeps its attribution, even after it is selected or completed.
+- The workflow synthesizes an original experiment rather than copying the source material.
+
+The workflow can also be started manually from the Actions tab through **Discover weekly eval bets**.
+
 **Bets create lenses. Lenses build stacks. Stacks raise the craft bar.**
