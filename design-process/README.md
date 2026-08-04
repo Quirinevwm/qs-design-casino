@@ -4,6 +4,10 @@
 
 This space documents thoughts and experiments around:
 
+## Articles
+
+- [Communicating intent is design?](./communicating-intent-is-design.md) - How human judgment, clearer intent, and closer-to-code workflows shape quality in AI-accelerated design.
+
 ## Design frameworks
 - End-to-end design workflows for AI features
 - Collaboration between designers and AI
