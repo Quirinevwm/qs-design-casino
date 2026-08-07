@@ -1,0 +1,94 @@
+name: Weekly eval bet
+description: Submit a candidate for the weekly Design Casino evaluation review.
+labels: ["weekly-eval-bet", "status:ready"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Submit a design evaluation bet. Each bet proposes a theme, tool, or practice
+        worth putting through a structured review this week.
+
+  - type: input
+    id: title
+    attributes:
+      label: Bet title
+      description: A concise name for this evaluation candidate.
+      placeholder: "e.g. Evaluating AI-generated component documentation"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: evaluator-class
+    attributes:
+      label: Evaluator class
+      description: What type of evaluation lens applies here?
+      options:
+        - Design quality (craft, coherence, accessibility)
+        - Process efficiency (speed, iteration cost, collaboration)
+        - Tool capability (what the tool can and cannot do)
+        - Framework fit (alignment with existing design systems)
+        - User impact (measurable effect on end-user experience)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: evidence-type
+    attributes:
+      label: Evidence type
+      description: What kind of evidence will this evaluation produce?
+      options:
+        - Comparative (A vs B output quality)
+        - Before/after (process improvement)
+        - Rubric-scored (criteria checklist)
+        - Heuristic review (expert judgment)
+        - Quantitative (metrics, time, error rates)
+    validations:
+      required: true
+
+  - type: textarea
+    id: design-relevance
+    attributes:
+      label: Design relevance
+      description: Why does this matter to designers right now? What decision does it inform?
+      placeholder: Explain the connection to active design work or open questions.
+    validations:
+      required: true
+
+  - type: textarea
+    id: novelty
+    attributes:
+      label: Novelty
+      description: What makes this bet fresh? Has this been evaluated before in a different context?
+      placeholder: Describe what is new or unexplored about this candidate.
+    validations:
+      required: true
+
+  - type: textarea
+    id: source-quality
+    attributes:
+      label: Source and quality signals
+      description: Where did this candidate come from? Link references, prior art, or evidence.
+      placeholder: "Links, papers, examples, or first-hand observations."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: reusability
+    attributes:
+      label: Reusability potential
+      description: Could this evaluation become a reusable rubric or review stack?
+      options:
+        - High (generalizes to many contexts)
+        - Medium (useful for similar tools or workflows)
+        - Low (one-off, context-specific)
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested-approach
+    attributes:
+      label: Suggested evaluation approach
+      description: How should we evaluate this? Propose a method (checked review, judged comparison, blind test, etc.)
+      placeholder: "e.g. Blind comparison of 3 outputs scored against a 5-point rubric."
+    validations:
+      required: false
