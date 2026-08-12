@@ -92,16 +92,36 @@
 
 ---
 
+### 6. Intentionality (3/5)
+
+**What works:**
+- The Soehne typeface is a premium, deliberate choice (Klim Type Foundry). This isn't a default; someone chose it for its clarity and modernity.
+- Token naming (ink, fog, dust, brand) reflects a considered material metaphor. Each name carries meaning beyond generic "gray-100" scales.
+- Scroll-driven animations with `prefers-reduced-motion` support signal a team that thought about the experience layer, not just the content layer.
+- The three-card deploy pattern is architecturally intentional: it gives each audience a home without forcing a choose-your-adventure fork.
+
+**What costs it points:**
+- The hero copy reads like a feature list was compressed into a sentence. The intent behind what to say first is unclear.
+- Trust signals placed above the product explanation feels like a pattern borrowed from a template rather than a conscious sequencing decision.
+- "Convert Your AI Vision into Immediate Business Value" reads as stakeholder-driven copy, not a designer's intentional choice about what the visitor needs to hear next.
+
+**Score: 3** - The visual and system-level decisions show clear intent. The content-level decisions feel defaulted or inherited rather than authored.
+
+---
+
 ## Summary
 
-| Dimension | Score | Notes |
-|-----------|-------|-------|
-| Visual hierarchy | 4/5 | Strong CTA layering, hero text too dense |
-| Information density | 3/5 | Well-portioned sections, but too many registers stacked |
-| Readability | 4/5 | Excellent type choice, hero sentences run long |
-| Coherence | 4/5 | Visual system holds, content voice is split |
-| Durability | 3/5 | Structural design endures, copy ties to current trends |
-| **Total** | **18/25** | |
+| Dimension | Weight | Score | Weighted |
+|-----------|--------|-------|----------|
+| Visual hierarchy | 1x | 4/5 | 4 |
+| Information density | 1x | 3/5 | 3 |
+| Readability | 1x | 4/5 | 4 |
+| Coherence | 2x | 4/5 | 8 |
+| Durability | 1x | 3/5 | 3 |
+| Intentionality | 1x | 3/5 | 3 |
+| **Total** | | | **25/35** |
+
+**Band: Solid craft with specific areas to sharpen (22-28).**
 
 ---
 
@@ -113,6 +133,7 @@
 - Token-based color semantics (ink/fog/dust/brand) as a naming convention
 - Parallel-structure cards for audience segmentation
 - Scroll-driven animations with motion preference respect
+- Soehne as a reference for typeface intentionality on platform pages
 
 Avoid reproducing:
 
@@ -120,29 +141,14 @@ Avoid reproducing:
 - Trust signals placed before the product concept has landed
 - Mixing developer-practical and enterprise-sales copy on the same surface
 - Hardcoded metrics (star counts) that require manual maintenance
+- Content decisions that feel inherited from templates rather than authored for the visitor
 
 ---
 
-## Reusable artifacts
+## Rubric reference
 
-### First-impression craft rubric (5-point, generalized)
-
-This rubric applies to any product landing page or signed-out state:
-
-| # | Dimension | Question | Scoring |
-|---|-----------|----------|---------|
-| 1 | Visual hierarchy | Can you identify the primary message and action within 3 seconds? | 5 = instant, 1 = buried |
-| 2 | Information density | Is every element earning its space? | 5 = nothing to remove, 1 = noise competes with signal |
-| 3 | Readability | Do typography, contrast, and sentence length support scanning? | 5 = effortless, 1 = labored |
-| 4 | Coherence | Does the page feel like one designed thing? | 5 = unified, 1 = assembled from parts |
-| 5 | Durability | Would this design hold if content changed by 30%? | 5 = resilient, 1 = brittle |
-
-**Scoring guide:**
-- 21-25: Exceptional craft. Study and reference.
-- 16-20: Solid craft with specific areas to sharpen.
-- 11-15: Functional but lacking intentionality.
-- 5-10: Needs structural rethinking.
+Scored using the first-impression craft rubric: [`skills/first-impression-craft-rubric.md`](../skills/first-impression-craft-rubric.md)
 
 ---
 
-*Reviewed: 2026-08-12*
+*Reviewed: 2026-08-12 (rescored with v2 rubric: coherence 2x, intentionality added)*
