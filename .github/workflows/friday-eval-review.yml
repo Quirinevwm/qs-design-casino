@@ -1,0 +1,101 @@
+name: Friday eval review (human-in-the-loop)
+
+on:
+  schedule:
+    - cron: '0 9 * * 5' # Every Friday at 09:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  compile-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find this week's auto-scored evaluations
+        id: find-evals
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          WEEK=$(date +%Y-W%V)
+          echo "week=$WEEK" >> "$GITHUB_OUTPUT"
+
+          # Find all evaluation files from this week
+          FILES=$(find weekly-eval-bets -name "${WEEK}_*.md" -type f 2>/dev/null | sort)
+
+          if [ -z "$FILES" ]; then
+            echo "No evaluations found for $WEEK. Skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "files<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$FILES" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+          # Count evaluations
+          COUNT=$(echo "$FILES" | wc -l | tr -d ' ')
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+
+      - name: Create Friday review issue
+        if: steps.find-evals.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WEEK: ${{ steps.find-evals.outputs.week }}
+          FILES: ${{ steps.find-evals.outputs.files }}
+          COUNT: ${{ steps.find-evals.outputs.count }}
+        run: |
+          # Build the review checklist
+          CHECKLIST=""
+          while IFS= read -r file; do
+            TITLE=$(head -1 "$file" | sed 's/^# //')
+            CHECKLIST="${CHECKLIST}- [ ] [${TITLE}](https://github.com/${{ github.repository }}/blob/main/${file})
+          "
+          done <<< "$FILES"
+
+          # Also gather the issues that were reviewed this week
+          REVIEWED_ISSUES=$(gh issue list \
+            --label "weekly-eval-bet" \
+            --label "status:reviewed" \
+            --state open \
+            --json number,title \
+            --jq '.[] | "- #\(.number): \(.title)"')
+
+          BODY="## Friday review: ${WEEK}
+
+          This week produced **${COUNT}** auto-scored evaluation(s). Each was scored by Copilot using the craft rubric and the bet's suggested approach.
+
+          ### Your job
+
+          Review each evaluation below. For each one:
+          1. Read the auto-scored report
+          2. Check whether the scores feel right (adjust if needed)
+          3. Confirm or override the verdict
+          4. Mark the checkbox when done
+
+          ### Evaluations to review
+
+          ${CHECKLIST}
+
+          ### Reviewed issues
+
+          ${REVIEWED_ISSUES}
+
+          ### When done
+
+          - Close this issue
+          - Move reviewed evals from \`status:reviewed\` to \`status:archived\`
+          - Edit any scores you disagree with directly in the markdown files
+
+          ---
+
+          *Auto-generated every Friday at 09:00 UTC.*"
+
+          gh issue create \
+            --title "Friday review: ${WEEK} eval bets (${COUNT} to check)" \
+            --label "weekly-eval-bet" \
+            --body "$BODY"
