@@ -8,20 +8,23 @@ Apply this rubric when you want to assess whether a page makes a strong first im
 
 ## Dimensions
 
-| # | Dimension | Question | 5 (best) | 1 (worst) |
-|---|-----------|----------|-----------|-----------|
-| 1 | Visual hierarchy | Can you identify the primary message and action within 3 seconds? | Instant | Buried |
-| 2 | Information density | Is every element earning its space? | Nothing to remove | Noise competes with signal |
-| 3 | Readability | Do typography, contrast, and sentence length support scanning? | Effortless | Labored |
-| 4 | Coherence | Does the page feel like one designed thing? | Unified | Assembled from parts |
-| 5 | Durability | Would this design hold if content changed by 30%? | Resilient | Brittle |
+| # | Dimension | Weight | Question | 5 (best) | 1 (worst) |
+|---|-----------|--------|----------|-----------|-----------|
+| 1 | Visual hierarchy | 1x | Can you identify the primary message and action within 3 seconds? | Instant | Buried |
+| 2 | Information density | 1x | Is every element earning its space? | Nothing to remove | Noise competes with signal |
+| 3 | Readability | 1x | Do typography, contrast, and sentence length support scanning? | Effortless | Labored |
+| 4 | Coherence | 2x | Does the page feel like one designed thing? | Unified | Assembled from parts |
+| 5 | Durability | 1x | Would this design hold if content changed by 30%? | Resilient | Brittle |
+| 6 | Intentionality | 1x | Can you tell why every design decision was made? | Every choice has a reason | Arbitrary or defaulted |
 
 ## Scoring guide
 
-- **21-25:** Exceptional craft. Study and reference.
-- **16-20:** Solid craft with specific areas to sharpen.
-- **11-15:** Functional but lacking intentionality.
-- **5-10:** Needs structural rethinking.
+Coherence is weighted 2x. Max score: 35.
+
+- **29-35:** Exceptional craft. Study and reference.
+- **22-28:** Solid craft with specific areas to sharpen.
+- **15-21:** Functional but lacking intentionality.
+- **7-14:** Needs structural rethinking.
 
 ## How to apply
 
@@ -30,10 +33,6 @@ Apply this rubric when you want to assess whether a page makes a strong first im
 3. Write one sentence per dimension noting what earned or cost the score.
 4. Sum the total. Use the scoring guide to frame the verdict.
 5. End with two lists: patterns worth borrowing, and anti-patterns to avoid.
-
-## Origin
-
-First used in the Dify signed-out page evaluation (2026-W33). Refined from common design-critique heuristics adapted for landing page contexts.
 
 ---
 
