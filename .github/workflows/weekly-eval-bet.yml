@@ -73,6 +73,57 @@ jobs:
             curl -sL "$URL" | sed 's/<[^>]*>//g' | sed '/^\s*$/d' | head -c 10000 > /tmp/page-text.txt
           fi
 
+      - name: Capture screenshots with Playwright
+        if: steps.find-bet.outputs.skip == 'false'
+        run: |
+          npm init -y > /dev/null 2>&1
+          npm install playwright@latest > /dev/null 2>&1
+          npx playwright install chromium --with-deps > /dev/null 2>&1
+
+          URL="${{ steps.fetch-page.outputs.url }}"
+          SLUG="${{ steps.find-bet.outputs.slug }}"
+          SCREENSHOT_DIR="weekly-eval-bets/screenshots/${SLUG}"
+          mkdir -p "$SCREENSHOT_DIR"
+
+          node << 'EOF'
+          const { chromium } = require('playwright');
+
+          (async () => {
+            const url = process.env.URL;
+            const dir = process.env.SCREENSHOT_DIR;
+
+            const browser = await chromium.launch();
+            const context = await browser.newContext({
+              viewport: { width: 1440, height: 900 },
+              deviceScaleFactor: 2
+            });
+            const page = await context.newPage();
+
+            await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+
+            // Full page screenshot
+            await page.screenshot({ path: `${dir}/full-page.png`, fullPage: true });
+
+            // Above the fold (first viewport)
+            await page.screenshot({ path: `${dir}/above-the-fold.png` });
+
+            // Scroll to middle and capture
+            await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
+            await page.waitForTimeout(500);
+            await page.screenshot({ path: `${dir}/mid-page.png` });
+
+            // Mobile viewport
+            await page.setViewportSize({ width: 390, height: 844 });
+            await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+            await page.screenshot({ path: `${dir}/mobile.png` });
+
+            await browser.close();
+          })();
+          EOF
+        env:
+          URL: ${{ steps.fetch-page.outputs.url }}
+          SCREENSHOT_DIR: weekly-eval-bets/screenshots/${{ steps.find-bet.outputs.slug }}
+
       - name: Auto-score with Copilot
         if: steps.find-bet.outputs.skip == 'false'
         id: auto-score
@@ -81,6 +132,7 @@ jobs:
           WEEK: ${{ steps.find-bet.outputs.week }}
           FILENAME: ${{ steps.find-bet.outputs.filename }}
           TARGET_URL: ${{ steps.fetch-page.outputs.url }}
+          SLUG: ${{ steps.find-bet.outputs.slug }}
         with:
           script: |
             const fs = require('fs');
@@ -123,9 +175,10 @@ jobs:
             2. If the bet specifies its own evaluation approach (e.g. heuristic review, judged evaluation), apply THAT method as the primary evaluation and use the craft rubric as a secondary lens.
             3. Include a weighted score table (coherence is 2x, max 35).
             4. End with: patterns worth borrowing, anti-patterns to avoid.
-            5. Add a "Status: auto-scored" note at the bottom. This will be reviewed by a human on Friday.
-            6. Format the output as a complete markdown file starting with a level-1 heading.
-            7. Do not use emdashes. Use commas, colons, or periods instead.`;
+            5. Reference the screenshots in your report using relative paths: \`screenshots/${process.env.SLUG}/above-the-fold.png\`, \`screenshots/${process.env.SLUG}/full-page.png\`, etc. Embed them as markdown images where they support your scoring rationale.
+            6. Add a "Status: auto-scored" note at the bottom. This will be reviewed by a human on Friday.
+            7. Format the output as a complete markdown file starting with a level-1 heading.
+            8. Do not use emdashes. Use commas, colons, or periods instead.`;
 
             // Call GitHub Models API
             const response = await fetch('https://models.github.ai/inference/chat/completions', {
@@ -191,6 +244,7 @@ Check each dimension you agree with. Add a note if you'd adjust the score.
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "weekly-eval-bets/$FILENAME"
+          git add "weekly-eval-bets/screenshots/" 2>/dev/null || true
           git commit -m "Auto-score eval bet #$ISSUE_NUMBER
 
           Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>" || exit 0
