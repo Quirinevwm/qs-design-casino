@@ -95,7 +95,30 @@ jobs:
 
           *Auto-generated every Friday at 09:00 UTC.*"
 
-          gh issue create \
+          ISSUE_URL=$(gh issue create \
             --title "Friday review: ${WEEK} eval bets (${COUNT} to check)" \
             --label "weekly-eval-bet" \
-            --body "$BODY"
+            --body "$BODY" 2>&1 | tail -1)
+
+          echo "issue_url=$ISSUE_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Send email notification
+        if: steps.find-evals.outputs.skip == 'false'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "Design Casino: ${{ steps.find-evals.outputs.count }} eval bets ready for Friday review (${{ steps.find-evals.outputs.week }})"
+          to: quvanwal@microsoft.com
+          from: Design Casino <${{ secrets.MAIL_USERNAME }}>
+          body: |
+            Week ${{ steps.find-evals.outputs.week }} produced ${{ steps.find-evals.outputs.count }} auto-scored evaluation(s).
+
+            Review them here: ${{ steps.compile-review.outputs.issue_url }}
+
+            Your job: read each scored report, confirm or adjust scores, and close the issue when done.
+
+            -- Design Casino automation
