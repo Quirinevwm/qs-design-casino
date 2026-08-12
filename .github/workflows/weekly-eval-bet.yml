@@ -1,0 +1,133 @@
+name: Weekly eval bet review
+
+on:
+  schedule:
+    - cron: '0 9 * * 1-5' # Every workday at 09:00 UTC
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Specific issue number to evaluate (leave empty for oldest ready bet)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find ready bet
+        id: find-bet
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -n "${{ inputs.issue_number }}" ]; then
+            ISSUE_NUMBER="${{ inputs.issue_number }}"
+          else
+            ISSUE_NUMBER=$(gh issue list \
+              --label "weekly-eval-bet" \
+              --label "status:ready" \
+              --state open \
+              --json number,createdAt \
+              --jq 'sort_by(.createdAt) | .[0].number')
+          fi
+
+          if [ -z "$ISSUE_NUMBER" ] || [ "$ISSUE_NUMBER" = "null" ]; then
+            echo "No ready bets found. Skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
+          # Fetch issue details
+          gh issue view "$ISSUE_NUMBER" --json title,body > /tmp/issue.json
+          TITLE=$(jq -r '.title' /tmp/issue.json)
+          BODY=$(jq -r '.body' /tmp/issue.json)
+          echo "title=$TITLE" >> "$GITHUB_OUTPUT"
+
+          # Generate week identifier and slug
+          WEEK=$(date +%Y-W%V)
+          SLUG=$(echo "$TITLE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
+          echo "week=$WEEK" >> "$GITHUB_OUTPUT"
+          echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
+          echo "filename=${WEEK}_${SLUG}.md" >> "$GITHUB_OUTPUT"
+
+      - name: Run evaluation with Copilot
+        if: steps.find-bet.outputs.skip == 'false'
+        uses: actions/github-script@v7
+        id: evaluate
+        with:
+          script: |
+            const issue_number = ${{ steps.find-bet.outputs.issue_number }};
+            const issue = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue_number
+            });
+
+            // Post a comment that evaluation is starting
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue_number,
+              body: `Evaluation started for week ${process.env.WEEK}. Results will be committed to \`weekly-eval-bets/\` when complete.`
+            });
+
+            return { issue_number, title: issue.data.title, body: issue.data.body };
+        env:
+          WEEK: ${{ steps.find-bet.outputs.week }}
+
+      - name: Generate evaluation report
+        if: steps.find-bet.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ steps.find-bet.outputs.issue_number }}
+          FILENAME: ${{ steps.find-bet.outputs.filename }}
+          WEEK: ${{ steps.find-bet.outputs.week }}
+        run: |
+          # Fetch issue body for evaluation context
+          BODY=$(gh issue view "$ISSUE_NUMBER" --json body --jq '.body')
+          TITLE=$(gh issue view "$ISSUE_NUMBER" --json title --jq '.title')
+
+          # Read the rubric
+          RUBRIC=$(cat skills/first-impression-craft-rubric.md)
+
+          # Create the evaluation scaffold
+          cat > "weekly-eval-bets/$FILENAME" << 'SCAFFOLD'
+          # Evaluation pending
+
+          This evaluation was triggered by the weekly workflow.
+          A manual review pass is needed to complete scoring.
+
+          SCAFFOLD
+
+          # Notify the issue
+          gh issue comment "$ISSUE_NUMBER" \
+            --body "Evaluation scaffold created at \`weekly-eval-bets/$FILENAME\`. Ready for manual scoring using the [craft rubric](../skills/first-impression-craft-rubric.md)."
+
+      - name: Commit and push
+        if: steps.find-bet.outputs.skip == 'false'
+        env:
+          FILENAME: ${{ steps.find-bet.outputs.filename }}
+          ISSUE_NUMBER: ${{ steps.find-bet.outputs.issue_number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "weekly-eval-bets/$FILENAME"
+          git commit -m "Start eval bet #$ISSUE_NUMBER: scaffold for weekly review" || exit 0
+          git push
+
+      - name: Update issue labels
+        if: steps.find-bet.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ steps.find-bet.outputs.issue_number }}
+        run: |
+          gh issue edit "$ISSUE_NUMBER" --remove-label "status:ready" --add-label "status:reviewed"
