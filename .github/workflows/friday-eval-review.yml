@@ -102,23 +102,40 @@ jobs:
 
           echo "issue_url=$ISSUE_URL" >> "$GITHUB_OUTPUT"
 
-      - name: Send email notification
+      - name: Send email notification via Microsoft Graph
         if: steps.find-evals.outputs.skip == 'false'
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          secure: true
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          subject: "Design Casino: ${{ steps.find-evals.outputs.count }} eval bets ready for Friday review (${{ steps.find-evals.outputs.week }})"
-          to: quvanwal@microsoft.com
-          from: Design Casino <${{ secrets.MAIL_USERNAME }}>
-          body: |
-            Week ${{ steps.find-evals.outputs.week }} produced ${{ steps.find-evals.outputs.count }} auto-scored evaluation(s).
+        env:
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          ISSUE_URL: ${{ steps.compile-review.outputs.issue_url }}
+          WEEK: ${{ steps.find-evals.outputs.week }}
+          COUNT: ${{ steps.find-evals.outputs.count }}
+        run: |
+          # Get access token via client credentials flow
+          TOKEN=$(curl -s -X POST \
+            "https://login.microsoftonline.com/$AZURE_TENANT_ID/oauth2/v2.0/token" \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            -d "client_id=$AZURE_CLIENT_ID" \
+            -d "client_secret=$AZURE_CLIENT_SECRET" \
+            -d "scope=https://graph.microsoft.com/.default" \
+            -d "grant_type=client_credentials" | jq -r '.access_token')
 
-            Review them here: ${{ steps.compile-review.outputs.issue_url }}
-
-            Your job: read each scored report, confirm or adjust scores, and close the issue when done.
-
-            -- Design Casino automation
+          # Send mail via Graph API
+          curl -s -X POST \
+            "https://graph.microsoft.com/v1.0/users/$MAIL_FROM/sendMail" \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"message\": {
+                \"subject\": \"Design Casino: $COUNT eval bets ready for Friday review ($WEEK)\",
+                \"body\": {
+                  \"contentType\": \"Text\",
+                  \"content\": \"Week $WEEK produced $COUNT auto-scored evaluation(s).\n\nReview them here: $ISSUE_URL\n\nYour job: read each scored report, confirm or adjust scores, and close the issue when done.\"
+                },
+                \"toRecipients\": [{
+                  \"emailAddress\": { \"address\": \"quvanwal@microsoft.com\" }
+                }]
+              }
+            }"
