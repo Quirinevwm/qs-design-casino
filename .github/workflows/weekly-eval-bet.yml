@@ -248,6 +248,7 @@ jobs:
           git commit -m "Auto-score eval bet #$ISSUE_NUMBER
 
           Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>" || exit 0
+          git pull --rebase origin main
           git push
 
       - name: Comment on issue
