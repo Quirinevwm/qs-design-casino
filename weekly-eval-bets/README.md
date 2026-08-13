@@ -68,4 +68,13 @@ The backlog is also the memory:
 
 The workflow can also be started manually from the Actions tab through **Discover weekly eval bets**.
 
+## Scoring model
+
+Auto-scored evaluations currently use **gpt-5.6-sol** via Azure AI Foundry. The model may change as newer options become available or as evaluation needs evolve. Each completed evaluation file notes which model scored it.
+
+| Week | Model | Notes |
+|------|-------|-------|
+| W33 | openai/gpt-4o | Via GitHub Models (now retired) |
+| W34+ | gpt-5.6-sol | Via Azure AI Foundry |
+
 **Bets create lenses. Lenses build stacks. Stacks raise the craft bar.**
