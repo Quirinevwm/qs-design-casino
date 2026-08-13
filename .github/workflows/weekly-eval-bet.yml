@@ -13,7 +13,6 @@ on:
 permissions:
   contents: write
   issues: write
-  models: read
 
 jobs:
   evaluate:
@@ -133,6 +132,7 @@ jobs:
           FILENAME: ${{ steps.find-bet.outputs.filename }}
           TARGET_URL: ${{ steps.fetch-page.outputs.url }}
           SLUG: ${{ steps.find-bet.outputs.slug }}
+          FOUNDRY_API_KEY: ${{ secrets.FOUNDRY_API_KEY }}
         with:
           script: |
             const fs = require('fs');
@@ -180,29 +180,28 @@ jobs:
             7. Format the output as a complete markdown file starting with a level-1 heading.
             8. Do not use emdashes. Use commas, colons, or periods instead.`;
 
-            // Call GitHub Models API
-            const response = await fetch('https://models.github.ai/inference/chat/completions', {
+            // Call Azure AI Foundry Responses API
+            const response = await fetch('https://quvanwal-march2026-resource.services.ai.azure.com/openai/v1/responses', {
               method: 'POST',
               headers: {
-                'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
+                'api-key': process.env.FOUNDRY_API_KEY,
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({
-                model: 'openai/gpt-4o',
-                messages: [{ role: 'user', content: prompt }],
-                max_tokens: 4000,
+                model: 'gpt-5.6-sol',
+                input: [{ role: 'user', content: prompt }],
                 temperature: 0.3
               })
             });
 
             if (!response.ok) {
               const err = await response.text();
-              core.setFailed(`Models API error: ${response.status} ${err}`);
+              core.setFailed(`Foundry API error: ${response.status} ${err}`);
               return;
             }
 
             const result = await response.json();
-            const evaluation = result.choices[0].message.content;
+            const evaluation = result.output_text;
 
             // Append human review section
             const reviewSection = [
