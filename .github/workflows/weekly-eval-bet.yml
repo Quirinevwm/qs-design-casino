@@ -201,30 +201,18 @@ jobs:
 
             const result = await response.json();
 
-            // Debug: log output structure to understand the response format
-            if (result.output) {
-              const outputStr = JSON.stringify(result.output).substring(0, 2000);
-              console.log(`Output structure: ${outputStr}`);
-            }
-
-            // Extract evaluation text - try multiple response formats
+            // Extract evaluation text from Responses API
             let evaluation = null;
 
-            // Responses API: output[0].content[0].text
-            if (result.output && Array.isArray(result.output) && result.output.length > 0) {
-              const firstOutput = result.output[0];
-              if (firstOutput.content && Array.isArray(firstOutput.content) && firstOutput.content.length > 0) {
-                evaluation = firstOutput.content[0].text;
-              } else if (typeof firstOutput.text === 'string') {
-                evaluation = firstOutput.text;
-              } else if (typeof firstOutput === 'string') {
-                evaluation = firstOutput;
+            if (result.output && Array.isArray(result.output)) {
+              // Find the message output (skip reasoning blocks)
+              const messageOutput = result.output.find(item => item.type === 'message');
+              if (messageOutput && messageOutput.content && Array.isArray(messageOutput.content)) {
+                const textContent = messageOutput.content.find(c => c.type === 'output_text' || c.type === 'text');
+                if (textContent) {
+                  evaluation = textContent.text;
+                }
               }
-            }
-
-            // Fallback: output_text convenience field
-            if (!evaluation && typeof result.output_text === 'string') {
-              evaluation = result.output_text;
             }
 
             // Fallback: Chat Completions format
@@ -232,14 +220,11 @@ jobs:
               evaluation = result.choices[0].message.content;
             }
 
-            // Fallback: top-level text if it's a string
-            if (!evaluation && typeof result.text === 'string') {
-              evaluation = result.text;
-            }
-
             if (!evaluation) {
-              const outputSnippet = result.output ? JSON.stringify(result.output).substring(0, 1500) : 'null';
-              core.setFailed(`Could not extract evaluation. Output field: ${outputSnippet}`);
+              const outputTypes = result.output ? result.output.map(i => i.type).join(', ') : 'null';
+              const messageItem = result.output ? result.output.find(i => i.type === 'message') : null;
+              const messageStr = messageItem ? JSON.stringify(messageItem).substring(0, 1000) : 'no message item found';
+              core.setFailed(`Could not extract evaluation. Output types: [${outputTypes}]. Message item: ${messageStr}`);
               return;
             }
 
