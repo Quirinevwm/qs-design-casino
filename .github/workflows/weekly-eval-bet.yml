@@ -200,7 +200,17 @@ jobs:
             }
 
             const result = await response.json();
-            const evaluation = result.output_text;
+
+            // Extract evaluation text from response (handle multiple API response formats)
+            const evaluation = result.output_text
+              || (result.output && result.output[0] && result.output[0].content && result.output[0].content[0] && result.output[0].content[0].text)
+              || (result.choices && result.choices[0] && result.choices[0].message && result.choices[0].message.content)
+              || null;
+
+            if (!evaluation) {
+              core.setFailed(`Could not extract evaluation from response. Keys: ${Object.keys(result).join(', ')}. Full response: ${JSON.stringify(result).substring(0, 500)}`);
+              return;
+            }
 
             // Append human review section
             const reviewSection = [
