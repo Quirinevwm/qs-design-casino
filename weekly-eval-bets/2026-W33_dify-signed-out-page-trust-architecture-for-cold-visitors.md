@@ -1,4 +1,4 @@
-undefined
+[object Object]
 ---
 
 ## Human review (Friday)
