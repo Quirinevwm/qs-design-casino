@@ -12,18 +12,45 @@ How the Design Casino runs its automated evaluation cadence.
 | Thu | Auto-score bet 4 |
 | Fri | Human review: check all 4, confirm or override scores |
 
-## How auto-scoring works
+## How the auto-scorer works
 
-Each weekday (Mon-Thu) at 09:00 UTC, the workflow:
+The daily workflow (`weekly-eval-bet.yml`) runs Monday through Thursday and processes one bet per day.
 
-1. Picks the oldest issue labeled `weekly-eval-bet` + `status:ready`
-2. Fetches the target page (HTML and text content)
-3. Captures screenshots with Playwright (full page, above the fold, mid-page, mobile)
-4. Sends the page content, screenshots context, rubric, and bet details to the GitHub Models API
-5. Receives a scored evaluation report
-6. Appends a human review checklist to the report
-7. Commits the evaluation and screenshots to `weekly-eval-bets/`
-8. Labels the issue `status:reviewed`
+### Step by step
+
+1. **Find the bet** -- Picks the oldest `status:ready` issue (or a specific one if triggered manually). Extracts the title, body, and generates a week-stamped filename.
+
+2. **Fetch the target page** -- Pulls the first URL from the issue body. Grabs both raw HTML (first 50KB) and a text-only version (first 10KB) for the model to analyze.
+
+3. **Capture screenshots with Playwright** -- Installs a headless Chromium browser and takes four shots:
+   - Above the fold (1440x900, 2x retina)
+   - Full page scroll
+   - Mid-page
+   - Mobile (390x844)
+
+   These get committed alongside the evaluation so Friday review has visual evidence.
+
+4. **Auto-score with the evaluation model** -- Sends the model a prompt containing:
+   - The craft rubric (`skills/first-impression-craft-rubric.md`)
+   - The bet's specific evaluation approach (from the issue body)
+   - The extracted page text and HTML structure
+   - Instructions to score, format markdown, and reference screenshots
+
+   The model returns a publication-ready evaluation report.
+
+5. **Append human review checklist** -- Adds a checkbox section at the bottom for Friday review (confirm or override each dimension score).
+
+6. **Commit and push** -- Writes the evaluation markdown and screenshots to `weekly-eval-bets/` on main.
+
+7. **Comment on the issue** -- Posts a link to the committed file and flips the label from `status:ready` to `status:reviewed`.
+
+### Friday review
+
+A separate workflow (`friday-eval-review.yml`) runs every Friday. It gathers everything scored that week and creates a review issue with checkboxes, assigned to the reviewer.
+
+### Manual trigger
+
+The workflow can be triggered manually from the Actions tab with an optional `issue_number` input to evaluate a specific bet out of order.
 
 ## Screenshots captured per evaluation
 
@@ -78,11 +105,6 @@ Coherence is weighted 2x. Max score: 35.
 ## Adding new bets
 
 Open an issue using the "Weekly eval bet" template. It auto-labels `weekly-eval-bet` + `status:ready` and enters the queue. The auto-scorer picks bets in order of creation date (oldest first).
-
-## Manual trigger
-
-You can run the auto-scorer on any specific issue from the Actions tab:
-**Actions > Daily eval bet auto-score > Run workflow > enter issue number**
 
 ---
 
