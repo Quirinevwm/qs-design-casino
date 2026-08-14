@@ -152,4 +152,5 @@ Scored using the first-impression craft rubric: [`skills/first-impression-craft-
 ---
 
 *Reviewed: 2026-08-12 (rescored with v2 rubric: coherence 2x, intentionality added)*
-*Human-reviewed: 2026-08-14. Visual hierarchy adjusted 4→3 (too much to process). Coherence adjusted 4→3 (API docs missing, mixed target audience).*
+*Human-reviewed: 2026-08-14. Original total: 25/35, revised: 22/35.*
+*Visual hierarchy: 4/5 → 3/5 (too much to process). Coherence: 4/5 → 3/5 (API docs missing, mixed target audience).*

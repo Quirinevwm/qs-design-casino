@@ -180,4 +180,5 @@ Check each dimension you agree with. Add a note if you'd adjust the score.
 
 *Status: auto-scored, pending human review*
 *Scoring model: gpt-5.6-sol*
-*Human-reviewed: 2026-08-14. Specificity adjusted 5→4 (older data). Visual hierarchy adjusted 4→3 (too much to process).*
+*Human-reviewed: 2026-08-14. Original trust total: 18/25, revised: 17/25. Original craft total: 28/35, revised: 26/35.*
+*Specificity: 5/5 → 4/5 (older data). Visual hierarchy: 4/5 → 3/5 (too much to process).*
