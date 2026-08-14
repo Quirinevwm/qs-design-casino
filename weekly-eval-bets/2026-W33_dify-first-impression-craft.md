@@ -15,7 +15,7 @@
 
 ## Rubric scores
 
-### 1. Visual hierarchy (4/5)
+### 1. Visual hierarchy (3/5)
 
 **What works:**
 - Clear CTA layering in the nav: "Contact Sales" (text) < "Log in" (text) < "Get Started" (filled blue button). Three levels of visual weight, immediately parseable.
@@ -26,7 +26,7 @@
 - The hero copy is dense and multi-clause: "Build Agentic workflows, RAG pipelines, with rich AI model and tool support on one collaborative workspace." That is not a 3-second read. It tries to name every capability rather than lead with one sharp promise.
 - Two competing section headers ("Trusted by Builders & Enterprises Worldwide" and "Deploy Dify Your Way") appear in quick succession, splitting attention before the visitor has anchored on the core message.
 
-**Score: 4** - Strong structural hierarchy in navigation and CTAs. Hero text undermines it by front-loading too many concepts.
+**Score: 3** - Strong structural hierarchy in navigation and CTAs. Hero text undermines it by front-loading too many concepts.
 
 ---
 
@@ -61,7 +61,7 @@
 
 ---
 
-### 4. Coherence (4/5)
+### 4. Coherence (3/5)
 
 **What works:**
 - Consistent design language: the token system (dust, fog, ink, brand) creates a unified material metaphor. Every interactive state (hover, active) uses the same transition timing and color shifts.
@@ -72,7 +72,7 @@
 **What costs it a point:**
 - The page mixes two tonal registers: developer-practical ("Single-command Docker deploy," "Full agent runtime + workflow editor") and enterprise-sales ("Convert Your AI Vision into Immediate Business Value," "Eliminate the overhead between idea and execution"). These feel like they were written by different teams. The design holds them together visually, but the voice fractures.
 
-**Score: 4** - The visual system is coherent. The content voice is split between developer and enterprise registers, creating a subtle "assembled" feeling.
+**Score: 3** - The visual system is coherent. The content voice is split between developer and enterprise registers, creating a subtle "assembled" feeling.
 
 ---
 
@@ -113,13 +113,13 @@
 
 | Dimension | Weight | Score | Weighted |
 |-----------|--------|-------|----------|
-| Visual hierarchy | 1x | 4/5 | 4 |
+| Visual hierarchy | 1x | 3/5 | 3 |
 | Information density | 1x | 3/5 | 3 |
 | Readability | 1x | 4/5 | 4 |
-| Coherence | 2x | 4/5 | 8 |
+| Coherence | 2x | 3/5 | 6 |
 | Durability | 1x | 3/5 | 3 |
 | Intentionality | 1x | 3/5 | 3 |
-| **Total** | | | **25/35** |
+| **Total** | | | **22/35** |
 
 **Band: Solid craft with specific areas to sharpen (22-28).**
 
@@ -152,3 +152,4 @@ Scored using the first-impression craft rubric: [`skills/first-impression-craft-
 ---
 
 *Reviewed: 2026-08-12 (rescored with v2 rubric: coherence 2x, intentionality added)*
+*Human-reviewed: 2026-08-14. Visual hierarchy adjusted 4→3 (too much to process). Coherence adjusted 4→3 (API docs missing, mixed target audience).*
