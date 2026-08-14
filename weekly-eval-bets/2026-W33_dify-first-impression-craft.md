@@ -152,5 +152,27 @@ Scored using the first-impression craft rubric: [`skills/first-impression-craft-
 ---
 
 *Reviewed: 2026-08-12 (rescored with v2 rubric: coherence 2x, intentionality added)*
-*Human-reviewed: 2026-08-14. Original total: 25/35, revised: 22/35.*
-*Visual hierarchy: 4/5 → 3/5 (too much to process). Coherence: 4/5 → 3/5 (API docs missing, mixed target audience).*
+
+---
+
+## Human review
+
+Reviewed: 2026-08-14
+
+| Dimension | Auto-score | Human score | Note |
+|-----------|-----------|-------------|------|
+| Visual hierarchy | 4/5 | **3/5** | Too much to process |
+| Information density | 3/5 | 3/5 | ✅ Agreed |
+| Readability | 4/5 | 4/5 | ✅ Agreed |
+| Coherence (2x) | 4/5 | **3/5** | API docs missing, mixed target audience is confusing |
+| Durability | 3/5 | 3/5 | ✅ Agreed |
+| Intentionality | 3/5 | 3/5 | ✅ Agreed |
+| **Total** | **25/35** | **22/35** | |
+
+### Verdict
+
+✅ Confirmed: adapt selectively.
+
+---
+
+*Status: reviewed*

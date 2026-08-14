@@ -158,27 +158,41 @@ Give developers a path through GitHub, documentation, templates, and self-hostin
 - Mixing developer proof and enterprise proof without identifying which objection each signal resolves.
 
 *Status: auto-scored*
----
-
-## Human review (Friday)
-
-Check each dimension you agree with. Add a note if you'd adjust the score.
-
-- [ ] Visual hierarchy — 
-- [ ] Information density — 
-- [ ] Readability — 
-- [ ] Coherence (2x) — 
-- [ ] Durability — 
-- [ ] Intentionality — 
-
-**Overrides:** (adjust scores here if any dimension is off)
-
-
-**Verdict confirmed?** [ ] Yes / [ ] Needs revision
 
 ---
 
-*Status: auto-scored, pending human review*
+## Human review
+
+Reviewed: 2026-08-14
+
+### Trust dimensions
+
+| Dimension | Auto-score | Human score | Note |
+|-----------|-----------|-------------|------|
+| Sequence | 2/5 | 2/5 | ✅ Agreed |
+| Specificity | 5/5 | **4/5** | Older data, some signals dating |
+| Social proof quality | 3/5 | 3/5 | ✅ Agreed |
+| Friction to first action | 4/5 | 4/5 | ✅ Agreed |
+| Risk reduction | 4/5 | 4/5 | ✅ Agreed |
+| **Trust total** | **18/25** | **17/25** | |
+
+### Craft dimensions
+
+| Dimension | Auto-score | Human score | Note |
+|-----------|-----------|-------------|------|
+| Visual hierarchy | 4/5 | **3/5** | Too much to process |
+| Information density | 4/5 | 4/5 | ✅ Agreed |
+| Readability | 4/5 | 4/5 | ✅ Agreed |
+| Coherence (2x) | 4/5 | 4/5 | ✅ Agreed |
+| Durability | 4/5 | 4/5 | ✅ Agreed |
+| Intentionality | 4/5 | 4/5 | ✅ Agreed |
+| **Craft total** | **28/35** | **26/35** | |
+
+### Verdict
+
+✅ Confirmed: strong trust material, weak sequencing.
+
+---
+
 *Scoring model: gpt-5.6-sol*
-*Human-reviewed: 2026-08-14. Original trust total: 18/25, revised: 17/25. Original craft total: 28/35, revised: 26/35.*
-*Specificity: 5/5 → 4/5 (older data). Visual hierarchy: 4/5 → 3/5 (too much to process).*
+*Status: reviewed*
