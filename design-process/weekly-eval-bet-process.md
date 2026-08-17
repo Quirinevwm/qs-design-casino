@@ -30,7 +30,7 @@ The daily workflow (`weekly-eval-bet.yml`) runs Monday through Thursday and proc
 
    These get committed alongside the evaluation so Friday review has visual evidence.
 
-4. **Auto-score with the evaluation model** -- Sends the model a prompt containing:
+4. **Auto-score with gpt-5.6-sol through Azure AI Foundry** -- Sends the model a prompt containing:
    - The craft rubric (`skills/first-impression-craft-rubric.md`)
    - The bet's specific evaluation approach (from the issue body)
    - The extracted page text and HTML structure
@@ -38,7 +38,7 @@ The daily workflow (`weekly-eval-bet.yml`) runs Monday through Thursday and proc
 
    The model returns a publication-ready evaluation report.
 
-5. **Append human review checklist** -- Adds a checkbox section at the bottom for Friday review (confirm or override each dimension score).
+5. **Append human review table** -- Adds an auto-score vs human-score table at the bottom for Friday review, with space to explain each confirmed or overridden dimension score.
 
 6. **Commit and push** -- Writes the evaluation markdown and screenshots to `weekly-eval-bets/` on main.
 
@@ -68,27 +68,31 @@ Screenshots live in `weekly-eval-bets/screenshots/{slug}/` and are referenced in
 On Friday morning, a workflow creates a review issue assigned to you. Your job:
 
 1. Open each evaluation file from the week
-2. Check the boxes for dimensions you agree with
-3. Add a note next to any dimension you'd score differently
-4. Write override scores if needed
-5. Mark "Verdict confirmed" or "Needs revision"
-6. Commit your edits directly on GitHub
+2. Compare each auto-score with your human score
+3. Add a note explaining confirmations or differences
+4. Mark the verdict as "Confirmed" or "Needs revision"
+5. Commit your edits directly on GitHub
 
 The review section at the bottom of each file looks like:
 
 ```markdown
-## Human review (Friday)
+## Human review
 
-- [ ] Visual hierarchy — 
-- [ ] Information density — 
-- [ ] Readability — 
-- [ ] Coherence (2x) — 
-- [ ] Durability — 
-- [ ] Intentionality — 
+Reviewed:
 
-**Overrides:** (adjust scores here)
+| Dimension | Auto-score | Human score | Note |
+|-----------|-----------|-------------|------|
+| Visual hierarchy | /5 | | |
+| Information density | /5 | | |
+| Readability | /5 | | |
+| Coherence (2x) | /5 | | |
+| Durability | /5 | | |
+| Intentionality | /5 | | |
+| **Total** | **/35** | | |
 
-**Verdict confirmed?** [ ] Yes / [ ] Needs revision
+### Verdict
+
+[ ] Confirmed / [ ] Needs revision
 ```
 
 ## Notification
@@ -105,6 +109,8 @@ Coherence is weighted 2x. Max score: 35.
 ## Adding new bets
 
 Open an issue using the "Weekly eval bet" template. It auto-labels `weekly-eval-bet` + `status:ready` and enters the queue. The auto-scorer picks bets in order of creation date (oldest first).
+
+Automated public-repository discovery only replenishes the queue after no open `status:ready` bets remain. While any issue has both `weekly-eval-bet` and `status:ready`, discovery exits without searching for or creating new candidates.
 
 ---
 

@@ -163,6 +163,22 @@ async function listAllIssuesWithLabel(label) {
   }
 }
 
+async function listReadyEvalIssues() {
+  const issues = [];
+  const labels = ["weekly-eval-bet", "status:ready"].map(encodeURIComponent).join(",");
+
+  for (let page = 1; ; page += 1) {
+    const batch = await github(
+      `/repos/${owner}/${repo}/issues?state=open&labels=${labels}&per_page=100&page=${page}`,
+    );
+    issues.push(...batch.filter((issue) => !issue.pull_request));
+
+    if (batch.length < 100) {
+      return issues;
+    }
+  }
+}
+
 function normalize(value) {
   return value
     .toLowerCase()
@@ -426,14 +442,22 @@ async function createBacklogIssues(candidates) {
 }
 
 await ensureLabels();
-const memory = await buildMemory();
-const candidates = await discoverCandidates(memory);
+const readyEvalIssues = await listReadyEvalIssues();
 
-if (candidates.length === 0) {
-  console.log("No new design signals remained after checking backlog and review memory.");
-} else {
-  await createBacklogIssues(candidates);
+if (readyEvalIssues.length > 0) {
   console.log(
-    `${dryRun ? "Prepared" : "Created"} ${candidates.length} weekly eval bet candidates.`,
+    `Ready eval queue contains ${readyEvalIssues.length} issue(s); skipping discovery until the schedule is empty.`,
   );
+} else {
+  const memory = await buildMemory();
+  const candidates = await discoverCandidates(memory);
+
+  if (candidates.length === 0) {
+    console.log("No new design signals remained after checking backlog and review memory.");
+  } else {
+    await createBacklogIssues(candidates);
+    console.log(
+      `${dryRun ? "Prepared" : "Created"} ${candidates.length} weekly eval bet candidates.`,
+    );
+  }
 }
