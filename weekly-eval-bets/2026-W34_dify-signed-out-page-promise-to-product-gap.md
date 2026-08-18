@@ -80,11 +80,11 @@ If any of these steps are hidden behind model configuration, billing decisions, 
 | Dimension | Weight | Score | Weighted score | Rationale |
 |---|---:|---:|---:|---|
 | Visual hierarchy | 1x | 4/5 | 4 | The production-ready agentic workflow proposition is prominent and supported by a clear route into the cloud product, though the number of adjacent capabilities slightly diffuses the primary message. |
-| Information density | 1x | 3/5 | The long page gives substantial space to product breadth and deployment options, but repeated capability framing risks competing with the core workflow promise. |
-| Readability | 1x | 4/5 | Strong display typography, restrained copy blocks, and a consistent visual cadence support scanning, although specialized terms such as agentic workflows and RAG assume category familiarity. |
-| Coherence | 2x | 4/5 | The typography, blue-led visual identity, product diagrams, and card system make the page feel like one designed system rather than an assembly of unrelated sections. |
-| Durability | 1x | 3/5 | The modular section and card structure should tolerate moderate content changes, but tightly composed marketing statements and product graphics may become brittle with longer localization or qualification text. |
-| Intentionality | 1x | 4/5 | The major visual and structural choices reinforce technical capability and production credibility, though the breadth of claims sometimes appears driven by coverage rather than prioritization. |
+| Information density | 1x | 3/5 | 3 | The long page gives substantial space to product breadth and deployment options, but repeated capability framing risks competing with the core workflow promise. |
+| Readability | 1x | 4/5 | 4 | Strong display typography, restrained copy blocks, and a consistent visual cadence support scanning, although specialized terms such as agentic workflows and RAG assume category familiarity. |
+| Coherence | 2x | 4/5 | 8 | The typography, blue-led visual identity, product diagrams, and card system make the page feel like one designed system rather than an assembly of unrelated sections. |
+| Durability | 1x | 3/5 | 3 | The modular section and card structure should tolerate moderate content changes, but tightly composed marketing statements and product graphics may become brittle with longer localization or qualification text. |
+| Intentionality | 1x | 4/5 | 4 | The major visual and structural choices reinforce technical capability and production credibility, though the breadth of claims sometimes appears driven by coverage rather than prioritization. |
 | **Total** |  |  | **26/35** | **Solid craft with specific areas to sharpen.** |
 
 ![Dify signed-out page full view](screenshots/dify-signed-out-page-promise-to-product-gap/full-page.png)

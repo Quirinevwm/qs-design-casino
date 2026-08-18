@@ -173,7 +173,7 @@ jobs:
 
             1. Score each rubric dimension 1-5 with one sentence explaining the score.
             2. If the bet specifies its own evaluation approach (e.g. heuristic review, judged evaluation), apply THAT method as the primary evaluation and use the craft rubric as a secondary lens.
-            3. Include a weighted score table (coherence is 2x, max 35).
+            3. Include a weighted score table with this exact schema: \`| Dimension | Weight | Score | Weighted score | Rationale |\`. Every dimension row must contain all five cells, including a numeric weighted-score cell. For 1x dimensions, weighted score equals score. For Coherence at 2x, weighted score equals score times 2. Total max is 35.
             4. End with: patterns worth borrowing, anti-patterns to avoid.
             5. Reference the screenshots in your report using relative paths: \`screenshots/${process.env.SLUG}/above-the-fold.png\`, \`screenshots/${process.env.SLUG}/full-page.png\`, etc. Embed them as markdown images where they support your scoring rationale.
             6. Add a "Status: auto-scored" note at the bottom. This will be reviewed by a human on Friday.
