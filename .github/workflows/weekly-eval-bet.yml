@@ -76,7 +76,7 @@ jobs:
         if: steps.find-bet.outputs.skip == 'false'
         run: |
           npm init -y > /dev/null 2>&1
-          npm install playwright-extra puppeteer-extra-plugin-stealth > /dev/null 2>&1
+          npm install playwright-extra puppeteer-extra-plugin-stealth playwright > /dev/null 2>&1
           npx playwright install chromium --with-deps > /dev/null 2>&1
 
           URL="${{ steps.fetch-page.outputs.url }}"
