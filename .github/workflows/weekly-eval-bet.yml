@@ -98,7 +98,8 @@ jobs:
             });
             const page = await context.newPage();
 
-            await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+            await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.waitForTimeout(2000); // let above-fold assets render
 
             // Full page screenshot
             await page.screenshot({ path: `${dir}/full-page.png`, fullPage: true });
@@ -113,7 +114,8 @@ jobs:
 
             // Mobile viewport
             await page.setViewportSize({ width: 390, height: 844 });
-            await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+            await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.waitForTimeout(2000);
             await page.screenshot({ path: `${dir}/mobile.png` });
 
             await browser.close();
