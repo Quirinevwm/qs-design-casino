@@ -70,7 +70,7 @@ The workflow can also be started manually from the Actions tab through **Discove
 
 ## Scoring model
 
-Auto-scored evaluations currently use **gpt-5.6-sol** via Azure AI Foundry. The model may change as newer options become available or as evaluation needs evolve. Each completed evaluation file notes which model scored it.
+Auto-scored evaluations currently use **gpt-5.6-sol** via Microsoft Foundry. The model may change as newer options become available or as evaluation needs evolve. Each completed evaluation file notes which model scored it.
 
 | Week | Model | Notes |
 |------|-------|-------|
