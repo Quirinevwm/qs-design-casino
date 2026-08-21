@@ -126,23 +126,23 @@ The 17/35 score places the observed page in the **functional but lacking intenti
 
 ## Human review
 
-Reviewed:
+Reviewed: 2026-08-21
 
 | Dimension | Auto-score | Human score | Note |
 |-----------|-----------|-------------|------|
-| Visual hierarchy | /5 | | |
-| Information density | /5 | | |
-| Readability | /5 | | |
-| Coherence (2x) | /5 | | |
-| Durability | /5 | | |
-| Intentionality | /5 | | |
-| **Total** | **/35** | | |
+| Visual hierarchy | 1/5 | 0/5 | Cloudflare auth blocked real page |
+| Information density | 4/5 | 0/5 | Cloudflare auth blocked real page |
+| Readability | 2/5 | 0/5 | Cloudflare auth blocked real page |
+| Coherence (2x) | 2/5 | 0/5 | Cloudflare auth blocked real page |
+| Durability | 4/5 | 0/5 | Cloudflare auth blocked real page |
+| Intentionality | 2/5 | 0/5 | Cloudflare auth blocked real page |
+| **Total** | **17/35** | **0/35** | Not a valid evaluation, needs recapture |
 
 ### Verdict
 
-[ ] Confirmed / [ ] Needs revision
+[ ] Confirmed / [x] Needs revision
 
 ---
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: human-reviewed, needs recapture without Cloudflare block*

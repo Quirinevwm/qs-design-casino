@@ -80,11 +80,11 @@ A valid before-and-after study should segment results by browser, device, geogra
 | Dimension | Weight | Score | Weighted score | Rationale |
 |---|---:|---:|---:|---|
 | Visual hierarchy | 1x | 2 | 2 | The centered logo is immediately visible, but there is no primary message, progress state, or actionable next step to identify within three seconds. |
-| Information density | 1x | 4 | The surface is visually quiet and contains little competing noise, although its sparseness comes from missing guidance rather than disciplined prioritization. |
-| Readability | 1x | 3 | The fallback instruction is short and centered, but muted gray styling and conditional `noscript` rendering make the explanation weak or potentially absent. |
-| Coherence | 2x | 3 | The logo, restrained palette, animation, and centered composition form a consistent challenge shell, but the generic Arial treatment and security markup feel detached from a complete OpenAI experience. |
-| Durability | 1x | 2 | The layout can accommodate a short status line, but it lacks structures for longer errors, troubleshooting steps, alternate actions, localization, or support content. |
-| Intentionality | 1x | 2 | The branded loading animation and theme support appear deliberate, while the absence of status, recovery, and accessibility affordances makes the overall experience feel under-resolved. |
+| Information density | 1x | 4 | 4 | The surface is visually quiet and contains little competing noise, although its sparseness comes from missing guidance rather than disciplined prioritization. |
+| Readability | 1x | 3 | 3 | The fallback instruction is short and centered, but muted gray styling and conditional `noscript` rendering make the explanation weak or potentially absent. |
+| Coherence | 2x | 3 | 6 | The logo, restrained palette, animation, and centered composition form a consistent challenge shell, but the generic Arial treatment and security markup feel detached from a complete OpenAI experience. |
+| Durability | 1x | 2 | 2 | The layout can accommodate a short status line, but it lacks structures for longer errors, troubleshooting steps, alternate actions, localization, or support content. |
+| Intentionality | 1x | 2 | 2 | The branded loading animation and theme support appear deliberate, while the absence of status, recovery, and accessibility affordances makes the overall experience feel under-resolved. |
 | **Total** | **7x** |  | **19** | **The delivered state is visually controlled but fails to orient the visitor or provide a resilient path forward.** |
 
 ### Score interpretation
@@ -159,23 +159,23 @@ _Status: auto-scored_
 
 ## Human review
 
-Reviewed:
+Reviewed: 2026-08-21
 
 | Dimension | Auto-score | Human score | Note |
 |-----------|-----------|-------------|------|
-| Visual hierarchy | /5 | | |
-| Information density | /5 | | |
-| Readability | /5 | | |
-| Coherence (2x) | /5 | | |
-| Durability | /5 | | |
-| Intentionality | /5 | | |
-| **Total** | **/35** | | |
+| Visual hierarchy | 2/5 | 3/5 | One higher, there's coherence and it's not too distracting |
+| Information density | 4/5 | 4/5 | More quiet, bit dull and missing some messaging |
+| Readability | 3/5 | 3/5 | |
+| Coherence (2x) | 3/5 | 3/5 | |
+| Durability | 2/5 | 2/5 | Hard to find the next step, lacking clear goals and same style flatness |
+| Intentionality | 2/5 | 3/5 | The simplicity actually adds to the intentionality |
+| **Total** | **19/35** | **21/35** | |
 
 ### Verdict
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
 
 ---
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: human-reviewed*

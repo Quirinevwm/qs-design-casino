@@ -57,11 +57,11 @@ A stronger version would preserve one universal hero while introducing a compact
 | Dimension | Weight | Score | Weighted score | Rationale |
 |---|---:|---:|---:|---|
 | Visual hierarchy | 1x | 4 | 4 | The platform message and primary cloud action are easy to identify, but Enterprise and Community Edition are not equally discoverable in the initial view. |
-| Information density | 1x | 4 | The deployment choices are contained in a structured card or tab pattern, though the long page delays some audience-specific signals. |
-| Readability | 1x | 4 | Short deployment promises and audience-specific terminology support scanning, but specialized platform language assumes a technically informed reader. |
-| Coherence | 2x | 3 | The shared visual system and deployment framework unify the three audiences, but cloud-first emphasis creates a noticeable imbalance in perceived priority. |
-| Durability | 1x | 4 | The modular deployment pattern should tolerate moderate changes in descriptions, proof points, and actions without requiring a structural redesign. |
-| Intentionality | 1x | 4 | Audience vocabulary, deployment framing, and differentiated actions appear purposeful, although the reason for delaying explicit segmentation is less convincing. |
+| Information density | 1x | 4 | 4 | The deployment choices are contained in a structured card or tab pattern, though the long page delays some audience-specific signals. |
+| Readability | 1x | 4 | 4 | Short deployment promises and audience-specific terminology support scanning, but specialized platform language assumes a technically informed reader. |
+| Coherence | 2x | 3 | 6 | The shared visual system and deployment framework unify the three audiences, but cloud-first emphasis creates a noticeable imbalance in perceived priority. |
+| Durability | 1x | 4 | 4 | The modular deployment pattern should tolerate moderate changes in descriptions, proof points, and actions without requiring a structural redesign. |
+| Intentionality | 1x | 4 | 4 | Audience vocabulary, deployment framing, and differentiated actions appear purposeful, although the reason for delaying explicit segmentation is less convincing. |
 | **Total** | **7x** | **N/A** | **26** | **The result falls within the 22-28 range for solid craft with specific areas to sharpen.** |
 
 ## Accessibility considerations
@@ -112,23 +112,23 @@ These implementation details cannot be confirmed from static screenshots and ext
 
 ## Human review
 
-Reviewed:
+Reviewed: 2026-08-21
 
 | Dimension | Auto-score | Human score | Note |
 |-----------|-----------|-------------|------|
-| Visual hierarchy | /5 | | |
-| Information density | /5 | | |
-| Readability | /5 | | |
-| Coherence (2x) | /5 | | |
-| Durability | /5 | | |
-| Intentionality | /5 | | |
-| **Total** | **/35** | | |
+| Visual hierarchy | 4/5 | 3/5 | Hard to follow the main messaging due to extreme visual difference and interactions |
+| Information density | 4/5 | 4/5 | Well controlled |
+| Readability | 4/5 | 4/5 | Agree |
+| Coherence (2x) | 3/5 | 3/5 | Agree |
+| Durability | 4/5 | 3/5 | The interactivity isn't always clear and the messaging gets lost somewhat, hard to follow through |
+| Intentionality | 4/5 | 4/5 | |
+| **Total** | **26/35** | **24/35** | |
 
 ### Verdict
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
 
 ---
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: human-reviewed*

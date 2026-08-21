@@ -167,23 +167,23 @@ _Status: auto-scored_
 
 ## Human review
 
-Reviewed:
+Reviewed: 2026-08-21
 
 | Dimension | Auto-score | Human score | Note |
 |-----------|-----------|-------------|------|
-| Visual hierarchy | /5 | | |
-| Information density | /5 | | |
-| Readability | /5 | | |
-| Coherence (2x) | /5 | | |
-| Durability | /5 | | |
-| Intentionality | /5 | | |
-| **Total** | **/35** | | |
+| Visual hierarchy | 4/5 | 3/5 | Relation between pitches is a bit harder to follow |
+| Information density | 3/5 | 3/5 | |
+| Readability | 4/5 | 4/5 | |
+| Coherence (2x) | 4/5 | 3/5 | The backgrounds changing is actually less easy to focus on |
+| Durability | 3/5 | 3/5 | |
+| Intentionality | 4/5 | 4/5 | |
+| **Total** | **26/35** | **23/35** | |
 
 ### Verdict
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
 
 ---
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: human-reviewed*
