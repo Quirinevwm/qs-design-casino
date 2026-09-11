@@ -263,7 +263,17 @@ jobs:
               return;
             }
 
-            // Append human review section
+            // Extract scores from the evaluation markdown table
+            const scorePattern = /\|\s*([^|]+?)\s*\|\s*\d+\s*\|\s*(\d+)\s*\|/g;
+            const scores = {};
+            let match;
+            while ((match = scorePattern.exec(evaluation)) !== null) {
+              const dimension = match[1].trim();
+              const score = match[2];
+              scores[dimension] = score;
+            }
+
+            // Append human review section with extracted scores
             const reviewSection = [
               '',
               '---',
@@ -274,12 +284,12 @@ jobs:
               '',
               '| Dimension | Auto-score | Human score | Note |',
               '|-----------|-----------|-------------|------|',
-              '| Visual hierarchy | /5 | | |',
-              '| Information density | /5 | | |',
-              '| Readability | /5 | | |',
-              '| Coherence (2x) | /5 | | |',
-              '| Durability | /5 | | |',
-              '| Intentionality | /5 | | |',
+              `| Visual hierarchy | ${scores['Visual hierarchy'] || '?'}/5 | | |`,
+              `| Information density | ${scores['Information density'] || '?'}/5 | | |`,
+              `| Readability | ${scores['Readability'] || '?'}/5 | | |`,
+              `| Coherence (2x) | ${scores['Coherence (2x)'] || scores['Coherence'] || '?'}/5 | | |`,
+              `| Durability | ${scores['Durability'] || '?'}/5 | | |`,
+              `| Intentionality | ${scores['Intentionality'] || '?'}/5 | | |`,
               '| **Total** | **/35** | | |',
               '',
               '### Verdict',
