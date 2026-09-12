@@ -87,17 +87,17 @@ Reviewed:
 
 | Dimension | Auto-score | Human score | Note |
 |-----------|-----------|-------------|------|
-| Visual hierarchy | /5 | | |
-| Information density | /5 | | |
-| Readability | /5 | | |
-| Coherence (2x) | /5 | | |
-| Durability | /5 | | |
-| Intentionality | /5 | | |
-| **Total** | **/35** | | |
+| Visual hierarchy | 4/5 | 4/5 | Agree |
+| Information density | 3/5 | 2/5 | Too many layers + images, harder to process, long scroll |
+| Readability | 4/5 | 4/5 | Naming consistent and clear |
+| Coherence (2x) | 4/5 | 4/5 | Not pretending to be something else |
+| Durability | 4/5 | 3/5 | Gets confusing, easy to get lost |
+| Intentionality | 4/5 | 4/5 | Curated experience |
+| **Total** | **27/35** | **25/35** | Information density -1, Durability -1 |
 
 ### Verdict
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
 
 ---
 
