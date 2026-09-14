@@ -162,13 +162,13 @@ Reviewed:
 
 | Dimension | Auto-score | Human score | Note |
 |-----------|-----------|-------------|------|
-| Visual hierarchy | 3/5 | 2/5 | Categories clear but basic, missing what research means, unclear OpenAI for business |
-| Information density | 4/5 | 4/5 | Clean density |
-| Readability | 3/5 | 3/5 | Solid readability |
+| Visual hierarchy | 3/5 | 2/5 | Categories are clear yet basic, missing what research means there, what is openai for business etc. |
+| Information density | 4/5 | 4/5 |  |
+| Readability | 3/5 | 3/5 |  |
 | Coherence (2x) | 4/5 | 4/5 | Fits like one system |
-| Durability | 2/5 | 2/5 | Limited durability |
+| Durability | 2/5 | 2/5 |  |
 | Intentionality | 3/5 | 2/5 | Lacking some value props |
-| **Total** | **23/35** | **21/35** | -2 points |
+| **Total** | **23/35** | **21/35** |  |
 
 ### Verdict
 

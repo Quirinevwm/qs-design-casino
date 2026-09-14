@@ -206,13 +206,13 @@ Reviewed:
 
 | Dimension | Auto-score | Human score | Note |
 |-----------|-----------|-------------|------|
-| Visual hierarchy | 2/5 | 1/5 | Cold start harder to assess: agent vs. articles |
-| Information density | 4/5 | 4/5 | Restrained and clean |
-| Readability | 3/5 | 4/5 | Visual weight helps scanning |
-| Coherence (2x) | 4/5 | 3/5 | Simple but more categorization would help |
-| Durability | 3/5 | 3/5 | Solid durability |
+| Visual hierarchy | 2/5 | 1/5 | Cold start it's harder to assess if you should talk to the agent or read the articles |
+| Information density | 4/5 | 4/5 |  |
+| Readability | 3/5 | 4/5 | Visual weight matters to scan |
+| Coherence (2x) | 4/5 | 3/5 | Even though it's simple more categorization would help |
+| Durability | 3/5 | 3/5 |  |
 | Intentionality | 3/5 | 4/5 | Very intentional w/ news curation and simplicity |
-| **Total** | **26/35** | **24/35** | -2 points |
+| **Total** | **26/35** | **24/35** |  |
 
 ### Verdict
 

@@ -149,13 +149,13 @@ Reviewed:
 
 | Dimension | Auto-score | Human score | Note |
 |-----------|-----------|-------------|------|
-| Visual hierarchy | 1/5 | 3/5 | Hierarchy is strong w/ interaction and agent suggestions about core product lines, missing helpful cues |
-| Information density | 3/5 | 4/5 | Experience breathes well |
-| Readability | 3/5 | 2/5 | Could show more details |
-| Coherence (2x) | 3/5 | 3/5 | Consistent approach |
+| Visual hierarchy | 1/5 | 3/5 | The hierarchy is actually strong, since you can interact w/ an agent w/ suggestions about their core product lines. It's missing helpful cues though |
+| Information density | 3/5 | 4/5 | The experience breathes |
+| Readability | 3/5 | 2/5 | Could show a bit more details |
+| Coherence (2x) | 3/5 | 3/5 |  |
 | Durability | 2/5 | 3/5 | Consistent and managing expectations |
-| Intentionality | 2/5 | 4/5 | Simplicity is intentional about not overloading |
-| **Total** | **17/35** | **25/35** | +8 points |
+| Intentionality | 2/5 | 4/5 | By its simplicity it's being intentional about not overloading |
+| **Total** | **17/35** | **25/35** |  |
 
 ### Verdict
 
