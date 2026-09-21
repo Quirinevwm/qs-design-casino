@@ -4,9 +4,14 @@
 
 **Primary method:** Checked review of singular message, audience alignment, CTA focus, claim specificity, and redundancy  
 **Secondary method:** First-impression craft rubric  
-**Primary score:** 15/25  
-**Craft score:** 26/35  
-**Craft verdict:** Solid craft with specific areas to sharpen
+**AI primary score:** 15/25  
+**AI craft score:** 26/35  
+**AI craft verdict:** Solid craft with specific areas to sharpen  
+**Human primary score:** 15/25  
+**Human craft score:** 24/35  
+**Human verdict:** Pending
+
+The original AI assessment is preserved below. Human scores and notes are recorded in the [human review](#human-review) section.
 
 The page quickly establishes Vertex AI Agent Builder as an enterprise platform for building AI agents, but it stops short of making one sharply differentiated promise. Search, orchestration, grounding, governance, deployment, and the wider Google Cloud portfolio receive similar emphasis, so the product is understandable as a category while its defining advantage remains less clear.
 
@@ -139,28 +144,43 @@ Explain how Agent Builder relates to Vertex AI, models, search, data services, a
 - Allowing the parent portfolio narrative to obscure the product’s specific boundary and advantage.
 - Equating comprehensive coverage with message clarity.
 
-*Status: auto-scored*
+*Status: human scores and notes recorded; verdict pending*
 ---
 
 ## Human review
 
-Reviewed:
+Reviewed: 2026-09-21
+
+### Promise clarity
 
 | Dimension | Auto-score | Human score | Note |
 |-----------|-----------|-------------|------|
-| Visual hierarchy | /5 | | |
-| Information density | /5 | | |
-| Readability | /5 | | |
-| Coherence (2x) | /5 | | |
-| Durability | /5 | | |
-| Intentionality | /5 | | |
-| **Total** | **/35** | | |
+| Singular message | 3/5 | 2/5 | Their note on being an enterprise agent platform is strong, but the building blocks that make that platform are harder to distill. |
+| Audience alignment | 4/5 | 5/5 | Very targeted and very smart with their targeted agent pricing up front. |
+| CTA focus | 3/5 | 3/5 | Aligned. Many docs links are good, but it's harder to parse. |
+| Claim specificity | 3/5 | 3/5 | Aligned. Generic is their pitch, so that makes sense. |
+| Redundancy | 2/5 | 2/5 | Aligned. They could simplify it more indeed. |
+| **Promise total** | **15/25** | **15/25** | Singular message -1, audience alignment +1. |
+
+### Craft
+
+| Dimension | Auto-score | Human score | Note |
+|-----------|-----------|-------------|------|
+| Visual hierarchy | 4/5 | 3/5 | A bit messy, with left and right panels that have information that's actually more important. |
+| Information density | 3/5 | 3/5 | As an enterprise platform this is hard. Aligned with 3/5. |
+| Readability | 4/5 | 3/5 | Overload of information, but it's compact in its own sections. |
+| Coherence (2x) | 4/5 | 4/5 | Aligned. The user understands Google's way of communicating; this is exactly as expected. |
+| Durability | 4/5 | 4/5 | Aligned. Easy to update and refine. |
+| Intentionality | 3/5 | 3/5 | Aligned. They know what they're pitching and to whom. |
+| **Craft total** | **26/35** | **24/35** | Visual hierarchy -1, readability -1. Coherence is weighted 2x. |
 
 ### Verdict
 
 [ ] Confirmed / [ ] Needs revision
 
+Scores and notes recorded. Final verdict not yet provided.
+
 ---
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: human scores and notes recorded; verdict pending*
