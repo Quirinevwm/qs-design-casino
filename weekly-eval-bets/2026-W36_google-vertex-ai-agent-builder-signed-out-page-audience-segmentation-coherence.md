@@ -2,13 +2,21 @@
 
 ## Evaluation summary
 
-**Verdict:** The page presents a coherent Google Cloud product story, but audience coherence depends on visitors translating a broad platform narrative into their own needs. AI developers receive the clearest path, while enterprise architects, IT leaders, and business decision-makers are acknowledged more through shared enterprise language than through distinct, role-relevant routes.
+**AI verdict:** The page presents a coherent Google Cloud product story, but audience coherence depends on visitors translating a broad platform narrative into their own needs. AI developers receive the clearest path, while enterprise architects, IT leaders, and business decision-makers are acknowledged more through shared enterprise language than through distinct, role-relevant routes.
 
-**Craft score:** **25/35**
+**AI craft score:** **25/35**
 
-**Rating:** Solid craft with specific areas to sharpen.
+**AI rating:** Solid craft with specific areas to sharpen.
 
-**Bet outcome:** **Partially supported.** The page serves multiple audiences without becoming visually fragmented, but it does not make each audience feel intentionally served within five seconds.
+**AI bet outcome:** **Partially supported.** The page serves multiple audiences without becoming visually fragmented, but it does not make each audience feel intentionally served within five seconds.
+
+**Human craft score:** **22/35**
+
+**Human verdict:** Confirmed.
+
+**Human audience-fit scores:** Pending.
+
+The original AI assessment is preserved below. Human craft scores and notes are recorded in the [human review](#human-review) section.
 
 ## Evaluation method
 
@@ -177,28 +185,40 @@ The page shows disciplined brand and component decisions, but audience treatment
 - Relying on one generic CTA pair to serve every role and evaluation stage.
 - Adding more role-specific content without first introducing clear routing and prioritization.
 
-*Status: auto-scored*
+*Status: human craft review confirmed; audience-fit review pending*
 ---
 
 ## Human review
 
-Reviewed:
+Craft reviewed: 2026-09-21
+
+### Craft
 
 | Dimension | Auto-score | Human score | Note |
 |-----------|-----------|-------------|------|
-| Visual hierarchy | /5 | | |
-| Information density | /5 | | |
-| Readability | /5 | | |
-| Coherence (2x) | /5 | | |
-| Durability | /5 | | |
-| Intentionality | /5 | | |
-| **Total** | **/35** | | |
+| Visual hierarchy | 4/5 | 3/5 | The visuals get muddier the more you scroll. |
+| Information density | 3/5 | 3/5 | Aligned. It's actually a good score for a complicated platform. |
+| Readability | 4/5 | 3/5 | The quotes at the end come late, but the pricing higher up is really important and draws attention with its strong green color. I'm not sure about accessibility. |
+| Coherence (2x) | 3/5 | 3/5 | Aligned. It's connected, but not that strong. |
+| Durability | 4/5 | 3/5 | Swapping modules is handy, but the order seems messy since it changes often. |
+| Intentionality | 4/5 | 4/5 | Aligned. Clear pitch priorities based on the enterprise business. |
+| **Craft total** | **25/35** | **22/35** | Visual hierarchy -1, readability -1, durability -1. Coherence is weighted 2x. |
+
+### Audience fit
+
+Human audience-fit scores and notes have not yet been provided. The original AI audience scores remain unchanged.
 
 ### Verdict
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
+
+Confirmed on submission of the human craft rating. Audience-fit scores remain pending.
+
+### Review synthesis (AI-assisted)
+
+**Clear enterprise pitch, muddier scroll.** The page knows whom it is selling to, and its information density is reasonable for a complex platform. But the hierarchy weakens farther down: pricing draws attention higher up, quotes arrive late, and changing module order makes the story harder to follow. The next improvement is a clearer, more stable reading order, not more content. Accessibility remains an open question, not a verified finding.
 
 ---
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: human craft review confirmed; audience-fit review pending*
