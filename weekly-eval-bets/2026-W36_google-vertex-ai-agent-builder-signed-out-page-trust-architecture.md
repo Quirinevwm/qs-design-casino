@@ -2,9 +2,17 @@
 
 ## Evaluation summary
 
-**Primary trust architecture score:** 19/25  
-**Secondary craft score:** 27/35  
-**Craft verdict:** Solid craft with specific areas to sharpen.
+**AI primary trust architecture score:** 19/25  
+**AI secondary craft score:** 27/35  
+**AI craft verdict:** Solid craft with specific areas to sharpen.
+
+**Human trust architecture score:** **13/25**
+
+**Human craft review:** Skipped at the reviewer's request; already reviewed in the [audience coherence evaluation](2026-W36_google-vertex-ai-agent-builder-signed-out-page-audience-segmentation-coherence.md#human-review).
+
+**Human verdict:** Confirmed.
+
+The original AI assessment is preserved below. Human trust scores and notes are recorded in the [human review](#human-review) section.
 
 Vertex AI Agent Builder presents a credible enterprise platform through clear product framing, familiar Google Cloud design language, and repeated emphasis on grounding, deployment, security, and governance. The page is strongest when explaining the breadth of the platform and weakest when converting Google’s inherited credibility into concrete, independently verifiable proof.
 
@@ -160,28 +168,41 @@ Condense overlapping capability sections and give greater visual prominence to d
 - Repeating similarly weighted capability modules until proof and promotion become difficult to distinguish.
 - Framing cloud dependency only as an advantage without explaining constraints, portability, or cost implications.
 
-Status: auto-scored
+Status: human trust review confirmed; craft review skipped at the reviewer's request
 ---
 
 ## Human review
 
-Reviewed:
+Trust reviewed: 2026-09-21
+
+### Trust architecture
 
 | Dimension | Auto-score | Human score | Note |
 |-----------|-----------|-------------|------|
-| Visual hierarchy | /5 | | |
-| Information density | /5 | | |
-| Readability | /5 | | |
-| Coherence (2x) | /5 | | |
-| Durability | /5 | | |
-| Intentionality | /5 | | |
-| **Total** | **/35** | | |
+| Sequence | 4/5 | 2/5 | Risk controls are really buried. |
+| Specificity | 4/5 | 3/5 | Elaborate explanation with good documentation links, but findability is hard with all the noise. |
+| Social proof quality | 3/5 | 3/5 | Aligned. Key quotes and customer callouts. |
+| Friction to first action | 4/5 | 2/5 | Some sample prompts, but they don't share security controls. |
+| Risk reduction | 4/5 | 3/5 | Their score is higher on cost alone, but the controls are a bit too high-level. |
+| **Trust total** | **19/25** | **13/25** | Sequence -2, specificity -1, friction to first action -2, risk reduction -1. |
+
+### Craft
+
+Skipped at the reviewer's request: "We can skip it, as I've already reviewed this craft element in the previous one."
+
+See the [human craft review in the audience coherence evaluation](2026-W36_google-vertex-ai-agent-builder-signed-out-page-audience-segmentation-coherence.md#human-review). No new human craft scores were assigned or copied into this evaluation. The original AI craft score remains 27/35.
 
 ### Verdict
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
+
+Confirmed on submission of the human trust rating. Craft was explicitly skipped, not left awaiting a duplicate review.
+
+### Review synthesis (AI-assisted)
+
+**Customer proof is visible; risk controls are buried.** Customer quotes and documentation links provide useful evidence, but the surrounding noise makes reassurance hard to find. Sample prompts invite exploration without making security controls clear, while the controls that are described remain too high-level. The practical next step is to bring concrete risk and security information closer to the first action, rather than asking visitors to piece it together.
 
 ---
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: human trust review confirmed; craft review skipped at the reviewer's request*
