@@ -18,9 +18,9 @@ The daily workflow (`weekly-eval-bet.yml`) runs Monday through Thursday and proc
 
 ### Step by step
 
-1. **Find the bet** -- Picks the oldest `status:ready` issue (or a specific one if triggered manually). Extracts the title, body, and generates a week-stamped filename.
+1. **Find the bet** -- Picks the oldest `status:ready` issue (or a specific one if triggered manually). Extracts the title and body, then generates a filename containing the week, slug, workflow run ID, and attempt. Reruns do not overwrite earlier evidence or reports.
 
-2. **Fetch the target page** -- Pulls the first URL from the issue body. Grabs both raw HTML (first 50KB) and a text-only version (first 10KB) for the model to analyze.
+2. **Resolve the target page** -- Uses the issue's Target page field, falling back to the first HTTPS link for older issues. The URL must identify the page being evaluated, not merely a source issue or reference article.
 
 3. **Capture screenshots with Playwright** -- Installs a headless Chromium browser and takes four shots:
    - Above the fold (1440x900, 2x retina)
@@ -28,21 +28,45 @@ The daily workflow (`weekly-eval-bet.yml`) runs Monday through Thursday and proc
    - Mid-page
    - Mobile (390x844)
 
-   These get committed alongside the evaluation so Friday review has visual evidence.
+   Rendered text, HTML, and capture settings are stored with the screenshots in an immutable run-specific folder. Failed page responses stop the run rather than becoming valid evaluation evidence.
 
-4. **Auto-score with gpt-5.6-sol through Azure AI Foundry** -- Sends the model a prompt containing:
-   - The craft rubric (`skills/first-impression-craft-rubric.md`)
-   - The bet's specific evaluation approach (from the issue body)
-   - The extracted page text and HTML structure
-   - Instructions to score, format markdown, and reference screenshots
+4. **Choose the craft scope** -- Match the target URL, rendering settings, rubric version, and captured evidence against prior machine-readable evaluation records. Choose a new baseline, an existing baseline reference, or a changed-evidence comparison as described below.
 
-   The model returns a publication-ready evaluation report.
+5. **Auto-score with gpt-5.6-sol through Azure AI Foundry** -- Send the named lens, bet details, rubric, captured text/HTML, and screenshots. For changed evidence, also send the baseline evidence. The model returns structured scores and a narrative. Validate dimensions and score ranges, calculate totals, and render the report in code. Invalid output fails the run; it does not publish missing scores as `?`.
 
-5. **Append human review table** -- Adds an auto-score vs human-score table at the bottom for Friday review, with space to explain each confirmed or overridden dimension score.
+6. **Build a scoped human review** -- Include the named lens dimensions. Include all six craft dimensions only when establishing a baseline; show only reassessed dimensions for a change review; otherwise link the baseline without requesting another craft score. Keep role-specific audience validation separate from design-lead review.
 
-6. **Commit and push** -- Writes the evaluation markdown and screenshots to `weekly-eval-bets/` on main.
+7. **Commit and push** -- Save the markdown report, a same-name JSON sidecar with AI scores and evidence provenance, and the immutable capture folder to `weekly-eval-bets/` on main. Scoring runs are serialized so later runs can see earlier baselines.
 
-7. **Comment on the issue** -- Posts a link to the committed file and flips the label from `status:ready` to `status:reviewed`.
+8. **Comment on the issue** -- Post the report location and flip the label from `status:ready` to `status:reviewed`. This means AI-scored, not human-approved.
+
+### Craft once per comparable page version
+
+Craft is a shared baseline, not a compulsory secondary score for every lens.
+
+| Evidence state | AI scoring | Human review |
+|---|---|---|
+| No comparable baseline | Establish six craft dimensions once, alongside the named lens if needed | Review the baseline once |
+| Same URL, capture context, rubric, and exact evidence | Reuse the existing baseline without new craft scores | Follow its link; no repeated craft table |
+| Changed evidence with comparable URL, context, and rubric | Compare old and new evidence; reassess only affected dimensions with explicit change reasons | Review only the reassessed dimensions |
+| Evidence changed but no material craft impact | Explain why no craft dimensions changed and retain the baseline reference | No repeated craft scoring |
+| Different page, rendering context, or rubric | Establish a separate baseline | Review the new baseline |
+
+The evidence fingerprint covers rendered text/HTML and all four screenshot files. Exact matches provide deterministic reuse. Differences are a reason to compare, not proof that all craft dimensions changed: dynamic counts or minor copy changes may have no material craft impact.
+
+Baseline links retain provenance. Unaffected AI scores may be used to calculate a revised baseline total, but they are not presented as newly scored dimensions. Human overrides remain in the linked human review and are never imported as AI scores or silently applied to later reports.
+
+Legacy reports have no comparable machine-readable capture record. They remain readable historical evidence but are not automatically adopted as baselines. The first future comparable run establishes an explicit baseline. Existing W36/W37 reports and scores are not rewritten by this change.
+
+### Named lens and reviewer scope
+
+- **Craft:** Establish or reference the shared craft baseline.
+- **Promise clarity:** Score singular message, audience alignment, CTA focus, claim specificity, and redundancy.
+- **Trust architecture:** Score sequence, specificity, social proof quality, friction to first action, and risk reduction.
+- **Audience fit:** Label role-specific scores as AI hypotheses requiring representative reviewers, not as validated design-lead judgments.
+- **Other:** Follow the bet's own evaluation method. If the supplied evidence cannot demonstrate the claim, report it as inconclusive rather than replacing it with a craft pass.
+
+New issues select a Primary lens explicitly. Older issue titles are used to recognize existing craft, promise, trust, and audience bets. An explicit skip with its rationale can complete the agreed design-lead scope without validating role-specific audience scores.
 
 ### Friday review
 
@@ -61,19 +85,20 @@ The workflow can be triggered manually from the Actions tab with an optional `is
 | `mid-page.png` | Middle section of the page |
 | `mobile.png` | 390x844 viewport (iPhone-sized) |
 
-Screenshots live in `weekly-eval-bets/screenshots/{slug}/` and are referenced in the evaluation markdown.
+New captures live in `weekly-eval-bets/screenshots/{week}_{slug}_{run-id}_{attempt}/`. They also contain `page-text.txt`, `page-content.html`, and `capture-context.json`. Reports link to their own evidence; earlier screenshots are not overwritten. Historical captures retain their existing `{slug}` paths.
 
 ## Friday human review
 
 On Friday morning, a workflow creates a review issue assigned to you. Your job:
 
 1. Open each evaluation file from the week
-2. Compare each auto-score with your human score
-3. Add a note explaining confirmations or differences
-4. Mark the verdict as "Confirmed" or "Needs revision"
-5. Commit your edits directly on GitHub
+2. Review the named lens and any newly requested baseline or changed craft dimensions, not every linked baseline again
+3. Add a note for each confirmation or difference, preserving notes even when scores match
+4. Mark the verdict as "Confirmed" or "Needs revision"; Quirine's submitted ratings count as confirmation unless she requests revision
+5. Record explicit skips and reviewer scope rather than inventing scores for unreviewed dimensions
+6. Commit the review or merge its PR, check off the evaluation, and archive its source issue when complete
 
-The review section at the bottom of each file looks like:
+For example, a trust evaluation that references an existing craft baseline requests trust scores, not six more craft scores:
 
 ```markdown
 ## Human review
@@ -82,13 +107,14 @@ Reviewed:
 
 | Dimension | Auto-score | Human score | Note |
 |-----------|-----------|-------------|------|
-| Visual hierarchy | /5 | | |
-| Information density | /5 | | |
-| Readability | /5 | | |
-| Coherence (2x) | /5 | | |
-| Durability | /5 | | |
-| Intentionality | /5 | | |
-| **Total** | **/35** | | |
+| Sequence | 4/5 | | |
+| Specificity | 4/5 | | |
+| Social proof quality | 3/5 | | |
+| Friction to first action | 4/5 | | |
+| Risk reduction | 4/5 | | |
+| **Trust total** | **19/25** | | |
+
+Craft: refer to the linked baseline. No new craft scoring requested.
 
 ### Verdict
 
@@ -102,9 +128,13 @@ https://github.com/notifications?query=repo%3AQuirinevwm%2Fqs-design-casino+reas
 
 ## Rubric reference
 
-All evaluations use the first-impression craft rubric: [`skills/first-impression-craft-rubric.md`](../skills/first-impression-craft-rubric.md)
+Craft baselines and changed-dimension reviews use the first-impression craft rubric: [`skills/first-impression-craft-rubric.md`](../skills/first-impression-craft-rubric.md). Other lenses do not repeat it.
 
 Coherence is weighted 2x. Max score: 35.
+
+## Scoring validation
+
+Run `node --test .github/scripts/eval-*.test.cjs` from the repository root. These dependency-free tests cover baseline selection, structured output validation, score arithmetic, provenance, scoped human review generation, and workflow capture integration. The same command runs in the Eval scoring tests workflow without Foundry credentials or live page requests.
 
 ## Adding new bets
 

@@ -18,6 +18,29 @@ body:
       required: true
 
   - type: dropdown
+    id: primary-lens
+    attributes:
+      label: Primary lens
+      description: Score this lens directly. Craft is a shared baseline, not a mandatory second evaluation.
+      options:
+        - Other
+        - Craft
+        - Promise clarity
+        - Trust architecture
+        - Audience fit
+    validations:
+      required: true
+
+  - type: input
+    id: target-page
+    attributes:
+      label: Target page
+      description: The actual page to evaluate, not a source issue or reference article. Older issues fall back to their first HTTPS link.
+      placeholder: "https://example.com/product"
+    validations:
+      required: false
+
+  - type: dropdown
     id: evaluator-class
     attributes:
       label: Evaluator class
