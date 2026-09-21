@@ -9,7 +9,7 @@
 **AI craft verdict:** Solid craft with specific areas to sharpen  
 **Human primary score:** 15/25  
 **Human craft score:** 24/35  
-**Human verdict:** Pending
+**Human verdict:** Confirmed
 
 The original AI assessment is preserved below. Human scores and notes are recorded in the [human review](#human-review) section.
 
@@ -144,7 +144,7 @@ Explain how Agent Builder relates to Vertex AI, models, search, data services, a
 - Allowing the parent portfolio narrative to obscure the product’s specific boundary and advantage.
 - Equating comprehensive coverage with message clarity.
 
-*Status: human scores and notes recorded; verdict pending*
+*Status: human review confirmed*
 ---
 
 ## Human review
@@ -176,11 +176,11 @@ Reviewed: 2026-09-21
 
 ### Verdict
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
 
-Scores and notes recorded. Final verdict not yet provided.
+Confirmed under the reviewer's guidance that submitted ratings confirm the human verdict. The recorded scores and notes are unchanged.
 
 ---
 
 *Scoring model: gpt-5.6-sol*
-*Status: human scores and notes recorded; verdict pending*
+*Status: human review confirmed*
