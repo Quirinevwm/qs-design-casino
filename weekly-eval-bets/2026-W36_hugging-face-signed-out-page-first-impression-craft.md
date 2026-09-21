@@ -2,9 +2,15 @@
 
 ## Evaluation summary
 
-**Score: 27/35**
+**AI craft score: 27/35**
 
-**Verdict: Solid craft with specific areas to sharpen.**
+**AI verdict: Solid craft with specific areas to sharpen.**
+
+**Human craft score: 27/35**
+
+**Human verdict: Confirmed.**
+
+The original AI assessment is preserved below. Human scores and notes are recorded in the [human review](#human-review) section.
 
 Hugging Face presents a complex ecosystem as a credible, community-first product surface. The hero quickly establishes the platform’s purpose, while search, category navigation, and live marketplace content make the product feel active rather than merely advertised. The main craft limitation is competition for attention. Announcements, promotional links, navigation, calls to action, badges, statistics, and content feeds all appear early, weakening the clarity of the first impression.
 
@@ -117,28 +123,34 @@ Allow browser zoom, provide an explicit label for search, verify contrast for gr
 - Assuming dense horizontal navigation will remain resilient under localization or increased text size.
 - Combining community, enterprise, and open-source modules without sufficiently strong transitions.
 
-_Status: auto-scored_
+_Status: human craft review confirmed_
 ---
 
 ## Human review
 
-Reviewed:
+Reviewed: 2026-09-21
 
 | Dimension | Auto-score | Human score | Note |
 |-----------|-----------|-------------|------|
-| Visual hierarchy | /5 | | |
-| Information density | /5 | | |
-| Readability | /5 | | |
-| Coherence (2x) | /5 | | |
-| Durability | /5 | | |
-| Intentionality | /5 | | |
-| **Total** | **/35** | | |
+| Visual hierarchy | 4/5 | 4/5 | Aligned. They have a very strong landing experience that pulls you in; scrolling only makes it better. |
+| Information density | 3/5 | 3/5 | Interesting, they pitch ML a lot more than I thought. Their information cards could have a bit less UI and more focused callouts, and the open-source ending could be more interesting. |
+| Readability | 4/5 | 4/5 | Very visual, high-fidelity modes. It could be a bit smoother, but yes, 4/5 is a high score. |
+| Coherence (2x) | 4/5 | 4/5 | Aligned. They're good at making focused decisions. |
+| Durability | 4/5 | 4/5 | Aligned. |
+| Intentionality | 4/5 | 4/5 | Aligned. Their additional ML pitch is clear, but could be elaborated on a bit more. |
+| **Craft total** | **27/35** | **27/35** | All six scores retained, with information density explicitly confirmed at 3/5. Coherence is weighted 2x. |
 
 ### Verdict
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
+
+Confirmed on submission of the human craft rating.
+
+### Review synthesis (AI-assisted)
+
+**Clear ML story, crowded cards.** Hugging Face draws visitors in with a strong landing experience and rewards further scrolling. Focused design choices hold the page together, while the ML pitch is clear and has room for more explanation. The opportunity is refinement: reduce UI clutter in the information cards, sharpen their callouts, and give the open-source ending a more engaging finish without losing the page's momentum.
 
 ---
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: human craft review confirmed*
