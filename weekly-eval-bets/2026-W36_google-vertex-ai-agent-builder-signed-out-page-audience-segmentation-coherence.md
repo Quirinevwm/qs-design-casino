@@ -14,7 +14,9 @@
 
 **Human verdict:** Confirmed.
 
-**Human audience-fit scores:** Pending.
+**Human audience-fit review:** Skipped at the reviewer's request; role-specific validation is outside this design-lead review.
+
+**Review completion:** Complete within the agreed design-lead scope. AI audience-fit scores remain unvalidated by human reviewers.
 
 The original AI assessment is preserved below. Human craft scores and notes are recorded in the [human review](#human-review) section.
 
@@ -185,7 +187,7 @@ The page shows disciplined brand and component decisions, but audience treatment
 - Relying on one generic CTA pair to serve every role and evaluation stage.
 - Adding more role-specific content without first introducing clear routing and prioritization.
 
-*Status: human craft review confirmed; audience-fit review pending*
+*Status: design-lead review complete; human craft review confirmed; audience-fit review explicitly skipped*
 ---
 
 ## Human review
@@ -206,13 +208,17 @@ Craft reviewed: 2026-09-21
 
 ### Audience fit
 
-Human audience-fit scores and notes have not yet been provided. The original AI audience scores remain unchanged.
+**Skipped on 2026-09-21 at the reviewer's request.**
+
+**Reviewer scope annotation:** Assessing fit for AI developers, enterprise architects, IT leaders, and business decision-makers requires reviewers from those specific roles. Quirine is reviewing as design lead, not as a representative of each audience. Audience-fit scoring is therefore excluded from this review rather than left pending.
+
+The original AI audience scores remain unchanged and have not been validated by role-specific human reviewers. No human audience scores are inferred from the craft review. This closes the audience-fit item within the agreed review scope without claiming that audience fit has been validated.
 
 ### Verdict
 
 [x] Confirmed / [ ] Needs revision
 
-Confirmed on submission of the human craft rating. Audience-fit scores remain pending.
+Confirmed on submission of the human craft rating. The design-lead review is complete; audience-fit scoring is explicitly skipped for the scope reasons recorded above.
 
 ### Review synthesis (AI-assisted)
 
@@ -221,4 +227,4 @@ Confirmed on submission of the human craft rating. Audience-fit scores remain pe
 ---
 
 *Scoring model: gpt-5.6-sol*
-*Status: human craft review confirmed; audience-fit review pending*
+*Status: design-lead review complete; human craft review confirmed; audience-fit review explicitly skipped*
