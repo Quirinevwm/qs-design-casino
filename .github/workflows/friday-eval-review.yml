@@ -67,15 +67,16 @@ jobs:
 
           BODY="## Friday review: ${WEEK}
 
-          This week produced **${COUNT}** auto-scored evaluation(s). Each was scored by Copilot using the craft rubric and the bet's suggested approach.
+          This week produced **${COUNT}** auto-scored evaluation(s). Each report scores its named lens. Craft is established once per comparable page version, then referenced or reassessed only where evidence changed.
 
           ### Your job
 
           Review each evaluation below. For each one:
           1. Read the auto-scored report
-          2. Check whether the scores feel right (adjust if needed)
-          3. Confirm or override the verdict
-          4. Mark the checkbox when done
+          2. Review the named lens scores, preserving notes even when scores match
+          3. Review craft only for a new baseline or the listed changed dimensions; follow existing baseline links instead of rescoring unchanged craft
+          4. Keep role-specific audience validation with representative reviewers; record an explicit scope skip if it is outside the design-lead review
+          5. Confirm or override the verdict, then mark the checkbox when the agreed review scope is complete
 
           ### Evaluations to review
 

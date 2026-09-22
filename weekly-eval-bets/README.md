@@ -70,6 +70,8 @@ The workflow can also be started manually from the Actions tab through **Discove
 
 ## Scoring model
 
+Each evaluation scores its named lens. Craft is a shared baseline for comparable page evidence, not a mandatory secondary review: later lenses reference the baseline, and material changes trigger only affected-dimension reassessment. AI scores, human overrides, and role-specific audience validation remain distinct. See the [scoring process](../design-process/weekly-eval-bet-process.md#craft-once-per-comparable-page-version).
+
 Auto-scored evaluations currently use **gpt-5.6-sol** via Microsoft Foundry. The model may change as newer options become available or as evaluation needs evolve. Each completed evaluation file notes which model scored it.
 
 | Week | Model | Notes |

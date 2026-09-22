@@ -14,11 +14,21 @@ permissions:
   contents: write
   issues: write
 
+concurrency:
+  group: daily-eval-scoring
+  cancel-in-progress: false
+
 jobs:
   evaluate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
 
       - name: Find ready bet
         id: find-bet
@@ -54,23 +64,27 @@ jobs:
           # Generate week identifier and slug
           WEEK=$(date +%Y-W%V)
           SLUG=$(echo "$TITLE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
+          SLUG="${SLUG:0:160}"
           echo "week=$WEEK" >> "$GITHUB_OUTPUT"
           echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
-          echo "filename=${WEEK}_${SLUG}.md" >> "$GITHUB_OUTPUT"
+          CAPTURE_ID="${WEEK}_${SLUG}_${GITHUB_RUN_ID}_${GITHUB_RUN_ATTEMPT}"
+          echo "capture_id=$CAPTURE_ID" >> "$GITHUB_OUTPUT"
+          echo "filename=${CAPTURE_ID}.md" >> "$GITHUB_OUTPUT"
 
-      - name: Fetch target page
+      - name: Resolve target page
         if: steps.find-bet.outputs.skip == 'false'
         id: fetch-page
         run: |
-          # Extract URL from issue body (first https:// link)
-          URL=$(jq -r '.body' /tmp/issue.json | grep -oP 'https://[^\s)]+' | head -1)
-          echo "url=$URL" >> "$GITHUB_OUTPUT"
-
-          if [ -n "$URL" ]; then
-            curl -sL "$URL" | head -c 50000 > /tmp/page-content.html
-            # Also get text-only version
-            curl -sL "$URL" | sed 's/<[^>]*>//g' | sed '/^\s*$/d' | head -c 10000 > /tmp/page-text.txt
-          fi
+          # Prefer the explicit target; older issues use their first HTTPS link.
+          node <<'EOF'
+          const fs = require('fs');
+          const { body } = JSON.parse(fs.readFileSync('/tmp/issue.json', 'utf8'));
+          const target = body.match(/(?:^|\n)### Target page[^\S\r\n]*\r?\n([\s\S]*?)(?=\r?\n### |$)/)?.[1].trim();
+          const source = target && target !== '_No response_' ? target : body;
+          const url = source.match(/https:\/\/[^\s)<>]+/)?.[0];
+          if (!url) throw new Error('A target page HTTPS URL is required.');
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `url=${new URL(url).href}\n`);
+          EOF
 
       - name: Capture screenshots with Playwright (stealth)
         if: steps.find-bet.outputs.skip == 'false'
@@ -79,12 +93,10 @@ jobs:
           npm install playwright-extra puppeteer-extra-plugin-stealth playwright > /dev/null 2>&1
           npx playwright install chromium --with-deps > /dev/null 2>&1
 
-          URL="${{ steps.fetch-page.outputs.url }}"
-          SLUG="${{ steps.find-bet.outputs.slug }}"
-          SCREENSHOT_DIR="weekly-eval-bets/screenshots/${SLUG}"
           mkdir -p "$SCREENSHOT_DIR"
 
           node << 'EOF'
+          const fs = require('fs');
           const { chromium } = require('playwright-extra');
           const stealth = require('puppeteer-extra-plugin-stealth');
           chromium.use(stealth());
@@ -93,42 +105,57 @@ jobs:
             const url = process.env.URL;
             const dir = process.env.SCREENSHOT_DIR;
 
-            const browser = await chromium.launch({ headless: true });
-            const context = await browser.newContext({
+            const captureContext = {
               viewport: { width: 1440, height: 900 },
+              mobileViewport: { width: 390, height: 844 },
               deviceScaleFactor: 2,
               userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
               locale: 'en-US',
-              timezoneId: 'America/Los_Angeles'
-            });
-            const page = await context.newPage();
+              timezoneId: 'America/Los_Angeles',
+              colorScheme: 'light',
+              evidenceVersion: 1
+            };
+            const browser = await chromium.launch({ headless: true });
+            try {
+              const { mobileViewport, evidenceVersion, ...contextOptions } = captureContext;
+              captureContext.browserVersion = browser.version();
+              const context = await browser.newContext(contextOptions);
+              const page = await context.newPage();
 
-            await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-            await page.waitForTimeout(5000); // allow JS rendering and any challenge to resolve
+              const desktopResponse = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+              if (!desktopResponse?.ok()) throw new Error(`Desktop capture failed: ${desktopResponse?.status()}`);
+              await page.waitForTimeout(5000); // allow JS rendering and any challenge to resolve
 
-            // Full page screenshot
-            await page.screenshot({ path: `${dir}/full-page.png`, fullPage: true });
+              fs.writeFileSync(`${dir}/page-text.txt`, await page.locator('body').innerText());
+              fs.writeFileSync(`${dir}/page-content.html`, await page.content());
+              fs.writeFileSync(`${dir}/capture-context.json`, JSON.stringify(captureContext, null, 2));
 
-            // Above the fold (first viewport)
-            await page.screenshot({ path: `${dir}/above-the-fold.png` });
+              // Full page screenshot
+              await page.screenshot({ path: `${dir}/full-page.png`, fullPage: true });
 
-            // Scroll to middle and capture
-            await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
-            await page.waitForTimeout(1000);
-            await page.screenshot({ path: `${dir}/mid-page.png` });
+              // Above the fold (first viewport)
+              await page.screenshot({ path: `${dir}/above-the-fold.png` });
 
-            // Mobile viewport
-            await page.setViewportSize({ width: 390, height: 844 });
-            await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-            await page.waitForTimeout(5000);
-            await page.screenshot({ path: `${dir}/mobile.png` });
+              // Scroll to middle and capture
+              await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
+              await page.waitForTimeout(1000);
+              await page.screenshot({ path: `${dir}/mid-page.png` });
 
-            await browser.close();
+              // Mobile viewport
+              await page.setViewportSize(mobileViewport);
+              const mobileResponse = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+              if (!mobileResponse?.ok()) throw new Error(`Mobile capture failed: ${mobileResponse?.status()}`);
+              await page.waitForTimeout(5000);
+              await page.screenshot({ path: `${dir}/mobile.png` });
+
+            } finally {
+              await browser.close();
+            }
           })();
           EOF
         env:
           URL: ${{ steps.fetch-page.outputs.url }}
-          SCREENSHOT_DIR: weekly-eval-bets/screenshots/${{ steps.find-bet.outputs.slug }}
+          SCREENSHOT_DIR: weekly-eval-bets/screenshots/${{ steps.find-bet.outputs.capture_id }}
 
       - name: Auto-score with Copilot
         if: steps.find-bet.outputs.skip == 'false'
@@ -138,60 +165,32 @@ jobs:
           WEEK: ${{ steps.find-bet.outputs.week }}
           FILENAME: ${{ steps.find-bet.outputs.filename }}
           TARGET_URL: ${{ steps.fetch-page.outputs.url }}
-          SLUG: ${{ steps.find-bet.outputs.slug }}
+          CAPTURE_DIR: weekly-eval-bets/screenshots/${{ steps.find-bet.outputs.capture_id }}
           FOUNDRY_API_KEY: ${{ secrets.FOUNDRY_API_KEY }}
         with:
           script: |
             const fs = require('fs');
+            const path = require('path');
+            const { prepareEvaluation, buildEvaluation } = require(path.resolve('.github/scripts/eval-scoring.cjs'));
 
             const issueJson = JSON.parse(fs.readFileSync('/tmp/issue.json', 'utf8'));
             const rubric = fs.readFileSync('skills/first-impression-craft-rubric.md', 'utf8');
-            const pageText = fs.existsSync('/tmp/page-text.txt')
-              ? fs.readFileSync('/tmp/page-text.txt', 'utf8')
-              : 'Page content not available.';
-            const pageHtml = fs.existsSync('/tmp/page-content.html')
-              ? fs.readFileSync('/tmp/page-content.html', 'utf8').substring(0, 30000)
-              : '';
-
-            const prompt = `You are a design director evaluating a product page. You score with precision and write with clarity. No emdashes. Sentence case for headings.
-
-            ## Your task
-
-            Evaluate the following page against the rubric and the bet's suggested evaluation approach. Produce a complete, publication-ready markdown evaluation report.
-
-            ## Rubric
-
-            ${rubric}
-
-            ## Bet details
-
-            Title: ${issueJson.title}
-            ${issueJson.body}
-
-            ## Page content (text extracted from ${process.env.TARGET_URL})
-
-            ${pageText}
-
-            ## Page HTML (first 30KB for structure analysis)
-
-            ${pageHtml.substring(0, 15000)}
-
-            ## Instructions
-
-            1. Score each rubric dimension 1-5 with one sentence explaining the score.
-            2. If the bet specifies its own evaluation approach (e.g. heuristic review, judged evaluation), apply THAT method as the primary evaluation and use the craft rubric as a secondary lens.
-            3. Include a weighted score table with this exact schema: \`| Dimension | Weight | Score | Weighted score | Rationale |\`. Every dimension row must contain all five cells, including a numeric weighted-score cell. For 1x dimensions, weighted score equals score. For Coherence at 2x, weighted score equals score times 2. Total max is 35.
-            4. End with: patterns worth borrowing, anti-patterns to avoid.
-            5. Reference the screenshots in your report using relative paths: \`screenshots/${process.env.SLUG}/above-the-fold.png\`, \`screenshots/${process.env.SLUG}/full-page.png\`, etc. Embed them as markdown images where they support your scoring rationale.
-            6. Add a "Status: auto-scored" note at the bottom. This will be reviewed by a human on Friday.
-            7. Format the output as a complete markdown file starting with a level-1 heading.
-            8. Do not use emdashes. Use commas, colons, or periods instead.`;
+            const reportPath = `weekly-eval-bets/${process.env.FILENAME}`;
+            const { context, requestContent } = prepareEvaluation({
+              rootDir: process.cwd(),
+              reportPath,
+              captureDir: process.env.CAPTURE_DIR,
+              targetUrl: process.env.TARGET_URL,
+              issue: issueJson,
+              rubric,
+              captureContext: JSON.parse(fs.readFileSync(`${process.env.CAPTURE_DIR}/capture-context.json`, 'utf8'))
+            });
 
             const retryDelaysSeconds = [30, 60];
             const transientStatuses = new Set([429, 500, 502, 503, 504]);
             const requestBody = JSON.stringify({
               model: 'gpt-5.6-sol',
-              input: [{ role: 'user', content: prompt }]
+              input: [{ role: 'user', content: requestContent }]
             });
 
             let response;
@@ -263,46 +262,13 @@ jobs:
               return;
             }
 
-            // Extract scores from the evaluation markdown table
-            const scorePattern = /\|\s*([^|]+?)\s*\|\s*\d+\s*\|\s*(\d+)\s*\|/g;
-            const scores = {};
-            let match;
-            while ((match = scorePattern.exec(evaluation)) !== null) {
-              const dimension = match[1].trim();
-              const score = match[2];
-              scores[dimension] = score;
-            }
-
-            // Append human review section with extracted scores
-            const reviewSection = [
-              '',
-              '---',
-              '',
-              '## Human review',
-              '',
-              'Reviewed:',
-              '',
-              '| Dimension | Auto-score | Human score | Note |',
-              '|-----------|-----------|-------------|------|',
-              `| Visual hierarchy | ${scores['Visual hierarchy'] || '?'}/5 | | |`,
-              `| Information density | ${scores['Information density'] || '?'}/5 | | |`,
-              `| Readability | ${scores['Readability'] || '?'}/5 | | |`,
-              `| Coherence (2x) | ${scores['Coherence (2x)'] || scores['Coherence'] || '?'}/5 | | |`,
-              `| Durability | ${scores['Durability'] || '?'}/5 | | |`,
-              `| Intentionality | ${scores['Intentionality'] || '?'}/5 | | |`,
-              '| **Total** | **/35** | | |',
-              '',
-              '### Verdict',
-              '',
-              '[ ] Confirmed / [ ] Needs revision',
-              '',
-              '---',
-              '',
-              `*Scoring model: gpt-5.6-sol*`,
-              '*Status: auto-scored, pending human review*'
-            ].join('\n');
-
-            fs.writeFileSync(`weekly-eval-bets/${process.env.FILENAME}`, evaluation + reviewSection);
+            const { markdown, record } = buildEvaluation({
+              context,
+              responseText: evaluation,
+              model: 'gpt-5.6-sol'
+            });
+            fs.writeFileSync(reportPath, markdown);
+            fs.writeFileSync(reportPath.replace(/\.md$/, '.json'), JSON.stringify(record, null, 2) + '\n');
             core.setOutput('evaluation', 'complete');
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -310,13 +276,14 @@ jobs:
         if: steps.find-bet.outputs.skip == 'false'
         env:
           FILENAME: ${{ steps.find-bet.outputs.filename }}
+          CAPTURE_DIR: weekly-eval-bets/screenshots/${{ steps.find-bet.outputs.capture_id }}
           ISSUE_NUMBER: ${{ steps.find-bet.outputs.issue_number }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "weekly-eval-bets/$FILENAME"
-          git add "weekly-eval-bets/screenshots/" 2>/dev/null || true
+          git add "weekly-eval-bets/${FILENAME%.md}.json" "$CAPTURE_DIR"
           git commit -m "Auto-score eval bet #$ISSUE_NUMBER
 
           Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>" || exit 0

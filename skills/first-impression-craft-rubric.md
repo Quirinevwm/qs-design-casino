@@ -6,6 +6,8 @@ A reusable 5-point rubric for evaluating the design craft of any product landing
 
 Apply this rubric when you want to assess whether a page makes a strong first impression through design quality alone, independent of content strategy or conversion goals.
 
+Establish a craft baseline once per comparable page version. Promise, trust, audience, and other evaluations should reference it rather than request the same six scores again. Revisit only affected craft dimensions when captured evidence changes materially; use a new baseline when the page, rendering context, or rubric is not comparable.
+
 ## Dimensions
 
 | # | Dimension | Weight | Question | 5 (best) | 1 (worst) |
@@ -33,6 +35,8 @@ Coherence is weighted 2x. Max score: 35.
 3. Write one sentence per dimension noting what earned or cost the score.
 4. Sum the total. Use the scoring guide to frame the verdict.
 5. End with two lists: patterns worth borrowing, and anti-patterns to avoid.
+
+For subsequent lenses, link the baseline and its evidence. For a changed-dimension review, record the prior score, new score, and observed change for each reassessed dimension. Preserve unaffected scores as inherited context, not new judgments. Keep AI scores distinct from human overrides, and never transfer scores between page versions without comparing the evidence.
 
 ---
 
