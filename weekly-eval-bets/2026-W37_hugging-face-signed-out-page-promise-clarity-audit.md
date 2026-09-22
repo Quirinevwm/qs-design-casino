@@ -8,10 +8,15 @@ The result is a credible and visually consistent ecosystem page with a diluted p
 
 ### Scores at a glance
 
-- **Primary promise clarity score:** 14/25
-- **Secondary craft score:** 22/35
-- **Craft verdict:** Solid craft with specific areas to sharpen
-- **Core finding:** The community platform is the stated promise, while model discovery is the strongest demonstrated product behavior
+- **AI primary promise clarity score:** 14/25
+- **AI secondary craft score:** 22/35
+- **AI craft verdict:** Solid craft with specific areas to sharpen
+- **AI core finding:** The community platform is the stated promise, while model discovery is the strongest demonstrated product behavior
+- **Human promise clarity score:** 16/25
+- **Human verdict:** Confirmed
+- **Human craft scope:** Not rescored in this promise-only review
+
+The original AI assessment is preserved below. Human scores and notes are recorded in the [human review](#human-review) section.
 
 ## Evidence
 
@@ -195,28 +200,39 @@ The weakness is at the page level. These proofs do not clearly ladder into one p
 - Adding new top-level products without a stable grouping model.
 - Using scale as a substitute for explaining the user outcome.
 
-Status: auto-scored
+Status: human promise review confirmed; craft not rescored in this review
 ---
 
 ## Human review
 
-Reviewed:
+Reviewed: 2026-09-22
+
+### Promise clarity
 
 | Dimension | Auto-score | Human score | Note |
 |-----------|-----------|-------------|------|
-| Visual hierarchy | /5 | | |
-| Information density | /5 | | |
-| Readability | /5 | | |
-| Coherence (2x) | /5 | | |
-| Durability | /5 | | |
-| Intentionality | /5 | | |
-| **Total** | **/35** | | |
+| Singular message | 3/5 | 4/5 | I think they do a really good job of addressing both existing and new members of the AI builder community. |
+| Audience alignment | 4/5 | 4/5 | Agreed. It's easy to understand but goes into depth for ML experts. |
+| CTA focus | 2/5 | 3/5 | Their models and open weights stand out as the hero offering. |
+| Claim specificity | 3/5 | 3/5 | Aligned. It's generic by nature. |
+| Redundancy | 2/5 | 2/5 | Aligned. Their pitch is the platform, with targeted angles that land as unique selling points. |
+| **Promise total** | **14/25** | **16/25** | Singular message +1, CTA focus +1. All other scores retained. |
+
+### Craft scope
+
+No repeat craft scoring was requested for this promise-only review. The [W36 human craft review](2026-W36_hugging-face-signed-out-page-first-impression-craft.md#human-review) remains a separate reference. Its scores are not copied into this report, and equivalence between the two captures has not been established. The original AI craft score of 22/35 is retained as historical context, not confirmed by this review.
 
 ### Verdict
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
+
+Confirmed on submission of the human promise rating. Confirmation applies to the five promise dimensions above.
+
+### Review synthesis (AI-assisted)
+
+**An open door for builders, depth for experts.** Hugging Face makes its broad platform promise accessible to both existing and new AI builders while offering depth for ML specialists. Models and open weights provide a recognizable hero focus. The human review gives more credit to that message and focus than the AI assessment, while retaining the specificity and redundancy scores. The opportunity is to keep the targeted selling points distinct without repeating the broader platform pitch.
 
 ---
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: human promise review confirmed; craft not rescored in this review*
