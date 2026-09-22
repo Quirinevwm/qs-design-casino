@@ -4,9 +4,17 @@
 
 Hugging Face builds trust primarily through visible ecosystem activity, recognizable participation, open-source adoption, and direct access to working products. The page convincingly demonstrates that the platform is active and widely used, but its enterprise risk-reduction case is comparatively compressed and appears after a substantial amount of marketplace content.
 
-**Primary evaluation score:** 19/25  
-**First-impression craft score:** 27/35  
-**Craft verdict:** Solid craft with specific areas to sharpen.
+**AI primary evaluation score:** 19/25  
+**AI first-impression craft score:** 27/35  
+**AI craft verdict:** Solid craft with specific areas to sharpen.
+
+**Human trust score:** **19/25**
+
+**Human verdict:** Confirmed.
+
+**Human craft scope:** Not rescored in this trust-only review.
+
+The original AI assessment is preserved below. Human scores and notes are recorded in the [human review](#human-review) section.
 
 The central trust tension is only partly resolved. Openness is presented as evidence of credibility, scale, and momentum, while governance, provenance, compliance, and operational controls receive less visible and less specific treatment.
 
@@ -183,28 +191,39 @@ The primary craft limitation is cumulative density. Each individual section is u
 - Assuming repository ownership alone communicates provenance, safety, or deployment readiness.
 - Naming controls without explaining their scope, availability, or operational effect.
 
-*Status: auto-scored*
+*Status: human trust review confirmed; craft not rescored in this review*
 ---
 
 ## Human review
 
-Reviewed:
+Reviewed: 2026-09-22
+
+### Trust architecture
 
 | Dimension | Auto-score | Human score | Note |
 |-----------|-----------|-------------|------|
-| Visual hierarchy | /5 | | |
-| Information density | /5 | | |
-| Readability | /5 | | |
-| Coherence (2x) | /5 | | |
-| Durability | /5 | | |
-| Intentionality | /5 | | |
-| **Total** | **/35** | | |
+| Sequence | 4/5 | 4/5 | Risk reduction could indeed show up earlier, but I'm aligned with the current score based on their strong proposition. |
+| Specificity | 4/5 | 3/5 | Their pricing could be a bit stronger, and their infrastructure too. |
+| Social proof quality | 4/5 | 5/5 | Very strong social proof, well done with the catalog. |
+| Friction to first action | 4/5 | 4/5 | Aligned. Clear ways to get started, with a mental model of the model catalog or apps. |
+| Risk reduction | 3/5 | 3/5 | Aligned. It could be highlighted more. |
+| **Trust total** | **19/25** | **19/25** | Specificity -1, social proof quality +1. All other scores retained. |
+
+### Craft scope
+
+No repeat craft scoring was requested for this trust-only review. The [W36 human craft review](2026-W36_hugging-face-signed-out-page-first-impression-craft.md#human-review) remains a separate reference. Its scores are not copied into this report, and equivalence between the two captures has not been established. The original AI craft score of 27/35 is retained as historical context, not confirmed by this review.
 
 ### Verdict
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
+
+Confirmed on submission of the human trust rating. Confirmation applies to the five trust dimensions above.
+
+### Review synthesis (AI-assisted)
+
+**The catalog earns trust; reassurance needs more prominence.** Hugging Face's strong proposition and catalog make social proof tangible, while models and apps give visitors clear ways to begin. The human review gives that proof more credit than the AI assessment, but asks for stronger pricing and infrastructure detail. The next improvement is to bring risk-reduction information forward without weakening the product-led entry experience.
 
 ---
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: human trust review confirmed; craft not rescored in this review*
