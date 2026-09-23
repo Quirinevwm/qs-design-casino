@@ -5,9 +5,17 @@
 **Method:** Checked review using the first-impression craft rubric  
 **Evidence:** Above-the-fold and full-page screenshots, extracted page content, and supplied HTML structure
 
-## Verdict
+## Evaluation summary
 
-**27 out of 35: Solid craft with specific areas to sharpen.**
+**AI craft score:** 27/35
+
+**AI craft verdict:** Solid craft with specific areas to sharpen.
+
+**Human craft score:** 29/35
+
+**Human verdict:** Confirmed.
+
+The original AI assessment is preserved below. Human scores and notes are recorded in the [human review](#human-review) section.
 
 Replicate communicates its core promise quickly: run and fine-tune AI models through an API. The direct headline, immediate code demonstration, model outputs, and prominent free-start action create a credible product story above the fold.
 
@@ -174,28 +182,34 @@ Items to verify in a manual review include:
 - Delaying the clearest workflow explanation until after multiple discovery sections.
 - Depending on animation to make dense collections legible or discoverable.
 
-**Status: auto-scored**
+**Status: human craft review confirmed**
 ---
 
 ## Human review
 
-Reviewed:
+Reviewed: 2026-09-23
 
 | Dimension | Auto-score | Human score | Note |
 |-----------|-----------|-------------|------|
-| Visual hierarchy | /5 | | |
-| Information density | /5 | | |
-| Readability | /5 | | |
-| Coherence (2x) | /5 | | |
-| Durability | /5 | | |
-| Intentionality | /5 | | |
-| **Total** | **/35** | | |
+| Visual hierarchy | 4/5 | 5/5 | I'd even say 5/5: it's very strong, with the API front and center. There's no need to scroll any further. |
+| Information density | 3/5 | 4/5 | They have a good balance, with practical code snippets that work. |
+| Readability | 4/5 | 4/5 | Aligned. Visual headers are balanced with visual outlines, setting the right connections between layers. |
+| Coherence (2x) | 4/5 | 4/5 | Aligned. It feels like one balanced, understandable story, without too much fluff. |
+| Durability | 4/5 | 4/5 | Their sections are well componentized and recognizable. Their scale section could use a bit of work to fit in better. |
+| Intentionality | 4/5 | 4/5 | Aligned. Clear. |
+| **Craft total** | **27/35** | **29/35** | Visual hierarchy +1, information density +1. Durability explicitly retained at 4/5. Coherence is weighted 2x. |
 
 ### Verdict
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
+
+Confirmed on submission of the human craft rating.
+
+### Review synthesis (AI-assisted)
+
+**API first, proof close at hand.** Replicate puts its API proposition front and center, with practical code examples that make the offering tangible immediately. Balanced visual structure and focused content hold the page together as one understandable story. The human review gives hierarchy and information density more credit than the AI assessment. The remaining refinement is local: bring the scale section into closer alignment with the recognizable component system around it.
 
 ---
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: human craft review confirmed*
