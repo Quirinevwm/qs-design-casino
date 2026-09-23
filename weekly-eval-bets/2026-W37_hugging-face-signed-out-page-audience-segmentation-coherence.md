@@ -2,10 +2,16 @@
 
 ## Evaluation summary
 
-**Verdict:** Solid craft with specific areas to sharpen  
-**Weighted score:** 27/35  
+**AI verdict:** Solid craft with specific areas to sharpen  
+**AI weighted craft score:** 27/35  
 **Primary method:** Judged heuristic review of audience coherence  
 **Secondary lens:** First-impression craft rubric
+
+**Human review scope:** Closed with an explicit audience-fit skip; no repeat craft scoring.
+
+**Human audience-fit validation:** Not performed. The original AI scores remain unvalidated by representative reviewers.
+
+The original AI assessment is preserved below. The [human review](#human-review) section records the agreed scope exclusions, not new scores or endorsement of the AI findings.
 
 Hugging Face presents a recognizably community-first ecosystem, with models, datasets, applications, organizations, and open-source projects forming a credible narrative. Commercial offerings remain subordinate enough not to undermine that identity, but audience pathways are inferred from product categories rather than clearly articulated around user needs.
 
@@ -170,28 +176,28 @@ Surface a beginner-oriented action earlier and translate specialist language whe
 - Assuming learners understand specialist infrastructure vocabulary.
 - Allowing live inventory metadata to overpower the page’s primary narrative.
 
-*Status: auto-scored*
+*Status: design-lead review scope closed; audience-fit validation skipped; craft not rescored*
 ---
 
 ## Human review
 
-Reviewed:
+Scope closed: 2026-09-23
 
-| Dimension | Auto-score | Human score | Note |
-|-----------|-----------|-------------|------|
-| Visual hierarchy | /5 | | |
-| Information density | /5 | | |
-| Readability | /5 | | |
-| Coherence (2x) | /5 | | |
-| Durability | /5 | | |
-| Intentionality | /5 | | |
-| **Total** | **/35** | | |
+### Audience fit
+
+Skipped at the reviewer's request for this design-lead review. Quirine is reviewing as design lead, not as a representative of model creators, application developers, researchers, learners, or enterprise teams. Validating fit for those audiences requires reviewers from the specific roles.
+
+The original AI audience scores remain unchanged and have not been human-validated. No human audience scores are inferred from the earlier craft review. This closes the item within the agreed W37 review scope without claiming that audience fit has been validated.
+
+### Craft scope
+
+No repeat craft scoring is requested. The [W36 human craft review](2026-W36_hugging-face-signed-out-page-first-impression-craft.md#human-review) remains a separate reference. Its scores are not copied here, and equivalence between the two captures has not been established. This report's original AI craft score of 27/35 remains historical context, not a newly confirmed human score.
 
 ### Verdict
 
-[ ] Confirmed / [ ] Needs revision
+**Scope closed with explicit skips.** No new human rating or role-specific validation was performed. Closing the weekly design-lead review does not endorse the AI audience findings.
 
 ---
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: design-lead review scope closed; audience-fit validation skipped; craft not rescored*
