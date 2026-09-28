@@ -138,9 +138,28 @@ Run `node --test .github/scripts/eval-*.test.cjs` from the repository root. Thes
 
 ## Adding new bets
 
-Open an issue using the "Weekly eval bet" template. It auto-labels `weekly-eval-bet` + `status:ready` and enters the queue. The auto-scorer picks bets in order of creation date (oldest first).
+Only publish a bet after explicit approval of its target, evaluation scope, and public visibility. The "Weekly eval bet" template automatically adds `weekly-eval-bet` + `status:ready`, so creating that issue also puts it into the scoring queue. The auto-scorer picks ready bets in order of creation date (oldest first); it does not independently verify that approval.
 
-Automated public-repository discovery only replenishes the queue after no open `status:ready` bets remain. While any issue has both `weekly-eval-bet` and `status:ready`, discovery exits without searching for or creating new candidates.
+Automated public-repository discovery is paused in GitHub Actions. An empty queue is not permission to publish or score new external candidates.
+
+## Archived lesson: discovery is not approval
+
+**Archived:** 2026-09-28  
+**Experiment:** Automatic external discovery, public backlog creation, and downstream scoring  
+**Decision:** Archive this automatic handoff. Keep outside-in learning, but separate research from publication and evaluation.
+
+The intent was useful: find real design problems outside our own work and turn them into reusable evaluation questions. The implementation selected issue titles using keywords and activity signals, wrapped them in a generic template, and immediately marked the resulting public issues as ready for scoring. It treated an interesting signal as an approved experiment without establishing relevance, consent to publication, or usable evidence.
+
+Two consequences made the boundary clear. Public source-linked issues generated upstream backlinks exposing this repository, even though the workflow did not post comments there. The scorer also evaluated a repository page instead of the component the original signal described. Neither public visibility nor a numerical score was justified by discovery alone.
+
+The lesson is to keep these decisions separate:
+
+- Gather external insights read-only and keep research notes private by default.
+- Ask for explicit approval before creating a public issue, publishing source references, or queuing an evaluation.
+- Define the actual target and evidence before scoring; popularity and title relevance are not proof of evaluability.
+- Preserve useful learning without making a public backlog the default research memory.
+
+Discovery remains disabled. Its code is retained as historical reference, not as an approved workflow to restart. This archive does not disable scoring for deliberately selected bets or change existing human reviews. No external project names or source links are needed to preserve the lesson.
 
 ---
 
