@@ -53,20 +53,15 @@ Stack package -> Specialized runners -> Actionable stack report
 
 The report should show whether the work is ready for review, needs craft attention, or is blocked, with links to the evidence and remediation for every lens.
 
-## Automated discovery
+## Archived discovery experiment
 
-A GitHub Actions workflow runs every Monday and searches active public repositories across design systems, accessibility, user experience, human-computer interaction, and AI design.
+Automatic external discovery into a public, ready-to-score backlog is archived. The **Discover weekly eval bets** workflow is disabled in GitHub Actions.
 
-The workflow turns recent public signals into attributed backlog issues labeled `weekly-eval-bet` and `status:ready`. Each candidate includes a proposed lens, design question, evaluator class, evidence type, and link to the original source.
+The useful principle remains outside-in learning. External research should be read-only, with private notes by default. Publishing a source-linked issue or putting a candidate into the scoring queue requires explicit approval and a defined evaluation target.
 
-The backlog is also the memory:
+The lesson: **discovery is not approval**. Public references can generate upstream backlinks, and an interesting issue is not necessarily a usable evaluation surface.
 
-- Existing weekly eval bet issues prevent the same source or theme from being proposed again.
-- Completed folders in `weekly-eval-bets/` preserve reviewed themes and source links.
-- Every generated candidate keeps its attribution, even after it is selected or completed.
-- The workflow synthesizes an original experiment rather than copying the source material.
-
-The workflow can also be started manually from the Actions tab through **Discover weekly eval bets**.
+See the [archived lesson and operating boundary](../design-process/weekly-eval-bet-process.md#archived-lesson-discovery-is-not-approval). Scoring and human review for deliberately selected bets continue unchanged.
 
 ## Scoring model
 
