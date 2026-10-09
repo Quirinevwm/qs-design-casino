@@ -66,7 +66,7 @@ Legacy reports have no comparable machine-readable capture record. They remain r
 - **Audience fit:** Label role-specific scores as AI hypotheses requiring representative reviewers, not as validated design-lead judgments.
 - **Other:** Follow the bet's own evaluation method. If the supplied evidence cannot demonstrate the claim, report it as inconclusive rather than replacing it with a craft pass.
 
-New issues select a Primary lens explicitly. Older issue titles are used to recognize existing craft, promise, trust, and audience bets. An explicit skip with its rationale can complete the agreed design-lead scope without validating role-specific audience scores.
+New issues select a Primary lens explicitly. Older issue titles are used to recognize existing craft, promise, trust, and audience bets. Audience-fit evaluations are skipped by default in the design-lead review: record the skip and reason in the report, leave the AI scores unvalidated, and complete the checklist item within that scope. Representative reviewers can validate them separately.
 
 ### Friday review
 
