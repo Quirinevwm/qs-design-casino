@@ -1,5 +1,7 @@
 # Design-system integrity evaluation: `nexu-io/open-design`
 
+> **Closed without a score (2026-10-09).** This auto-scored report evaluated a GitHub repository page instead of the component named in the original bet, so its 27/35 score and threshold pass do not answer that bet. The bet itself came from the retired discovery experiment and was removed. This report is kept only as historical context. See the [archived discovery lesson](../design-process/weekly-eval-bet-process.md#archived-lesson-discovery-is-not-approval).
+
 ## Evaluation scope
 
 **Bet:** Prevent Question card required marker from wrapping with long copy  
@@ -157,28 +159,20 @@ The strongest attribute is coherence. The weakest areas are density, durability,
 - Relying solely on screenshots without DOM, accessibility, zoom, and localization checks.
 - Declaring the component-level bet successful when the representative artifact does not contain the component.
 
-_Status: auto-scored_
+_Status: closed without a score; wrong evaluation surface_
 ---
 
 ## Human review
 
-Reviewed:
+Closed: 2026-10-09
 
-| Dimension | Auto-score | Human score | Note |
-|-----------|-----------|-------------|------|
-| Visual hierarchy | ?/5 | | |
-| Information density | ?/5 | | |
-| Readability | ?/5 | | |
-| Coherence (2x) | ?/5 | | |
-| Durability | ?/5 | | |
-| Intentionality | ?/5 | | |
-| **Total** | **/35** | | |
+No human review was performed or needed. The AI scores above apply to the wrong surface and are not confirmed. No craft baseline should be reused from this report.
 
 ### Verdict
 
-[ ] Confirmed / [ ] Needs revision
+**Closed without a score.** There is nothing to confirm or revise.
 
 ---
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: closed without a score; wrong evaluation surface*
