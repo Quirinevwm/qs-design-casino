@@ -6,10 +6,15 @@ Replicate makes its core proposition immediately clear and supports it with exec
 
 Its trust architecture is less complete for production evaluation. Reliability, pricing predictability, data handling, model provenance, security, and operational support are either absent from the page or deferred to navigation. The result is strong developer appeal and marketplace credibility, but limited reassurance for teams assessing production risk.
 
-- **Primary trust review:** 17/25
-- **Secondary craft score:** 27/35
-- **Craft verdict:** Solid craft with specific areas to sharpen
-- **Central finding:** The page proves that Replicate is easy to try and broadly adopted, but does not sufficiently prove that it is safe and predictable to operate at scale.
+- **AI primary trust review:** 17/25
+- **AI secondary craft score:** 27/35
+- **AI craft verdict:** Solid craft with specific areas to sharpen
+- **AI central finding:** The page proves that Replicate is easy to try and broadly adopted, but does not sufficiently prove that it is safe and predictable to operate at scale.
+- **Human trust review:** 18/25
+- **Human verdict:** Confirmed
+- **Human craft scope:** Not rescored in this trust-only review
+
+The original AI assessment is preserved below. Human scores and notes are recorded in the [human review](#human-review) section.
 
 ## Evidence reviewed
 
@@ -243,28 +248,39 @@ It is not yet a complete trust architecture for production buyers. The page shou
 - Presenting several competing first actions at the same visual priority.
 - Allowing a promotional banner to compete with the core signed-out proposition.
 
-*Status: auto-scored*
+*Status: human trust review confirmed; craft not rescored in this review*
 ---
 
 ## Human review
 
-Reviewed:
+Reviewed: 2026-10-09
+
+### Trust architecture
 
 | Dimension | Auto-score | Human score | Note |
 |-----------|-----------|-------------|------|
-| Visual hierarchy | ?/5 | | |
-| Information density | ?/5 | | |
-| Readability | ?/5 | | |
-| Coherence (2x) | ?/5 | | |
-| Durability | ?/5 | | |
-| Intentionality | ?/5 | | |
-| **Total** | **/35** | | |
+| Sequence | 4/5 | 4/5 | A natural path: start with the API, explore why it's relevant and who uses it, and the scalability helps, but the security is missing. Retained at 4/5. |
+| Specificity | 4/5 | 3/5 | Secure building is missing. |
+| Social proof quality | 3/5 | 4/5 | Their run signals indicate usage, which is so good. |
+| Friction to first action | 4/5 | 5/5 | It's so simple to start with the API. |
+| Risk reduction | 2/5 | 2/5 | Aligned. It's very playful and feels less secure. |
+| **Trust total** | **17/25** | **18/25** | Specificity -1, social proof quality +1, friction to first action +1. All other scores retained. |
+
+### Craft scope
+
+No repeat craft scoring was requested for this trust-only review. The original AI craft score of 27/35 is retained as historical context, not confirmed by this review. No human craft scores are copied from another report.
 
 ### Verdict
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
+
+Confirmed on submission of the human trust rating. Confirmation applies to the five trust dimensions above.
+
+### Review synthesis (AI-assisted)
+
+**A playful API with a natural path, light on reassurance.** Replicate offers a natural path from a simple API start to evidence of use and scalability, and the run signals make adoption visible. The human review gives social proof and ease of starting more credit than the AI assessment, while lowering specificity because secure building is missing. Its playful feel keeps risk reduction low, so reassurance remains the main opportunity.
 
 ---
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: human trust review confirmed; craft not rescored in this review*

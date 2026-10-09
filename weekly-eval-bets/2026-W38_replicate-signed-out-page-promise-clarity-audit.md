@@ -12,8 +12,14 @@ Replicate communicates its core proposition with exceptional economy above the f
 
 Clarity declines as the page continues. Repeated model cards, capability categories, community promotion, fine-tuning, and deployment content expand the story from a focused API product into a broad marketplace narrative. These sections are relevant, but their repetition and similar visual weight dilute the singular promise rather than progressively proving it.
 
-**Primary evaluation score: 20/25**  
-**Craft score: 28/35, solid craft with specific areas to sharpen**
+**AI primary evaluation score: 20/25**  
+**AI craft score: 28/35, solid craft with specific areas to sharpen**
+
+**Human promise clarity score: 22/25**  
+**Human verdict: Confirmed**  
+**Human craft scope:** Not rescored in this promise-only review.
+
+The original AI assessment is preserved below. Human scores and notes are recorded in the [human review](#human-review) section.
 
 ![Replicate signed-out page above the fold](screenshots/replicate-signed-out-page-promise-clarity-audit/above-the-fold.png)
 
@@ -138,28 +144,39 @@ Its clarity would improve if earlier marketplace content were condensed. The pag
 - Repeating marketplace claims instead of advancing to new proof.
 - Allowing supporting content to become longer and louder than the core promise.
 
-_Status: auto-scored_
+_Status: human promise review confirmed; craft not rescored in this review_
 ---
 
 ## Human review
 
-Reviewed:
+Reviewed: 2026-10-09
+
+### Promise clarity
 
 | Dimension | Auto-score | Human score | Note |
 |-----------|-----------|-------------|------|
-| Visual hierarchy | ?/5 | | |
-| Information density | ?/5 | | |
-| Readability | ?/5 | | |
-| Coherence (2x) | ?/5 | | |
-| Durability | ?/5 | | |
-| Intentionality | ?/5 | | |
-| **Total** | **/35** | | |
+| Singular message | 5/5 | 5/5 | Super strong. |
+| Audience alignment | 4/5 | 5/5 | The code-centric approach. |
+| CTA focus | 4/5 | 4/5 | The "Get started for free" action really pulls a user in. Retained at 4/5. |
+| Claim specificity | 4/5 | 4/5 | Straightforward. Aligned. |
+| Redundancy | 3/5 | 4/5 | It's okay to show the broad catalog that you can access without signing in. Smart play. |
+| **Promise total** | **20/25** | **22/25** | Audience alignment +1, redundancy +1. All other scores retained. |
+
+### Craft scope
+
+No repeat craft scoring was requested for this promise-only review. The original AI craft score of 28/35 is retained as historical context, not confirmed by this review. No human craft scores are copied from another report.
 
 ### Verdict
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
+
+Confirmed on submission of the human promise rating. Confirmation applies to the five promise dimensions above.
+
+### Review synthesis (AI-assisted)
+
+**Code-first clarity, with a free first step.** Replicate's message is immediately clear, and its code-centric approach gives the audience a direct fit. The free starting action draws users in, while showing the broad catalog without a sign-in gate is a smart way to demonstrate range. The human review gives audience alignment and redundancy more credit than the AI assessment.
 
 ---
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: human promise review confirmed; craft not rescored in this review*
