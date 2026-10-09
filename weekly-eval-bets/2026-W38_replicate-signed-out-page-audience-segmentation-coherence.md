@@ -151,28 +151,28 @@ The main opportunity is not to add more segmentation. It is to edit more aggress
 - Allowing promotional banners to compete with an otherwise focused first impression.
 - Representing advanced audiences only through technical features rather than clearly framed workflows and outcomes.
 
-*Status: auto-scored*
+*Status: design-lead review scope closed; audience-fit validation skipped; craft not rescored*
 ---
 
 ## Human review
 
-Reviewed:
+Scope closed: 2026-10-09
 
-| Dimension | Auto-score | Human score | Note |
-|-----------|-----------|-------------|------|
-| Visual hierarchy | ?/5 | | |
-| Information density | ?/5 | | |
-| Readability | ?/5 | | |
-| Coherence (2x) | ?/5 | | |
-| Durability | ?/5 | | |
-| Intentionality | ?/5 | | |
-| **Total** | **/35** | | |
+### Audience fit
+
+Skipped under the standing design-lead scope rule. Validating fit for application developers, product builders, ML teams, and model creators requires reviewers from those roles.
+
+The original AI audience assessment remains unchanged and has not been human-validated. No human audience scores are inferred from other reviews.
+
+### Craft scope
+
+No craft scoring is requested. The original AI craft score of 28/35 is retained as historical context, not a newly confirmed human score. No scores are copied from another report.
 
 ### Verdict
 
-[ ] Confirmed / [ ] Needs revision
+**Scope closed with explicit skips.** No new human rating or role-specific validation was performed. Closing the weekly design-lead review does not endorse the AI audience findings.
 
 ---
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: design-lead review scope closed; audience-fit validation skipped; craft not rescored*
