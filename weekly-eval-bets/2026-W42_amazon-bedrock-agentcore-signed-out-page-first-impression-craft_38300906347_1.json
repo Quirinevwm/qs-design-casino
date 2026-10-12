@@ -1,0 +1,150 @@
+{
+  "schemaVersion": "eval-scoring/v1",
+  "createdAt": "2026-10-12T19:57:19.506Z",
+  "reportPath": "weekly-eval-bets/2026-W42_amazon-bedrock-agentcore-signed-out-page-first-impression-craft_38300906347_1.md",
+  "captureDir": "weekly-eval-bets/screenshots/2026-W42_amazon-bedrock-agentcore-signed-out-page-first-impression-craft_38300906347_1",
+  "targetUrl": "https://aws.amazon.com/bedrock/agentcore/",
+  "canonicalUrl": "https://aws.amazon.com/bedrock/agentcore/",
+  "primaryLens": "craft",
+  "rubricHash": "8df8d4cf81dd06544d99a4ea07ce6e9ce15b3a74bf124f9a09e606a2e1d37c5b",
+  "rubric": "# First-impression craft rubric\n\nA reusable 5-point rubric for evaluating the design craft of any product landing page or signed-out state.\n\n## When to use\n\nApply this rubric when you want to assess whether a page makes a strong first impression through design quality alone, independent of content strategy or conversion goals.\n\nEstablish a craft baseline once per comparable page version. Promise, trust, audience, and other evaluations should reference it rather than request the same six scores again. Revisit only affected craft dimensions when captured evidence changes materially; use a new baseline when the page, rendering context, or rubric is not comparable.\n\n## Dimensions\n\n| # | Dimension | Weight | Question | 5 (best) | 1 (worst) |\n|---|-----------|--------|----------|-----------|-----------|\n| 1 | Visual hierarchy | 1x | Can you identify the primary message and action within 3 seconds? | Instant | Buried |\n| 2 | Information density | 1x | Is every element earning its space? | Nothing to remove | Noise competes with signal |\n| 3 | Readability | 1x | Do typography, contrast, and sentence length support scanning? | Effortless | Labored |\n| 4 | Coherence | 2x | Does the page feel like one designed thing? | Unified | Assembled from parts |\n| 5 | Durability | 1x | Would this design hold if content changed by 30%? | Resilient | Brittle |\n| 6 | Intentionality | 1x | Can you tell why every design decision was made? | Every choice has a reason | Arbitrary or defaulted |\n\n## Scoring guide\n\nCoherence is weighted 2x. Max score: 35.\n\n- **29-35:** Exceptional craft. Study and reference.\n- **22-28:** Solid craft with specific areas to sharpen.\n- **15-21:** Functional but lacking intentionality.\n- **7-14:** Needs structural rethinking.\n\n## How to apply\n\n1. Open the page cold (no prior context, clear cache if possible).\n2. Score each dimension independently, 1-5.\n3. Write one sentence per dimension noting what earned or cost the score.\n4. Sum the total. Use the scoring guide to frame the verdict.\n5. End with two lists: patterns worth borrowing, and anti-patterns to avoid.\n\nFor subsequent lenses, link the baseline and its evidence. For a changed-dimension review, record the prior score, new score, and observed change for each reassessed dimension. Preserve unaffected scores as inherited context, not new judgments. Keep AI scores distinct from human overrides, and never transfer scores between page versions without comparing the evidence.\n\n---\n\n*This is a living rubric. Adjust dimensions, weights, or scoring anchors as your evaluation practice evolves.*\n",
+  "captureContextHash": "4b899014cf36f7c1e52fb0b2d2a03b9b14e4b155da082a400f8553f97b021c6f",
+  "captureContext": {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "mobileViewport": {
+      "width": 390,
+      "height": 844
+    },
+    "deviceScaleFactor": 2,
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
+    "locale": "en-US",
+    "timezoneId": "America/Los_Angeles",
+    "colorScheme": "light",
+    "evidenceVersion": 1,
+    "browserVersion": "156.0.8078.4"
+  },
+  "evidenceHash": "a9d49187d810108788fa2102983afcb88572ee528d10b51261d6f0bc2ce88187",
+  "issueTitle": "Amazon Bedrock AgentCore signed-out page: first-impression craft",
+  "issueBody": "### Bet title\n\nAmazon Bedrock AgentCore signed-out page: first-impression craft\n\n### Primary lens\n\nCraft\n\n### Target page\n\nhttps://aws.amazon.com/bedrock/agentcore/\n\n### Evaluator class\n\nDesign quality (craft, coherence, accessibility)\n\n### Evidence type\n\nRubric-scored (criteria checklist)\n\n### Design relevance\n\nCompare how agent platforms present their promise, build trust, and earn a first impression for cold, signed-out visitors.\n\n### Suggested evaluation approach\n\nChecked review using the first-impression craft rubric.\n",
+  "links": {
+    "pageText": "screenshots/2026-W42_amazon-bedrock-agentcore-signed-out-page-first-impression-craft_38300906347_1/page-text.txt",
+    "pageHtml": "screenshots/2026-W42_amazon-bedrock-agentcore-signed-out-page-first-impression-craft_38300906347_1/page-content.html",
+    "aboveTheFold": "screenshots/2026-W42_amazon-bedrock-agentcore-signed-out-page-first-impression-craft_38300906347_1/above-the-fold.png",
+    "fullPage": "screenshots/2026-W42_amazon-bedrock-agentcore-signed-out-page-first-impression-craft_38300906347_1/full-page.png",
+    "midPage": "screenshots/2026-W42_amazon-bedrock-agentcore-signed-out-page-first-impression-craft_38300906347_1/mid-page.png",
+    "mobile": "screenshots/2026-W42_amazon-bedrock-agentcore-signed-out-page-first-impression-craft_38300906347_1/mobile.png"
+  },
+  "model": "gpt-5.6-sol",
+  "ai": {
+    "summaryMarkdown": "The page makes a strong initial product impression through a clear hero, prominent primary action, consistent typography, and polished product imagery. Its craft weakens below the fold: repeated text-and-screenshot modules, very large empty intervals, layered navigation, and persistent assistant prompts make the experience feel heavier and less controlled than the hero suggests. The mobile hero adapts well, but the assistant cards obscure the next section and dominate the viewport.\n\n**Patterns worth borrowing**\n- Pair a concise promise with one dominant action and one secondary action.\n- Use alternating product demonstrations to connect benefits with concrete interfaces.\n- Support technical claims with customer examples and a named source.\n- Preserve consistent heading, button, and image treatments across sections.\n\n**Anti-patterns to avoid**\n- Do not let sales and AI-assistant prompts cover primary page content, especially on mobile.\n- Avoid stacking global navigation, product navigation, breadcrumbs, and floating utilities without reducing competing chrome.\n- Avoid oversized vertical gaps that break continuity and make the page appear partially loaded.\n- Do not repeat nearly identical media modules without enough visual or structural variation.",
+    "primary": {
+      "noteMarkdown": "The primary lens is represented by the craft baseline below. The weighted result is 20 out of 35, which is functional but lacking consistent intentionality.",
+      "inconclusive": false,
+      "items": []
+    },
+    "craft": {
+      "evaluationMode": "baseline",
+      "referenceStatus": "reference",
+      "summaryMarkdown": "The baseline shows a polished and legible hero followed by a less disciplined long-form experience. The product name, promise, and CLI action are immediately identifiable, but persistent overlays, repeated module patterns, dense body copy, and unusually large blank areas reduce coherence and scanning quality. The responsive hero is sound, while the mobile assistant treatment materially obstructs content.",
+      "scores": [
+        {
+          "name": "Visual hierarchy",
+          "score": 4,
+          "rationale": "The large product title, concise promise, and filled CLI button establish an immediate reading order, although stacked navigation and floating assistant elements compete for attention."
+        },
+        {
+          "name": "Information density",
+          "score": 2,
+          "rationale": "The page combines two navigation layers, breadcrumbs, long paragraphs, repeated media controls, download actions, feedback prompts, and assistant cards, while large empty intervals elsewhere make the density feel poorly balanced."
+        },
+        {
+          "name": "Readability",
+          "score": 3,
+          "rationale": "Large headings, strong contrast, and generous spacing support scanning, but wide body-copy lines and assistant overlays obscure content on both desktop and mobile."
+        },
+        {
+          "name": "Coherence",
+          "score": 3,
+          "rationale": "Typography, rounded controls, dark actions, and gradient-backed product imagery form a recognizable system, but oversized gaps, repeated screenshot modules, and unrelated floating prompts make the page feel assembled from multiple systems."
+        },
+        {
+          "name": "Durability",
+          "score": 2,
+          "rationale": "The alternating content modules and responsive hero provide a usable foundation, but the mobile overlays cover substantial content and the desktop capture shows spacing that would be fragile under longer text or missing dynamic modules."
+        },
+        {
+          "name": "Intentionality",
+          "score": 3,
+          "rationale": "The hero actions, benefit sequence, trust section, customer evidence, and next-step area have clear purposes, but persistent promotional utilities and excessive blank space do not appear calibrated to the page's main reading flow."
+        }
+      ],
+      "totalScore": 20,
+      "maxScore": 35,
+      "reassessedDimensions": [
+        "Visual hierarchy",
+        "Information density",
+        "Readability",
+        "Coherence",
+        "Durability",
+        "Intentionality"
+      ],
+      "changes": [
+        {
+          "name": "Visual hierarchy",
+          "priorScore": null,
+          "score": 4,
+          "rationale": "The large product title, concise promise, and filled CLI button establish an immediate reading order, although stacked navigation and floating assistant elements compete for attention.",
+          "changeEvidence": "Initial comparable craft baseline."
+        },
+        {
+          "name": "Information density",
+          "priorScore": null,
+          "score": 2,
+          "rationale": "The page combines two navigation layers, breadcrumbs, long paragraphs, repeated media controls, download actions, feedback prompts, and assistant cards, while large empty intervals elsewhere make the density feel poorly balanced.",
+          "changeEvidence": "Initial comparable craft baseline."
+        },
+        {
+          "name": "Readability",
+          "priorScore": null,
+          "score": 3,
+          "rationale": "Large headings, strong contrast, and generous spacing support scanning, but wide body-copy lines and assistant overlays obscure content on both desktop and mobile.",
+          "changeEvidence": "Initial comparable craft baseline."
+        },
+        {
+          "name": "Coherence",
+          "priorScore": null,
+          "score": 3,
+          "rationale": "Typography, rounded controls, dark actions, and gradient-backed product imagery form a recognizable system, but oversized gaps, repeated screenshot modules, and unrelated floating prompts make the page feel assembled from multiple systems.",
+          "changeEvidence": "Initial comparable craft baseline."
+        },
+        {
+          "name": "Durability",
+          "priorScore": null,
+          "score": 2,
+          "rationale": "The alternating content modules and responsive hero provide a usable foundation, but the mobile overlays cover substantial content and the desktop capture shows spacing that would be fragile under longer text or missing dynamic modules.",
+          "changeEvidence": "Initial comparable craft baseline."
+        },
+        {
+          "name": "Intentionality",
+          "priorScore": null,
+          "score": 3,
+          "rationale": "The hero actions, benefit sequence, trust section, customer evidence, and next-step area have clear purposes, but persistent promotional utilities and excessive blank space do not appear calibrated to the page's main reading flow.",
+          "changeEvidence": "Initial comparable craft baseline."
+        }
+      ],
+      "noMaterialChangeExplanation": "",
+      "provenance": {
+        "baselineReportPath": "weekly-eval-bets/2026-W42_amazon-bedrock-agentcore-signed-out-page-first-impression-craft_38300906347_1.md",
+        "baselineCaptureDir": "weekly-eval-bets/screenshots/2026-W42_amazon-bedrock-agentcore-signed-out-page-first-impression-craft_38300906347_1",
+        "baselineEvidenceHash": "a9d49187d810108788fa2102983afcb88572ee528d10b51261d6f0bc2ce88187",
+        "comparedToReportPath": null,
+        "comparedToCaptureDir": null,
+        "comparedToEvidenceHash": null,
+        "exactReuseSourceReportPath": null
+      }
+    }
+  }
+}
