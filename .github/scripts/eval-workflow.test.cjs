@@ -125,7 +125,7 @@ test('workflow keeps immutable report and capture paths and commits the sidecar'
   assert.ok(!workflow.includes('use the craft rubric as a secondary lens'));
 });
 
-test('actual scoring step publishes a baseline, then lens-only reuse and a focused delta', async (t) => {
+test('scoring step runs with github-script bindings for baseline, reuse, and a focused delta', async (t) => {
   const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'eval-scoring-workflow-'));
   t.after(() => fs.rmSync(rootDir, { recursive: true, force: true }));
   const captures = 'weekly-eval-bets/screenshots/';
@@ -139,14 +139,13 @@ test('actual scoring step publishes a baseline, then lens-only reuse and a focus
   const source = workflow.split('          script: |\n')[1].split('\n          github-token:')[0]
     .split('\n').map(line => line.replace(/^            /, '')).join('\n');
   const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
-  const run = new AsyncFunction('require', 'process', 'fetch', 'core', source);
   const dimensions = ['Visual hierarchy', 'Information density', 'Readability', 'Coherence', 'Durability', 'Intentionality'];
   const emptyPrimary = { items: [], inconclusive: false, noteMarkdown: '' };
 
   async function score({ filename, capture = 'original', title, response, expectedImages }) {
     const outputs = {};
-    await run(
-      (name) => {
+    const bindings = {
+      require: (name) => {
         if (name.endsWith('eval-scoring.cjs')) return require('./eval-scoring.cjs');
         if (name === 'path') return { ...path, resolve: (...parts) => path.resolve(rootDir, ...parts) };
         if (name === 'fs') return {
@@ -157,7 +156,19 @@ test('actual scoring step publishes a baseline, then lens-only reuse and a focus
         };
         throw new Error(`Unexpected workflow dependency: ${name}`);
       },
-      {
+      __original_require__: require,
+      github: {},
+      octokit: {},
+      context: Object.freeze({ repo: { owner: 'example', repo: 'eval-fixture' } }),
+      core: {
+        setOutput: (name, value) => { outputs[name] = value; },
+        setFailed: (message) => { throw new Error(message); },
+        warning: (message) => { throw new Error(`Unexpected retry: ${message}`); },
+      },
+      exec: {},
+      glob: {},
+      io: {},
+      process: {
         cwd: () => rootDir,
         env: {
           FILENAME: filename,
@@ -166,7 +177,7 @@ test('actual scoring step publishes a baseline, then lens-only reuse and a focus
           FOUNDRY_API_KEY: 'fake-test-key',
         },
       },
-      async (url, options) => {
+      fetch: async (url, options) => {
         assert.ok(url.endsWith('/openai/v1/responses'));
         const request = JSON.parse(options.body);
         assert.equal(request.input[0].content.filter(item => item.type === 'input_image').length, expectedImages);
@@ -174,12 +185,9 @@ test('actual scoring step publishes a baseline, then lens-only reuse and a focus
           output: [{ type: 'message', content: [{ type: 'output_text', text: JSON.stringify(response) }] }],
         }) };
       },
-      {
-        setOutput: (name, value) => { outputs[name] = value; },
-        setFailed: (message) => { throw new Error(message); },
-        warning: (message) => { throw new Error(`Unexpected retry: ${message}`); },
-      }
-    );
+    };
+    const run = new AsyncFunction(...Object.keys(bindings), source);
+    await run(...Object.values(bindings));
     assert.equal(outputs.evaluation, 'complete');
     return {
       markdown: fs.readFileSync(path.join(rootDir, 'weekly-eval-bets', filename), 'utf8'),

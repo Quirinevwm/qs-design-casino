@@ -176,7 +176,7 @@ jobs:
             const issueJson = JSON.parse(fs.readFileSync('/tmp/issue.json', 'utf8'));
             const rubric = fs.readFileSync('skills/first-impression-craft-rubric.md', 'utf8');
             const reportPath = `weekly-eval-bets/${process.env.FILENAME}`;
-            const { context, requestContent } = prepareEvaluation({
+            const { context: evaluationContext, requestContent } = prepareEvaluation({
               rootDir: process.cwd(),
               reportPath,
               captureDir: process.env.CAPTURE_DIR,
@@ -263,7 +263,7 @@ jobs:
             }
 
             const { markdown, record } = buildEvaluation({
-              context,
+              context: evaluationContext,
               responseText: evaluation,
               model: 'gpt-5.6-sol'
             });
