@@ -1,0 +1,126 @@
+{
+  "schemaVersion": "eval-scoring/v1",
+  "createdAt": "2026-10-14T14:21:39.439Z",
+  "reportPath": "weekly-eval-bets/2026-W42_amazon-bedrock-agentcore-signed-out-page-trust-architecture_38579552308_1.md",
+  "captureDir": "weekly-eval-bets/screenshots/2026-W42_amazon-bedrock-agentcore-signed-out-page-trust-architecture_38579552308_1",
+  "targetUrl": "https://aws.amazon.com/bedrock/agentcore/",
+  "canonicalUrl": "https://aws.amazon.com/bedrock/agentcore/",
+  "primaryLens": "trust",
+  "rubricHash": "8df8d4cf81dd06544d99a4ea07ce6e9ce15b3a74bf124f9a09e606a2e1d37c5b",
+  "rubric": "# First-impression craft rubric\n\nA reusable 5-point rubric for evaluating the design craft of any product landing page or signed-out state.\n\n## When to use\n\nApply this rubric when you want to assess whether a page makes a strong first impression through design quality alone, independent of content strategy or conversion goals.\n\nEstablish a craft baseline once per comparable page version. Promise, trust, audience, and other evaluations should reference it rather than request the same six scores again. Revisit only affected craft dimensions when captured evidence changes materially; use a new baseline when the page, rendering context, or rubric is not comparable.\n\n## Dimensions\n\n| # | Dimension | Weight | Question | 5 (best) | 1 (worst) |\n|---|-----------|--------|----------|-----------|-----------|\n| 1 | Visual hierarchy | 1x | Can you identify the primary message and action within 3 seconds? | Instant | Buried |\n| 2 | Information density | 1x | Is every element earning its space? | Nothing to remove | Noise competes with signal |\n| 3 | Readability | 1x | Do typography, contrast, and sentence length support scanning? | Effortless | Labored |\n| 4 | Coherence | 2x | Does the page feel like one designed thing? | Unified | Assembled from parts |\n| 5 | Durability | 1x | Would this design hold if content changed by 30%? | Resilient | Brittle |\n| 6 | Intentionality | 1x | Can you tell why every design decision was made? | Every choice has a reason | Arbitrary or defaulted |\n\n## Scoring guide\n\nCoherence is weighted 2x. Max score: 35.\n\n- **29-35:** Exceptional craft. Study and reference.\n- **22-28:** Solid craft with specific areas to sharpen.\n- **15-21:** Functional but lacking intentionality.\n- **7-14:** Needs structural rethinking.\n\n## How to apply\n\n1. Open the page cold (no prior context, clear cache if possible).\n2. Score each dimension independently, 1-5.\n3. Write one sentence per dimension noting what earned or cost the score.\n4. Sum the total. Use the scoring guide to frame the verdict.\n5. End with two lists: patterns worth borrowing, and anti-patterns to avoid.\n\nFor subsequent lenses, link the baseline and its evidence. For a changed-dimension review, record the prior score, new score, and observed change for each reassessed dimension. Preserve unaffected scores as inherited context, not new judgments. Keep AI scores distinct from human overrides, and never transfer scores between page versions without comparing the evidence.\n\n---\n\n*This is a living rubric. Adjust dimensions, weights, or scoring anchors as your evaluation practice evolves.*\n",
+  "captureContextHash": "4b899014cf36f7c1e52fb0b2d2a03b9b14e4b155da082a400f8553f97b021c6f",
+  "captureContext": {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "mobileViewport": {
+      "width": 390,
+      "height": 844
+    },
+    "deviceScaleFactor": 2,
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
+    "locale": "en-US",
+    "timezoneId": "America/Los_Angeles",
+    "colorScheme": "light",
+    "evidenceVersion": 1,
+    "browserVersion": "156.0.8078.4"
+  },
+  "evidenceHash": "594bef13391500e3765a17f2f78e29c762f783679994327027dd10052888d1b4",
+  "issueTitle": "Amazon Bedrock AgentCore signed-out page: trust architecture",
+  "issueBody": "### Bet title\n\nAmazon Bedrock AgentCore signed-out page: trust architecture\n\n### Primary lens\n\nTrust architecture\n\n### Target page\n\nhttps://aws.amazon.com/bedrock/agentcore/\n\n### Evaluator class\n\nDesign quality (craft, coherence, accessibility)\n\n### Evidence type\n\nRubric-scored (criteria checklist)\n\n### Design relevance\n\nCompare how agent platforms present their promise, build trust, and earn a first impression for cold, signed-out visitors.\n\n### Suggested evaluation approach\n\nChecked review across sequence, specificity, social proof quality, friction to first action, and risk reduction.\n",
+  "links": {
+    "pageText": "screenshots/2026-W42_amazon-bedrock-agentcore-signed-out-page-trust-architecture_38579552308_1/page-text.txt",
+    "pageHtml": "screenshots/2026-W42_amazon-bedrock-agentcore-signed-out-page-trust-architecture_38579552308_1/page-content.html",
+    "aboveTheFold": "screenshots/2026-W42_amazon-bedrock-agentcore-signed-out-page-trust-architecture_38579552308_1/above-the-fold.png",
+    "fullPage": "screenshots/2026-W42_amazon-bedrock-agentcore-signed-out-page-trust-architecture_38579552308_1/full-page.png",
+    "midPage": "screenshots/2026-W42_amazon-bedrock-agentcore-signed-out-page-trust-architecture_38579552308_1/mid-page.png",
+    "mobile": "screenshots/2026-W42_amazon-bedrock-agentcore-signed-out-page-trust-architecture_38579552308_1/mobile.png"
+  },
+  "model": "gpt-5.6-sol",
+  "ai": {
+    "summaryMarkdown": "The page builds trust through a strong progression from a concise production promise to concrete platform capabilities, security details, quantified outcomes, named customer stories, and documentation-oriented next steps. It demonstrates credible specificity through framework names, authentication and access-control scenarios, automated reasoning references, benchmark figures, and customer outcomes. These statements are presented by the page and are not independently verified by the capture.\n\n**Patterns worth borrowing**\n- Lead with a concise promise and pair it with both a direct technical action and a product demonstration.\n- Translate platform capabilities into recognizable production problems such as permissions, debugging, and scaling.\n- Combine quantified evidence with a visible source label and named customer outcomes.\n- Place security explanations near operational capabilities rather than isolating them in generic trust language.\n\n**Anti-patterns to avoid**\n- Persistent sales and generative AI assistant prompts obscure content, especially on mobile.\n- Repeated media controls and download actions add friction to an otherwise clear narrative.\n- Broad phrases such as “numerous AWS compliance programs” reduce the specificity of risk-reduction claims.\n- Large empty intervals weaken continuity between trust evidence and the next action.",
+    "primary": {
+      "noteMarkdown": "This assessment describes the trust architecture demonstrated by the captured page. Security, performance, compliance, benchmark, and customer outcome claims are treated as page assertions rather than independently verified facts.",
+      "inconclusive": false,
+      "items": [
+        {
+          "name": "Sequence",
+          "score": 4,
+          "rationale": "The page moves logically from promise and first actions through production problems, operational capabilities, security, quantified results, customer stories, and next steps. Trust evidence arrives progressively, although large spacing gaps and floating utilities interrupt the flow."
+        },
+        {
+          "name": "Specificity",
+          "score": 4,
+          "rationale": "The content names LangChain, OpenAI Agents SDK, Claude Agent SDK, Strands SDK, MCP servers, Lambda, IAM, S3, automated reasoning, multiple regions, and concrete performance figures. Some claims remain broad, particularly the references to compliance programs and infrastructure trusted by millions."
+        },
+        {
+          "name": "Social proof quality",
+          "score": 4,
+          "rationale": "The page presents named organizations and quantified outcomes, including 17 production agents, 68 percent support resolution, and 70 percent automation, plus a Signal65 comparison source. The capture does not establish study methodology, customer quotation context, or independent verification."
+        },
+        {
+          "name": "Friction to first action",
+          "score": 4,
+          "rationale": "A prominent AgentCore CLI action and a secondary demonstration action are immediately available without a visible form. Documentation also offers a lower-risk path, but it appears later, while assistant overlays obstruct reading and interaction on mobile."
+        },
+        {
+          "name": "Risk reduction",
+          "score": 4,
+          "rationale": "The page addresses production risk with platform-layer controls, authentication, access policies, automated reasoning, compliance alignment, regional deployment, observability, and customer evidence. It does not show detailed compliance certifications, contractual assurances, pricing risk, or implementation prerequisites in the captured content."
+        }
+      ]
+    },
+    "craft": {
+      "evaluationMode": "no-material-change",
+      "referenceStatus": "reused",
+      "summaryMarkdown": "No craft dimension changed materially from the prior comparable evidence. The current and prior captures show the same hierarchy, spacing, repeated media modules, assistant overlays, responsive behavior, and page content. The rendered benchmark values are also unchanged in the screenshots, so incidental extracted counter states do not justify rescoring.",
+      "scores": [
+        {
+          "name": "Visual hierarchy",
+          "score": 4,
+          "rationale": "The large product title, concise promise, and filled CLI button establish an immediate reading order, although stacked navigation and floating assistant elements compete for attention."
+        },
+        {
+          "name": "Information density",
+          "score": 2,
+          "rationale": "The page combines two navigation layers, breadcrumbs, long paragraphs, repeated media controls, download actions, feedback prompts, and assistant cards, while large empty intervals elsewhere make the density feel poorly balanced."
+        },
+        {
+          "name": "Readability",
+          "score": 3,
+          "rationale": "Large headings, strong contrast, and generous spacing support scanning, but wide body-copy lines and assistant overlays obscure content on both desktop and mobile."
+        },
+        {
+          "name": "Coherence",
+          "score": 3,
+          "rationale": "Typography, rounded controls, dark actions, and gradient-backed product imagery form a recognizable system, but oversized gaps, repeated screenshot modules, and unrelated floating prompts make the page feel assembled from multiple systems."
+        },
+        {
+          "name": "Durability",
+          "score": 2,
+          "rationale": "The alternating content modules and responsive hero provide a usable foundation, but the mobile overlays cover substantial content and the desktop capture shows spacing that would be fragile under longer text or missing dynamic modules."
+        },
+        {
+          "name": "Intentionality",
+          "score": 3,
+          "rationale": "The hero actions, benefit sequence, trust section, customer evidence, and next-step area have clear purposes, but persistent promotional utilities and excessive blank space do not appear calibrated to the page's main reading flow."
+        }
+      ],
+      "totalScore": 20,
+      "maxScore": 35,
+      "reassessedDimensions": [],
+      "changes": [],
+      "noMaterialChangeExplanation": "The current evidence is visually and structurally equivalent to the prior evidence across all six craft dimensions. No affected craft dimension requires reassessment.",
+      "provenance": {
+        "baselineReportPath": "weekly-eval-bets/2026-W42_amazon-bedrock-agentcore-signed-out-page-first-impression-craft_38300906347_1.md",
+        "baselineCaptureDir": "weekly-eval-bets/screenshots/2026-W42_amazon-bedrock-agentcore-signed-out-page-first-impression-craft_38300906347_1",
+        "baselineEvidenceHash": "a9d49187d810108788fa2102983afcb88572ee528d10b51261d6f0bc2ce88187",
+        "comparedToReportPath": "weekly-eval-bets/2026-W42_amazon-bedrock-agentcore-signed-out-page-first-impression-craft_38300906347_1.md",
+        "comparedToCaptureDir": "weekly-eval-bets/screenshots/2026-W42_amazon-bedrock-agentcore-signed-out-page-first-impression-craft_38300906347_1",
+        "comparedToEvidenceHash": "a9d49187d810108788fa2102983afcb88572ee528d10b51261d6f0bc2ce88187",
+        "exactReuseSourceReportPath": null
+      }
+    }
+  }
+}
