@@ -7,6 +7,35 @@ const { test } = require('node:test');
 
 const workflow = fs.readFileSync(path.join(__dirname, '../workflows/weekly-eval-bet.yml'), 'utf8');
 
+test('scoring runs at 04:15 Pacific Monday through Thursday across daylight saving changes', () => {
+  const schedule = workflow.split('  schedule:\n')[1].split('  workflow_dispatch:')[0];
+  const cronEntries = [...schedule.matchAll(/- cron: '([^']+)'/g)];
+  assert.equal(cronEntries.length, 1, 'Only one scoring schedule should run each eligible day');
+  const [minute, hour, day, month, weekdays] = cronEntries[0][1].split(' ');
+  assert.deepEqual([minute, hour, day, month, weekdays], ['15', '4', '*', '*', '1-4']);
+  const timezone = schedule.match(/^\s+timezone: '([^']+)'/m)?.[1];
+  assert.equal(timezone, 'America/Los_Angeles');
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: timezone, weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+  });
+  const scheduledTime = `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`;
+  for (const [timestamp, expectedTime, eligible] of [
+    ['2026-10-15T11:15:00Z', '04:15', true],
+    ['2026-11-02T12:15:00Z', '04:15', true],
+    ['2027-03-11T12:15:00Z', '04:15', true],
+    ['2027-03-15T11:15:00Z', '04:15', true],
+    ['2026-11-02T11:15:00Z', '03:15', false],
+    ['2026-10-16T11:15:00Z', '04:15', false],
+    ['2026-10-17T11:15:00Z', '04:15', false],
+    ['2026-10-18T11:15:00Z', '04:15', false],
+  ]) {
+    const parts = Object.fromEntries(formatter.formatToParts(new Date(timestamp)).map(part => [part.type, part.value]));
+    const localTime = `${parts.hour}:${parts.minute}`;
+    assert.equal(localTime, expectedTime, timestamp);
+    assert.equal(['Mon', 'Tue', 'Wed', 'Thu'].includes(parts.weekday) && localTime === scheduledTime, eligible, timestamp);
+  }
+});
+
 function embeddedNode(stepName) {
   const step = workflow.split(`- name: ${stepName}\n`)[1]?.split('\n      - name:')[0];
   assert.ok(step, `Missing workflow step: ${stepName}`);

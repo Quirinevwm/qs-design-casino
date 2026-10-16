@@ -14,7 +14,9 @@ How the Design Casino runs its automated evaluation cadence.
 
 ## How the auto-scorer works
 
-The daily workflow (`weekly-eval-bet.yml`) runs Monday through Thursday and processes one bet per day.
+The daily workflow (`weekly-eval-bet.yml`) is scheduled for **04:15 Pacific, Monday through Thursday**, and processes one bet per day. It uses `America/Los_Angeles`, so the local time stays the same across daylight saving changes (11:15 UTC during daylight time, 12:15 UTC during standard time). Friday remains reserved for human review.
+
+The early-morning slot aims to reduce exposure to peak model demand, not guarantee capacity. Starting at 15 minutes past the hour also avoids GitHub Actions' busiest scheduling boundary. GitHub may delay scheduled runs, so the trigger time is not a guaranteed start time. Manual runs remain available and do not change the regular cadence.
 
 ### Step by step
 
