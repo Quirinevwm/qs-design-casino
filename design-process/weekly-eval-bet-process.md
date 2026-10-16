@@ -14,7 +14,9 @@ How the Design Casino runs its automated evaluation cadence.
 
 ## How the auto-scorer works
 
-The daily workflow (`weekly-eval-bet.yml`) runs Monday through Thursday and processes one bet per day.
+The daily workflow (`weekly-eval-bet.yml`) is scheduled for **04:15 Pacific, Monday through Thursday**, and processes one bet per day. It uses `America/Los_Angeles`, so the local time stays the same across daylight saving changes (11:15 UTC during daylight time, 12:15 UTC during standard time). Friday remains reserved for human review.
+
+The early-morning slot aims to reduce exposure to peak model demand, not guarantee capacity. Starting at 15 minutes past the hour also avoids GitHub Actions' busiest scheduling boundary. GitHub may delay scheduled runs, so the trigger time is not a guaranteed start time. Manual runs remain available and do not change the regular cadence.
 
 ### Step by step
 
@@ -32,7 +34,7 @@ The daily workflow (`weekly-eval-bet.yml`) runs Monday through Thursday and proc
 
 4. **Choose the craft scope** -- Match the target URL, rendering settings, rubric version, and captured evidence against prior machine-readable evaluation records. Choose a new baseline, an existing baseline reference, or a changed-evidence comparison as described below.
 
-5. **Auto-score with gpt-5.6-sol through Azure AI Foundry** -- Send the named lens, bet details, rubric, captured text/HTML, and screenshots. For changed evidence, also send the baseline evidence. The model returns structured scores and a narrative. Validate dimensions and score ranges, calculate totals, and render the report in code. Invalid output fails the run; it does not publish missing scores as `?`.
+5. **Auto-score with gpt-5.6-sol-q through Azure AI Foundry** -- Use the existing Foundry resource, Responses API endpoint, and API-key secret. Send the named lens, bet details, rubric, captured text/HTML, and screenshots. For changed evidence, also send the baseline evidence. The model returns structured scores and a narrative. Validate dimensions and score ranges, calculate totals, and render the report in code. Invalid output fails the run; it does not publish missing scores as `?`. New reports record the model used; historical scores and model attribution remain unchanged.
 
 6. **Build a scoped human review** -- Include the named lens dimensions. Include all six craft dimensions only when establishing a baseline; show only reassessed dimensions for a change review; otherwise link the baseline without requesting another craft score. Keep role-specific audience validation separate from design-lead review.
 
