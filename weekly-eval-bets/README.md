@@ -67,12 +67,13 @@ See the [archived lesson and operating boundary](../design-process/weekly-eval-b
 
 Each evaluation scores its named lens. Craft is a shared baseline for comparable page evidence, not a mandatory secondary review: later lenses reference the baseline, and material changes trigger only affected-dimension reassessment. AI scores, human overrides, and role-specific audience validation remain distinct. See the [scoring process](../design-process/weekly-eval-bet-process.md#craft-once-per-comparable-page-version).
 
-New auto-scored evaluations use **gpt-5.6-sol-q** via the existing Microsoft Foundry resource and Responses API endpoint. The model may change as newer options become available or as evaluation needs evolve. Each completed evaluation file notes which model scored it; historical scores and attribution are preserved.
+New auto-scored evaluations use **gpt-6-astra-q** via the existing Microsoft Foundry resource and Responses API endpoint. The model may change as newer options become available or as evaluation needs evolve. Each completed evaluation file notes which model scored it; historical scores and attribution are preserved.
 
 | Period | Model | Notes |
 |------|-------|-------|
 | W33 | openai/gpt-4o | Via GitHub Models (now retired) |
 | W34 onward, before the model switch | gpt-5.6-sol | Via Azure AI Foundry |
-| After the model switch | gpt-5.6-sol-q | Same Foundry resource and endpoint |
+| Interim deployment attempt | gpt-5.6-sol-q | Returned service errors; no evaluation published |
+| Current configuration | gpt-6-astra-q | Same Foundry resource and endpoint |
 
 **Bets create lenses. Lenses build stacks. Stacks raise the craft bar.**

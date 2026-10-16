@@ -210,7 +210,7 @@ test('scoring step runs with github-script bindings for baseline, reuse, and a f
         assert.equal(url, 'https://quvanwal-march2026-resource.services.ai.azure.com/openai/v1/responses');
         assert.equal(options.headers['api-key'], 'fake-test-key');
         const request = JSON.parse(options.body);
-        assert.equal(request.model, 'gpt-5.6-sol-q');
+        assert.equal(request.model, 'gpt-6-astra-q');
         assert.equal(request.input[0].content.filter(item => item.type === 'input_image').length, expectedImages);
         return { ok: true, json: async () => ({
           output: [{ type: 'message', content: [{ type: 'output_text', text: JSON.stringify(response) }] }],
@@ -224,8 +224,8 @@ test('scoring step runs with github-script bindings for baseline, reuse, and a f
       markdown: fs.readFileSync(path.join(rootDir, 'weekly-eval-bets', filename), 'utf8'),
       record: JSON.parse(fs.readFileSync(path.join(rootDir, 'weekly-eval-bets', filename.replace(/\.md$/, '.json')), 'utf8')),
     };
-    assert.equal(published.record.model, 'gpt-5.6-sol-q');
-    assert.ok(published.markdown.includes('*Scoring model: gpt-5.6-sol-q*'));
+    assert.equal(published.record.model, 'gpt-6-astra-q');
+    assert.ok(published.markdown.includes('*Scoring model: gpt-6-astra-q*'));
     return published;
   }
 
