@@ -173,6 +173,7 @@ jobs:
             const fs = require('fs');
             const path = require('path');
             const { prepareEvaluation, buildEvaluation } = require(path.resolve('.github/scripts/eval-scoring.cjs'));
+            const scoringModel = 'gpt-5.6-sol-q';
 
             const issueJson = JSON.parse(fs.readFileSync('/tmp/issue.json', 'utf8'));
             const rubric = fs.readFileSync('skills/first-impression-craft-rubric.md', 'utf8');
@@ -190,7 +191,7 @@ jobs:
             const retryDelaysSeconds = [30, 60];
             const transientStatuses = new Set([429, 500, 502, 503, 504]);
             const requestBody = JSON.stringify({
-              model: 'gpt-5.6-sol',
+              model: scoringModel,
               input: [{ role: 'user', content: requestContent }]
             });
 
@@ -266,7 +267,7 @@ jobs:
             const { markdown, record } = buildEvaluation({
               context: evaluationContext,
               responseText: evaluation,
-              model: 'gpt-5.6-sol'
+              model: scoringModel
             });
             fs.writeFileSync(reportPath, markdown);
             fs.writeFileSync(reportPath.replace(/\.md$/, '.json'), JSON.stringify(record, null, 2) + '\n');
