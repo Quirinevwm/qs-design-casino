@@ -78,6 +78,10 @@ A separate workflow (`friday-eval-review.yml`) runs every Friday. It gathers eve
 
 The workflow can be triggered manually from the Actions tab with an optional `issue_number` input to evaluate a specific bet out of order.
 
+For a hosted diagnostic run, enable `diagnostics_first`. The workflow sends one minimal text request, then one existing screenshot under 1 MB. Only completed, usable responses from both controls allow the normal evaluation to proceed. Failures appear in the Actions run summary and stop before any scoring or queue updates.
+
+The optional `not_before` field delays a single manual run until an explicit UTC timestamp such as `2026-10-16T05:00:00Z` (October 15 at 10 p.m. Pacific). It accepts at most four hours of waiting and rejects stale timestamps. The wait happens on a GitHub-hosted runner, not your laptop, and does not add a recurring schedule. The run uses hosted runner time during the wait, and GitHub may delay its initial start. Manual diagnostics use the tools from the dispatched workflow revision, including when testing an unmerged PR branch. Model and endpoint settings are shared with the full scorer.
+
 ## Screenshots captured per evaluation
 
 | File | What it shows |
