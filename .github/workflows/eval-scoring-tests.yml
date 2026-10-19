@@ -6,12 +6,14 @@ on:
       - '.github/scripts/eval-*.cjs'
       - '.github/workflows/weekly-eval-bet.yml'
       - '.github/workflows/eval-scoring-tests.yml'
+      - 'weekly-eval-bets/_template.md'
   push:
     branches: [main]
     paths:
       - '.github/scripts/eval-*.cjs'
       - '.github/workflows/weekly-eval-bet.yml'
       - '.github/workflows/eval-scoring-tests.yml'
+      - 'weekly-eval-bets/_template.md'
   workflow_dispatch: {}
 
 permissions:

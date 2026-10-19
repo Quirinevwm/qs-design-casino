@@ -7,7 +7,13 @@ const { test } = require('node:test');
 
 const workflow = fs.readFileSync(path.join(__dirname, '../workflows/weekly-eval-bet.yml'), 'utf8');
 const scoringModel = workflow.match(/^  SCORING_MODEL: '([^']+)'/m)?.[1];
-const responsesEndpoint = workflow.match(/^  FOUNDRY_RESPONSES_ENDPOINT: '([^']+)'/m)?.[1];
+const responsesEndpoint = 'https://scoring.example/api/projects/test/openai/v1/responses';
+
+test('report template matches the configured scoring model and pending-review status', () => {
+  const template = fs.readFileSync(path.join(__dirname, '../../weekly-eval-bets/_template.md'), 'utf8');
+  assert.ok(template.includes(`*Scoring model: ${scoringModel}*`));
+  assert.ok(template.includes('*Status: auto-scored, pending human review*'));
+});
 
 test('scoring runs at 04:15 Pacific Monday through Thursday across daylight saving changes', () => {
   const schedule = workflow.split('  schedule:\n')[1].split('  workflow_dispatch:')[0];
@@ -158,7 +164,7 @@ test('workflow keeps immutable report and capture paths and commits the sidecar'
 
 test('one-time diagnostics wait on GitHub and gate scoring without changing the regular schedule', () => {
   assert.equal(scoringModel, 'gpt-6.1-sol');
-  assert.equal(responsesEndpoint, 'https://quvanwal-northus-resource.services.ai.azure.com/api/projects/quvanwal-NorthUS/openai/v1/responses');
+  assert.ok(workflow.includes('FOUNDRY_RESPONSES_ENDPOINT: ${{ secrets.FOUNDRY_RESPONSES_ENDPOINT }}'));
   assert.ok(workflow.includes('timeout-minutes: 330'));
   assert.ok(workflow.includes('ref: ${{ github.sha }}'));
   assert.ok(workflow.includes('path: .eval-diagnostics-tools'));
@@ -174,11 +180,12 @@ test('one-time diagnostics wait on GitHub and gate scoring without changing the 
   assert.ok(checkStep.includes("if: github.event_name == 'workflow_dispatch' && inputs.diagnostics_first"));
 });
 
-test('diagnostics and scoring both use the NorthUS key without falling back to the old resource', () => {
-  const northusBindings = workflow.match(/FOUNDRY_API_KEY: \$\{\{ secrets\.FOUNDRY_NORTHUS_API_KEY \}\}/g);
-  assert.equal(northusBindings?.length, 2);
+test('diagnostics and scoring use secret-backed configuration without public service identifiers', () => {
+  const keyBindings = workflow.match(/FOUNDRY_API_KEY: \$\{\{ secrets\.FOUNDRY_SCORING_API_KEY \}\}/g);
+  assert.equal(keyBindings?.length, 2);
+  assert.ok(workflow.includes('FOUNDRY_RESPONSES_ENDPOINT: ${{ secrets.FOUNDRY_RESPONSES_ENDPOINT }}'));
   assert.ok(!workflow.includes('secrets.FOUNDRY_API_KEY'));
-  assert.ok(!workflow.includes('quvanwal-march2026-resource'));
+  assert.ok(!workflow.includes('.services.ai.azure.com'));
 });
 
 test('scoring step runs with github-script bindings for baseline, reuse, and a focused delta', async (t) => {
@@ -236,7 +243,7 @@ test('scoring step runs with github-script bindings for baseline, reuse, and a f
         },
       },
       fetch: async (url, options) => {
-        assert.equal(url, 'https://quvanwal-northus-resource.services.ai.azure.com/api/projects/quvanwal-NorthUS/openai/v1/responses');
+        assert.equal(url, responsesEndpoint);
         assert.equal(options.headers['api-key'], 'fake-test-key');
         const request = JSON.parse(options.body);
         assert.equal(request.model, 'gpt-6.1-sol');
