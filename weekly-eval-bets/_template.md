@@ -44,3 +44,5 @@ Any rubric, checklist, or review template that came out of this evaluation.
 ---
 
 *Reviewed: YYYY-MM-DD*
+*Scoring model: gpt-6.1-sol*
+*Status: auto-scored, pending human review*
