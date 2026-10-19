@@ -158,7 +158,7 @@ test('workflow keeps immutable report and capture paths and commits the sidecar'
 
 test('one-time diagnostics wait on GitHub and gate scoring without changing the regular schedule', () => {
   assert.equal(scoringModel, 'gpt-6.1-sol');
-  assert.equal(responsesEndpoint, 'https://quvanwal-march2026-resource.services.ai.azure.com/openai/v1/responses');
+  assert.equal(responsesEndpoint, 'https://quvanwal-northus-resource.services.ai.azure.com/api/projects/quvanwal-NorthUS/openai/v1/responses');
   assert.ok(workflow.includes('timeout-minutes: 330'));
   assert.ok(workflow.includes('ref: ${{ github.sha }}'));
   assert.ok(workflow.includes('path: .eval-diagnostics-tools'));
@@ -172,6 +172,13 @@ test('one-time diagnostics wait on GitHub and gate scoring without changing the 
   assert.ok(tools.includes("if: github.event_name == 'workflow_dispatch'"));
   const checkStep = workflow.split('- name: Check minimal text and image requests')[1].split('- name: Find ready bet')[0];
   assert.ok(checkStep.includes("if: github.event_name == 'workflow_dispatch' && inputs.diagnostics_first"));
+});
+
+test('diagnostics and scoring both use the NorthUS key without falling back to the old resource', () => {
+  const northusBindings = workflow.match(/FOUNDRY_API_KEY: \$\{\{ secrets\.FOUNDRY_NORTHUS_API_KEY \}\}/g);
+  assert.equal(northusBindings?.length, 2);
+  assert.ok(!workflow.includes('secrets.FOUNDRY_API_KEY'));
+  assert.ok(!workflow.includes('quvanwal-march2026-resource'));
 });
 
 test('scoring step runs with github-script bindings for baseline, reuse, and a focused delta', async (t) => {
@@ -229,7 +236,7 @@ test('scoring step runs with github-script bindings for baseline, reuse, and a f
         },
       },
       fetch: async (url, options) => {
-        assert.equal(url, 'https://quvanwal-march2026-resource.services.ai.azure.com/openai/v1/responses');
+        assert.equal(url, 'https://quvanwal-northus-resource.services.ai.azure.com/api/projects/quvanwal-NorthUS/openai/v1/responses');
         assert.equal(options.headers['api-key'], 'fake-test-key');
         const request = JSON.parse(options.body);
         assert.equal(request.model, 'gpt-6.1-sol');

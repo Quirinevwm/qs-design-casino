@@ -67,7 +67,7 @@ See the [archived lesson and operating boundary](../design-process/weekly-eval-b
 
 Each evaluation scores its named lens. Craft is a shared baseline for comparable page evidence, not a mandatory secondary review: later lenses reference the baseline, and material changes trigger only affected-dimension reassessment. AI scores, human overrides, and role-specific audience validation remain distinct. See the [scoring process](../design-process/weekly-eval-bet-process.md#craft-once-per-comparable-page-version).
 
-New auto-scored evaluations use **gpt-6.1-sol** via the existing Microsoft Foundry resource and Responses API endpoint. The model may change as newer options become available or as evaluation needs evolve. Each completed evaluation file notes which model scored it; historical scores and attribution are preserved.
+New auto-scored evaluations use **gpt-6.1-sol** via the **quvanwal-NorthUS** Microsoft Foundry project on `quvanwal-northus-resource`. Diagnostics and scoring share the project's Responses API endpoint and the `FOUNDRY_NORTHUS_API_KEY` GitHub secret. The model may change as newer options become available or as evaluation needs evolve. Each completed evaluation file notes which model scored it; historical scores and attribution are preserved.
 
 | Period | Model | Notes |
 |------|-------|-------|
@@ -75,6 +75,6 @@ New auto-scored evaluations use **gpt-6.1-sol** via the existing Microsoft Found
 | W34 onward, before the model switch | gpt-5.6-sol | Via Azure AI Foundry |
 | Interim deployment attempt | gpt-5.6-sol-q | Returned service errors; no evaluation published |
 | Interim deployment attempt | gpt-6-astra-q | Returned capacity errors; no evaluation published |
-| Current configuration | gpt-6.1-sol | Same Foundry resource and endpoint |
+| Current configuration | gpt-6.1-sol | NorthUS project endpoint; previous resource retired from scoring |
 
 **Bets create lenses. Lenses build stacks. Stacks raise the craft bar.**
