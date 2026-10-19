@@ -6,6 +6,8 @@ const vm = require('node:vm');
 const { test } = require('node:test');
 
 const workflow = fs.readFileSync(path.join(__dirname, '../workflows/weekly-eval-bet.yml'), 'utf8');
+const scoringModel = workflow.match(/^  SCORING_MODEL: '([^']+)'/m)?.[1];
+const responsesEndpoint = workflow.match(/^  FOUNDRY_RESPONSES_ENDPOINT: '([^']+)'/m)?.[1];
 
 test('scoring runs at 04:15 Pacific Monday through Thursday across daylight saving changes', () => {
   const schedule = workflow.split('  schedule:\n')[1].split('  workflow_dispatch:')[0];
@@ -154,6 +156,31 @@ test('workflow keeps immutable report and capture paths and commits the sidecar'
   assert.ok(!workflow.includes('use the craft rubric as a secondary lens'));
 });
 
+test('one-time diagnostics wait on GitHub and gate scoring without changing the regular schedule', () => {
+  assert.equal(scoringModel, 'gpt-6.1-sol');
+  assert.equal(responsesEndpoint, 'https://quvanwal-northus-resource.services.ai.azure.com/api/projects/quvanwal-NorthUS/openai/v1/responses');
+  assert.ok(workflow.includes('timeout-minutes: 330'));
+  assert.ok(workflow.includes('ref: ${{ github.sha }}'));
+  assert.ok(workflow.includes('path: .eval-diagnostics-tools'));
+  const wait = workflow.indexOf('- name: Wait for the requested one-time start');
+  const checks = workflow.indexOf('- name: Check minimal text and image requests');
+  const find = workflow.indexOf('- name: Find ready bet');
+  assert.ok(wait >= 0 && checks > wait && find > checks);
+  assert.ok(workflow.includes("if (!result.success) throw new Error('Minimal Foundry checks failed"));
+  assert.ok(workflow.includes('fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, renderSummary(result))'));
+  const tools = workflow.split('- name: Check out diagnostic tools from the workflow revision')[1].split('- name: Wait')[0];
+  assert.ok(tools.includes("if: github.event_name == 'workflow_dispatch'"));
+  const checkStep = workflow.split('- name: Check minimal text and image requests')[1].split('- name: Find ready bet')[0];
+  assert.ok(checkStep.includes("if: github.event_name == 'workflow_dispatch' && inputs.diagnostics_first"));
+});
+
+test('diagnostics and scoring both use the NorthUS key without falling back to the old resource', () => {
+  const northusBindings = workflow.match(/FOUNDRY_API_KEY: \$\{\{ secrets\.FOUNDRY_NORTHUS_API_KEY \}\}/g);
+  assert.equal(northusBindings?.length, 2);
+  assert.ok(!workflow.includes('secrets.FOUNDRY_API_KEY'));
+  assert.ok(!workflow.includes('quvanwal-march2026-resource'));
+});
+
 test('scoring step runs with github-script bindings for baseline, reuse, and a focused delta', async (t) => {
   const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'eval-scoring-workflow-'));
   t.after(() => fs.rmSync(rootDir, { recursive: true, force: true }));
@@ -204,13 +231,15 @@ test('scoring step runs with github-script bindings for baseline, reuse, and a f
           TARGET_URL: 'https://example.com/product',
           CAPTURE_DIR: captures + capture,
           FOUNDRY_API_KEY: 'fake-test-key',
+          SCORING_MODEL: scoringModel,
+          FOUNDRY_RESPONSES_ENDPOINT: responsesEndpoint,
         },
       },
       fetch: async (url, options) => {
-        assert.equal(url, 'https://quvanwal-march2026-resource.services.ai.azure.com/openai/v1/responses');
+        assert.equal(url, 'https://quvanwal-northus-resource.services.ai.azure.com/api/projects/quvanwal-NorthUS/openai/v1/responses');
         assert.equal(options.headers['api-key'], 'fake-test-key');
         const request = JSON.parse(options.body);
-        assert.equal(request.model, 'gpt-6-astra-q');
+        assert.equal(request.model, 'gpt-6.1-sol');
         assert.equal(request.input[0].content.filter(item => item.type === 'input_image').length, expectedImages);
         return { ok: true, json: async () => ({
           output: [{ type: 'message', content: [{ type: 'output_text', text: JSON.stringify(response) }] }],
@@ -224,8 +253,8 @@ test('scoring step runs with github-script bindings for baseline, reuse, and a f
       markdown: fs.readFileSync(path.join(rootDir, 'weekly-eval-bets', filename), 'utf8'),
       record: JSON.parse(fs.readFileSync(path.join(rootDir, 'weekly-eval-bets', filename.replace(/\.md$/, '.json')), 'utf8')),
     };
-    assert.equal(published.record.model, 'gpt-6-astra-q');
-    assert.ok(published.markdown.includes('*Scoring model: gpt-6-astra-q*'));
+    assert.equal(published.record.model, 'gpt-6.1-sol');
+    assert.ok(published.markdown.includes('*Scoring model: gpt-6.1-sol*'));
     return published;
   }
 

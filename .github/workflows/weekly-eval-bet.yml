@@ -10,6 +10,19 @@ on:
         description: 'Specific issue number to evaluate (leave empty for oldest ready bet)'
         required: false
         type: string
+      diagnostics_first:
+        description: 'Require a minimal text and single-image check before scoring'
+        required: false
+        default: false
+        type: boolean
+      not_before:
+        description: 'Optional one-time UTC start time, at most 4 hours ahead (YYYY-MM-DDTHH:mm:ssZ)'
+        required: false
+        type: string
+
+env:
+  SCORING_MODEL: 'gpt-6.1-sol'
+  FOUNDRY_RESPONSES_ENDPOINT: 'https://quvanwal-northus-resource.services.ai.azure.com/api/projects/quvanwal-NorthUS/openai/v1/responses'
 
 permissions:
   contents: write
@@ -22,6 +35,7 @@ concurrency:
 jobs:
   evaluate:
     runs-on: ubuntu-latest
+    timeout-minutes: 330
     steps:
       - uses: actions/checkout@v4
         with:
@@ -31,7 +45,70 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Check out diagnostic tools from the workflow revision
+        if: github.event_name == 'workflow_dispatch' && (inputs.diagnostics_first || inputs.not_before != '')
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: .eval-diagnostics-tools
+          persist-credentials: false
+          sparse-checkout: |
+            .github/scripts/eval-diagnostics.cjs
+          sparse-checkout-cone-mode: false
+
+      - name: Wait for the requested one-time start
+        if: github.event_name == 'workflow_dispatch' && inputs.not_before != ''
+        env:
+          NOT_BEFORE: ${{ inputs.not_before }}
+        run: |
+          node <<'EOF'
+          const { waitUntil } = require('./.eval-diagnostics-tools/.github/scripts/eval-diagnostics.cjs');
+          console.log(`GitHub-hosted run waiting until ${process.env.NOT_BEFORE}. No laptop connection is needed.`);
+          waitUntil({ notBefore: process.env.NOT_BEFORE }).then(() => console.log('Requested start time reached.'));
+          EOF
+
+      - name: Check minimal text and image requests
+        if: github.event_name == 'workflow_dispatch' && inputs.diagnostics_first
+        id: diagnostics
+        env:
+          FOUNDRY_API_KEY: ${{ secrets.FOUNDRY_NORTHUS_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+        run: |
+          node <<'EOF'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const { execFileSync } = require('node:child_process');
+          const { runDiagnostics, renderSummary } = require('./.eval-diagnostics-tools/.github/scripts/eval-diagnostics.cjs');
+          const root = 'weekly-eval-bets/screenshots';
+          const imagePath = fs.readdirSync(root, { withFileTypes: true })
+            .filter(entry => entry.isDirectory())
+            .map(entry => path.join(root, entry.name, 'above-the-fold.png'))
+            .find(file => fs.existsSync(file) && fs.statSync(file).size > 0 && fs.statSync(file).size <= 1024 * 1024);
+          if (!imagePath) throw new Error('No existing screenshot under 1 MB is available for the image control.');
+          (async () => {
+            if (process.env.ISSUE_NUMBER) {
+              if (!/^\d+$/.test(process.env.ISSUE_NUMBER)) throw new Error('issue_number must be numeric.');
+              const issue = JSON.parse(execFileSync('gh', ['api', `repos/${process.env.GITHUB_REPOSITORY}/issues/${process.env.ISSUE_NUMBER}`], { encoding: 'utf8' }));
+              if (issue.state !== 'open' || !issue.labels.some(label => label.name === 'status:ready')) {
+                fs.appendFileSync(process.env.GITHUB_OUTPUT, 'skip=true\n');
+                fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, 'The requested issue is no longer ready. Diagnostics and scoring were skipped to avoid a duplicate.\n');
+                return;
+              }
+            }
+            const result = await runDiagnostics({
+              endpoint: process.env.FOUNDRY_RESPONSES_ENDPOINT,
+              model: process.env.SCORING_MODEL,
+              apiKey: process.env.FOUNDRY_API_KEY,
+              imagePath
+            });
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, renderSummary(result));
+            if (!result.success) throw new Error('Minimal Foundry checks failed; the full evaluation and queue updates were not attempted. See the run summary.');
+          })();
+          EOF
+
       - name: Find ready bet
+        if: steps.diagnostics.outputs.skip != 'true'
         id: find-bet
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -167,13 +244,13 @@ jobs:
           FILENAME: ${{ steps.find-bet.outputs.filename }}
           TARGET_URL: ${{ steps.fetch-page.outputs.url }}
           CAPTURE_DIR: weekly-eval-bets/screenshots/${{ steps.find-bet.outputs.capture_id }}
-          FOUNDRY_API_KEY: ${{ secrets.FOUNDRY_API_KEY }}
+          FOUNDRY_API_KEY: ${{ secrets.FOUNDRY_NORTHUS_API_KEY }}
         with:
           script: |
             const fs = require('fs');
             const path = require('path');
             const { prepareEvaluation, buildEvaluation } = require(path.resolve('.github/scripts/eval-scoring.cjs'));
-            const scoringModel = 'gpt-6-astra-q';
+            const scoringModel = process.env.SCORING_MODEL;
 
             const issueJson = JSON.parse(fs.readFileSync('/tmp/issue.json', 'utf8'));
             const rubric = fs.readFileSync('skills/first-impression-craft-rubric.md', 'utf8');
@@ -199,7 +276,7 @@ jobs:
 
             // Call Azure AI Foundry Responses API
             for (let attempt = 1; attempt <= retryDelaysSeconds.length + 1; attempt += 1) {
-              response = await fetch('https://quvanwal-march2026-resource.services.ai.azure.com/openai/v1/responses', {
+              response = await fetch(process.env.FOUNDRY_RESPONSES_ENDPOINT, {
                 method: 'POST',
                 headers: {
                   'api-key': process.env.FOUNDRY_API_KEY,

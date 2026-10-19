@@ -34,7 +34,7 @@ The early-morning slot aims to reduce exposure to peak model demand, not guarant
 
 4. **Choose the craft scope** -- Match the target URL, rendering settings, rubric version, and captured evidence against prior machine-readable evaluation records. Choose a new baseline, an existing baseline reference, or a changed-evidence comparison as described below.
 
-5. **Auto-score with gpt-6-astra-q through Azure AI Foundry** -- Use the existing Foundry resource, Responses API endpoint, and API-key secret. Send the named lens, bet details, rubric, captured text/HTML, and screenshots. For changed evidence, also send the baseline evidence. The model returns structured scores and a narrative. Validate dimensions and score ranges, calculate totals, and render the report in code. Invalid output fails the run; it does not publish missing scores as `?`. New reports record the model used; historical scores and model attribution remain unchanged.
+5. **Auto-score with gpt-6.1-sol through Azure AI Foundry** -- Use the `quvanwal-NorthUS` project on `quvanwal-northus-resource`. Both diagnostics and scoring call the configured project Responses API endpoint and read the `FOUNDRY_NORTHUS_API_KEY` GitHub secret. There is no fallback to the previous resource or key. Send the named lens, bet details, rubric, captured text/HTML, and screenshots. For changed evidence, also send the baseline evidence. The model returns structured scores and a narrative. Validate dimensions and score ranges, calculate totals, and render the report in code. Invalid output fails the run; it does not publish missing scores as `?`. New reports record the model used; historical scores and model attribution remain unchanged.
 
 6. **Build a scoped human review** -- Include the named lens dimensions. Include all six craft dimensions only when establishing a baseline; show only reassessed dimensions for a change review; otherwise link the baseline without requesting another craft score. Keep role-specific audience validation separate from design-lead review.
 
@@ -77,6 +77,10 @@ A separate workflow (`friday-eval-review.yml`) runs every Friday. It gathers eve
 ### Manual trigger
 
 The workflow can be triggered manually from the Actions tab with an optional `issue_number` input to evaluate a specific bet out of order.
+
+For a hosted diagnostic run, enable `diagnostics_first`. The workflow sends one minimal text request, then one existing screenshot under 1 MB. Only completed, usable responses from both controls allow the normal evaluation to proceed. Failures appear in the Actions run summary and stop before any scoring or queue updates.
+
+The optional `not_before` field delays a single manual run until an explicit UTC timestamp such as `2026-10-16T05:00:00Z` (October 15 at 10 p.m. Pacific). It accepts at most four hours of waiting and rejects stale timestamps. The wait happens on a GitHub-hosted runner, not your laptop, and does not add a recurring schedule. The run uses hosted runner time during the wait, and GitHub may delay its initial start. Manual diagnostics use the tools from the dispatched workflow revision, including when testing an unmerged PR branch. Model and endpoint settings are shared with the full scorer.
 
 ## Screenshots captured per evaluation
 
