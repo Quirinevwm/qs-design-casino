@@ -20,6 +20,11 @@ on:
         required: false
         default: false
         type: boolean
+      test_connection:
+        description: 'Use dedicated test endpoint and key, allowed only with dry_run'
+        required: false
+        default: false
+        type: boolean
       test_model:
         description: 'Optional Azure deployment name, allowed only with dry_run'
         required: false
@@ -32,8 +37,8 @@ on:
 env:
   SCORING_MODEL: 'gpt-6.1-sol'
   DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'true' || 'false' }}
+  TEST_CONNECTION: ${{ github.event_name == 'workflow_dispatch' && inputs.test_connection && 'true' || 'false' }}
   TEST_MODEL: ${{ github.event_name == 'workflow_dispatch' && inputs.test_model || '' }}
-  FOUNDRY_RESPONSES_ENDPOINT: ${{ secrets.FOUNDRY_RESPONSES_ENDPOINT }}
 
 permissions:
   contents: write
@@ -57,13 +62,34 @@ jobs:
           node-version: '22'
 
       - name: Validate scoring inputs
+        env:
+          FOUNDRY_RESPONSES_ENDPOINT: ${{ secrets[github.event_name == 'workflow_dispatch' && inputs.dry_run && inputs.test_connection && 'FOUNDRY_TEST_RESPONSES_ENDPOINT' || 'FOUNDRY_RESPONSES_ENDPOINT'] }}
+          FOUNDRY_API_KEY: ${{ secrets[github.event_name == 'workflow_dispatch' && inputs.dry_run && inputs.test_connection && 'FOUNDRY_TEST_API_KEY' || 'FOUNDRY_SCORING_API_KEY'] }}
         run: |
           node <<'EOF'
+          const testConnection = process.env.TEST_CONNECTION === 'true';
+          if (testConnection && process.env.DRY_RUN !== 'true') {
+            throw new Error('test_connection is allowed only with dry_run=true.');
+          }
           if (process.env.TEST_MODEL && process.env.DRY_RUN !== 'true') {
             throw new Error('test_model is allowed only with dry_run=true.');
           }
           if (process.env.TEST_MODEL && !/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(process.env.TEST_MODEL)) {
             throw new Error('test_model must be an Azure deployment name, not a URL or expression.');
+          }
+          const endpointSecret = testConnection ? 'FOUNDRY_TEST_RESPONSES_ENDPOINT' : 'FOUNDRY_RESPONSES_ENDPOINT';
+          const keySecret = testConnection ? 'FOUNDRY_TEST_API_KEY' : 'FOUNDRY_SCORING_API_KEY';
+          for (const [name, value] of [
+            [endpointSecret, process.env.FOUNDRY_RESPONSES_ENDPOINT],
+            [keySecret, process.env.FOUNDRY_API_KEY]
+          ]) {
+            if (!value?.trim()) throw new Error(`Missing ${testConnection ? 'test ' : ''}secret: ${name}.`);
+          }
+          try {
+            const endpoint = new URL(process.env.FOUNDRY_RESPONSES_ENDPOINT);
+            if (endpoint.protocol !== 'https:' || endpoint.username || endpoint.password) throw new Error();
+          } catch {
+            throw new Error(`${endpointSecret} must be a valid HTTPS URL without credentials.`);
           }
           EOF
 
@@ -94,7 +120,8 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && inputs.diagnostics_first
         id: diagnostics
         env:
-          FOUNDRY_API_KEY: ${{ secrets.FOUNDRY_SCORING_API_KEY }}
+          FOUNDRY_RESPONSES_ENDPOINT: ${{ secrets[github.event_name == 'workflow_dispatch' && inputs.dry_run && inputs.test_connection && 'FOUNDRY_TEST_RESPONSES_ENDPOINT' || 'FOUNDRY_RESPONSES_ENDPOINT'] }}
+          FOUNDRY_API_KEY: ${{ secrets[github.event_name == 'workflow_dispatch' && inputs.dry_run && inputs.test_connection && 'FOUNDRY_TEST_API_KEY' || 'FOUNDRY_SCORING_API_KEY'] }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ inputs.issue_number }}
         run: |
@@ -282,7 +309,8 @@ jobs:
           FILENAME: ${{ steps.find-bet.outputs.filename }}
           TARGET_URL: ${{ steps.fetch-page.outputs.url }}
           CAPTURE_DIR: weekly-eval-bets/screenshots/${{ steps.find-bet.outputs.capture_id }}
-          FOUNDRY_API_KEY: ${{ secrets.FOUNDRY_SCORING_API_KEY }}
+          FOUNDRY_RESPONSES_ENDPOINT: ${{ secrets[github.event_name == 'workflow_dispatch' && inputs.dry_run && inputs.test_connection && 'FOUNDRY_TEST_RESPONSES_ENDPOINT' || 'FOUNDRY_RESPONSES_ENDPOINT'] }}
+          FOUNDRY_API_KEY: ${{ secrets[github.event_name == 'workflow_dispatch' && inputs.dry_run && inputs.test_connection && 'FOUNDRY_TEST_API_KEY' || 'FOUNDRY_SCORING_API_KEY'] }}
         with:
           script: |
             const fs = require('fs');

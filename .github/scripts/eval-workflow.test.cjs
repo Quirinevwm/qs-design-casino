@@ -7,6 +7,14 @@ const { test } = require('node:test');
 const workflow = fs.readFileSync(path.join(__dirname, '../workflows/weekly-eval-bet.yml'), 'utf8');
 const scoringModel = workflow.match(/^  SCORING_MODEL: '([^']+)'/m)?.[1];
 const responsesEndpoint = 'https://scoring.example/api/projects/test/openai/v1/responses';
+const testResponsesEndpoint = 'https://test-scoring.example/openai/v1/responses';
+const connectionSecrets = {
+  FOUNDRY_RESPONSES_ENDPOINT: responsesEndpoint,
+  FOUNDRY_SCORING_API_KEY: 'fake-test-key',
+  FOUNDRY_TEST_RESPONSES_ENDPOINT: testResponsesEndpoint,
+  FOUNDRY_TEST_API_KEY: 'fake-dedicated-test-key',
+};
+const connectionSteps = ['Validate scoring inputs', 'Check minimal text and image requests', 'Auto-score with Copilot'];
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
 const dimensions = ['Visual hierarchy', 'Information density', 'Readability', 'Coherence', 'Durability', 'Intentionality'];
 const emptyPrimary = { items: [], inconclusive: false, noteMarkdown: '' };
@@ -20,6 +28,26 @@ function stepSource(name) {
   const step = workflow.split(`- name: ${name}\n`)[1]?.split('\n      - name:')[0];
   assert.ok(step, `Missing workflow step: ${name}`);
   return step;
+}
+
+function selectedEnvironment(stepName, { eventName = 'workflow_dispatch', inputs = {}, secrets = connectionSecrets } = {}) {
+  // These bindings use shared JS/Actions operators. Unset Actions context properties resolve to ''.
+  const context = (values) => new Proxy(values, { get: (object, key) => object[key] ?? '' });
+  const bindings = { github: { event_name: eventName }, inputs: context(inputs), secrets: context(secrets) };
+  const globalEnv = workflow.split('\nenv:\n')[1].split('\npermissions:')[0];
+  const env = {};
+  for (const source of [globalEnv, stepSource(stepName)]) {
+    for (const [, name, expression] of source.matchAll(/^\s+([A-Z_]+): \$\{\{ (.*) \}\}$/gm)) {
+      if (['DRY_RUN', 'TEST_MODEL', 'TEST_CONNECTION', 'FOUNDRY_RESPONSES_ENDPOINT', 'FOUNDRY_API_KEY'].includes(name)) {
+        env[name] = vm.runInNewContext(expression, bindings);
+      }
+    }
+  }
+  return { SCORING_MODEL: scoringModel, ...env };
+}
+
+function validateScoringInputs(env) {
+  return vm.runInNewContext(embeddedNode('Validate scoring inputs'), { process: { env }, URL });
 }
 
 test('report template matches the configured scoring model and pending-review status', () => {
@@ -176,7 +204,7 @@ test('workflow keeps immutable report and capture paths and commits the sidecar'
 
 test('one-time diagnostics wait on GitHub and gate scoring without changing the regular schedule', () => {
   assert.equal(scoringModel, 'gpt-6.1-sol');
-  assert.ok(workflow.includes('FOUNDRY_RESPONSES_ENDPOINT: ${{ secrets.FOUNDRY_RESPONSES_ENDPOINT }}'));
+  assert.equal(selectedEnvironment('Check minimal text and image requests', { eventName: 'schedule' }).FOUNDRY_RESPONSES_ENDPOINT, responsesEndpoint);
   assert.ok(workflow.includes('timeout-minutes: 330'));
   assert.ok(workflow.includes('ref: ${{ github.sha }}'));
   assert.ok(workflow.includes('path: .eval-diagnostics-tools'));
@@ -193,9 +221,17 @@ test('one-time diagnostics wait on GitHub and gate scoring without changing the 
 });
 
 test('diagnostics and scoring use secret-backed configuration without public service identifiers', () => {
-  const keyBindings = workflow.match(/FOUNDRY_API_KEY: \$\{\{ secrets\.FOUNDRY_SCORING_API_KEY \}\}/g);
-  assert.equal(keyBindings?.length, 2);
-  assert.ok(workflow.includes('FOUNDRY_RESPONSES_ENDPOINT: ${{ secrets.FOUNDRY_RESPONSES_ENDPOINT }}'));
+  const condition = "github.event_name == 'workflow_dispatch' && inputs.dry_run && inputs.test_connection";
+  const endpointBinding = `FOUNDRY_RESPONSES_ENDPOINT: \${{ secrets[${condition} && 'FOUNDRY_TEST_RESPONSES_ENDPOINT' || 'FOUNDRY_RESPONSES_ENDPOINT'] }}`;
+  const keyBinding = `FOUNDRY_API_KEY: \${{ secrets[${condition} && 'FOUNDRY_TEST_API_KEY' || 'FOUNDRY_SCORING_API_KEY'] }}`;
+  for (const name of connectionSteps) {
+    assert.ok(stepSource(name).includes(endpointBinding), `${name} must select the endpoint secret name before dereferencing`);
+    assert.ok(stepSource(name).includes(keyBinding), `${name} must select the key secret name before dereferencing`);
+  }
+  assert.equal(workflow.split(endpointBinding).length - 1, connectionSteps.length);
+  assert.equal(workflow.split(keyBinding).length - 1, connectionSteps.length);
+  assert.doesNotMatch(workflow.split('\nenv:\n')[1].split('\npermissions:')[0], /FOUNDRY_/);
+  assert.doesNotMatch(embeddedNode('Validate scoring inputs'), /GITHUB_ENV|GITHUB_OUTPUT|console\./);
   assert.ok(!workflow.includes('secrets.FOUNDRY_API_KEY'));
   assert.ok(!workflow.includes('.services.ai.azure.com'));
 });
@@ -218,7 +254,8 @@ function scoringFixture(t) {
 
   async function score({
     filename = 'candidate-test.md', capture = 'original', title = 'Product first-impression craft',
-    response = baselineResponse, expectedImages = 4, dryRun = false, testModel = '',
+    response = baselineResponse, expectedImages = 4, dryRun = false, testModel = '', testConnection = false,
+    eventName = 'workflow_dispatch', secrets = connectionSecrets,
     replies, fetchImpl, timeoutMs,
   } = {}) {
     const outputs = {};
@@ -226,10 +263,16 @@ function scoringFixture(t) {
     const waits = [];
     const requests = [];
     const writes = [];
-    const expectedModel = testModel || scoringModel;
+    const inputs = { dry_run: dryRun, test_model: testModel, test_connection: testConnection };
+    const env = selectedEnvironment('Auto-score with Copilot', { eventName, inputs, secrets });
+    validateScoringInputs(selectedEnvironment('Validate scoring inputs', { eventName, inputs, secrets }));
+    const useTestConnection = eventName === 'workflow_dispatch' && dryRun && testConnection;
+    const expectedEndpoint = useTestConnection ? testResponsesEndpoint : responsesEndpoint;
+    const expectedKey = useTestConnection ? 'fake-dedicated-test-key' : 'fake-test-key';
+    const expectedModel = eventName === 'workflow_dispatch' && testModel || scoringModel;
     const mockFetch = async (url, options) => {
-      assert.equal(url, responsesEndpoint);
-      assert.equal(options.headers['api-key'], 'fake-test-key');
+      assert.equal(url, expectedEndpoint);
+      assert.equal(options.headers['api-key'], expectedKey);
       const request = JSON.parse(options.body);
       requests.push(request);
       assert.equal(request.model, expectedModel);
@@ -296,13 +339,9 @@ function scoringFixture(t) {
           FILENAME: filename,
           TARGET_URL: 'https://example.com/product',
           CAPTURE_DIR: captures + capture,
-          FOUNDRY_API_KEY: 'fake-test-key',
-          SCORING_MODEL: scoringModel,
-          TEST_MODEL: testModel,
-          DRY_RUN: dryRun ? 'true' : 'false',
+          ...env,
           RUNNER_TEMP: runnerDir,
           GITHUB_STEP_SUMMARY: path.join(runnerDir, 'summary'),
-          FOUNDRY_RESPONSES_ENDPOINT: responsesEndpoint,
         },
       },
       fetch: mockFetch,
@@ -389,33 +428,120 @@ test('scoring step runs with github-script bindings for baseline, reuse, and a f
 
 test('manual dry-run inputs are explicit booleans and reject a publishing override before any requests', () => {
   assert.match(workflow, /dry_run:\n(?:.*\n)*?        default: false\n        type: boolean/);
+  assert.match(workflow, /test_connection:\n(?:.*\n)*?        default: false\n        type: boolean/);
   assert.match(workflow, /test_model:\n(?:.*\n)*?        type: string/);
-  const environment = (name, github, inputs) => {
-    const expression = workflow.match(new RegExp(`^  ${name}: \\$\\{\\{ (.*) \\}\\}$`, 'm'))?.[1];
-    assert.ok(expression);
-    return new Function('github', 'inputs', `return ${expression}`)(github, inputs);
-  };
   for (const [event, dryRun, model, expectedDryRun, expectedModel] of [
-    ['schedule', true, 'gpt-5-mini', 'false', ''],
+    ['schedule', true, 'gpt-5.6-sol', 'false', ''],
     ['workflow_dispatch', undefined, undefined, 'false', ''],
     ['workflow_dispatch', false, '', 'false', ''],
     ['workflow_dispatch', true, '', 'true', ''],
-    ['workflow_dispatch', true, 'gpt-5-mini', 'true', 'gpt-5-mini'],
+    ['workflow_dispatch', true, 'gpt-5.6-sol', 'true', 'gpt-5.6-sol'],
   ]) {
-    const github = { event_name: event };
     const inputs = { dry_run: dryRun, test_model: model };
-    assert.equal(environment('DRY_RUN', github, inputs), expectedDryRun);
-    assert.equal(environment('TEST_MODEL', github, inputs), expectedModel);
+    const env = selectedEnvironment('Validate scoring inputs', { eventName: event, inputs });
+    assert.equal(env.DRY_RUN, expectedDryRun);
+    assert.equal(env.TEST_MODEL, expectedModel);
   }
-  const validate = (DRY_RUN, TEST_MODEL) => vm.runInNewContext(embeddedNode('Validate scoring inputs'), { process: { env: { DRY_RUN, TEST_MODEL } } });
-  assert.throws(() => validate('false', 'gpt-5-mini'), /only with dry_run/);
+  const validate = (DRY_RUN, TEST_MODEL, TEST_CONNECTION = 'false') => validateScoringInputs({
+    ...selectedEnvironment('Validate scoring inputs'), DRY_RUN, TEST_MODEL, TEST_CONNECTION,
+  });
+  assert.throws(() => validate('false', 'gpt-5.6-sol'), /test_model is allowed only with dry_run=true/);
+  assert.throws(() => validate('false', '', 'true'), /test_connection is allowed only with dry_run=true/);
+  assert.throws(() => validate('false', 'gpt-5.6-sol', 'true'), /test_connection is allowed only with dry_run=true/);
   assert.throws(() => validate('true', 'https://example.com'), /deployment name/);
   assert.throws(() => validate('true', '$(echo unsafe)'), /deployment name/);
-  validate('true', 'gpt-5-mini');
+  validate('true', 'gpt-5.6-sol');
   validate('true', '');
   validate('false', '');
   assert.ok(workflow.indexOf('- name: Validate scoring inputs') < workflow.indexOf('- name: Check minimal text and image requests'));
+  assert.ok(workflow.indexOf('- name: Validate scoring inputs') < workflow.indexOf('- name: Auto-score with Copilot'));
   assert.ok(!workflow.includes('${{ inputs.test_model }}'), 'Model input must not be interpolated into shell or JavaScript source');
+  assert.ok(!workflow.includes('${{ inputs.test_connection }}'), 'Connection input must not be interpolated into shell or JavaScript source');
+});
+
+test('connection expressions select test secret names only for an explicitly opted-in manual dry run', () => {
+  for (const eventName of ['schedule', 'push', 'workflow_dispatch']) {
+    for (const dryRun of [undefined, false, true]) {
+      for (const testConnection of [undefined, false, true]) {
+        for (const testModel of ['', 'gpt-5.6-sol']) {
+          const inputs = { dry_run: dryRun, test_connection: testConnection, test_model: testModel };
+          const manual = eventName === 'workflow_dispatch';
+          const selectedTest = manual && dryRun && testConnection;
+          const environments = connectionSteps.map(step => selectedEnvironment(step, { eventName, inputs }));
+          for (const env of environments) {
+            assert.equal(env.DRY_RUN, manual && dryRun ? 'true' : 'false');
+            assert.equal(env.TEST_CONNECTION, manual && testConnection ? 'true' : 'false');
+            assert.equal(env.TEST_MODEL, manual ? testModel : '');
+            assert.equal(env.FOUNDRY_RESPONSES_ENDPOINT, selectedTest ? testResponsesEndpoint : responsesEndpoint);
+            assert.equal(env.FOUNDRY_API_KEY, selectedTest ? 'fake-dedicated-test-key' : 'fake-test-key');
+          }
+          assert.deepEqual(environments[0], environments[1]);
+          assert.deepEqual(environments[1], environments[2]);
+          if (manual && !dryRun && (testConnection || testModel)) {
+            assert.throws(() => validateScoringInputs(environments[0]), /only with dry_run=true/);
+          } else {
+            validateScoringInputs(environments[0]);
+          }
+        }
+      }
+    }
+  }
+});
+
+test('default connections do not require test secrets and selected tests do not require production secrets', () => {
+  for (const [inputs, secrets] of [
+    [{ dry_run: true }, { FOUNDRY_RESPONSES_ENDPOINT: responsesEndpoint, FOUNDRY_SCORING_API_KEY: 'fake-test-key' }],
+    [{ dry_run: true, test_connection: true }, { FOUNDRY_TEST_RESPONSES_ENDPOINT: testResponsesEndpoint, FOUNDRY_TEST_API_KEY: 'fake-dedicated-test-key' }],
+  ]) {
+    for (const step of connectionSteps) {
+      const env = selectedEnvironment(step, { inputs, secrets });
+      validateScoringInputs(env);
+      assert.ok(env.FOUNDRY_RESPONSES_ENDPOINT);
+      assert.ok(env.FOUNDRY_API_KEY);
+    }
+  }
+});
+
+test('missing selected test secrets never fall back to populated production secrets', () => {
+  for (const name of ['FOUNDRY_TEST_RESPONSES_ENDPOINT', 'FOUNDRY_TEST_API_KEY']) {
+    for (const value of [undefined, '', '   ']) {
+      const secrets = { ...connectionSecrets, [name]: value };
+      const inputs = { dry_run: true, test_connection: true, test_model: 'gpt-5.6-sol' };
+      for (const step of connectionSteps) {
+        const env = selectedEnvironment(step, { inputs, secrets });
+        const binding = name.endsWith('ENDPOINT') ? 'FOUNDRY_RESPONSES_ENDPOINT' : 'FOUNDRY_API_KEY';
+        assert.equal(env[binding], value ?? '');
+        assert.throws(() => validateScoringInputs(env), { message: `Missing test secret: ${name}.` });
+      }
+    }
+  }
+});
+
+test('selected endpoint validation requires HTTPS without exposing the endpoint or credentials', () => {
+  for (const testConnection of [false, true]) {
+    const name = testConnection ? 'FOUNDRY_TEST_RESPONSES_ENDPOINT' : 'FOUNDRY_RESPONSES_ENDPOINT';
+    for (const endpoint of ['invalid-private-value', 'http://example.com/responses', 'https://private-user:private-key@example.com/responses']) {
+      const env = selectedEnvironment('Validate scoring inputs', {
+        inputs: { dry_run: true, test_connection: testConnection },
+        secrets: { ...connectionSecrets, [name]: endpoint },
+      });
+      assert.throws(() => validateScoringInputs(env), { message: `${name} must be a valid HTTPS URL without credentials.` });
+    }
+  }
+});
+
+test('invalid connection selection and missing test secrets stop full scoring before any fetch', async (t) => {
+  const { score } = scoringFixture(t);
+  let calls = 0;
+  const fetchImpl = async () => { calls += 1; };
+  await assert.rejects(score({ testConnection: true, fetchImpl }), /test_connection is allowed only with dry_run=true/);
+  for (const name of ['FOUNDRY_TEST_RESPONSES_ENDPOINT', 'FOUNDRY_TEST_API_KEY']) {
+    await assert.rejects(score({
+      dryRun: true, testConnection: true, testModel: 'gpt-5.6-sol', fetchImpl,
+      secrets: { ...connectionSecrets, [name]: '' },
+    }), { message: `Missing test secret: ${name}.` });
+  }
+  assert.equal(calls, 0);
 });
 
 test('dry runs never publish, always retain attempted diagnostics, and load helpers from the feature revision', () => {
@@ -471,11 +597,28 @@ test('full dry-run scoring sends the selected deployment, all images and rubric,
 });
 
 test('an empty override dry run uses the production deployment without publishing', async (t) => {
-  const result = await scoringFixture(t).score({ dryRun: true });
-  assert.equal(result.requests[0].model, scoringModel);
-  assert.equal(result.record.model, scoringModel);
-  assert.equal(result.metadata.attempts[0].requested_model, scoringModel);
-  assert.equal(result.outputs.evaluation, 'complete');
+  for (const testConnection of [false, true]) {
+    const result = await scoringFixture(t).score({ dryRun: true, testConnection });
+    assert.equal(result.requests[0].model, scoringModel);
+    assert.equal(result.record.model, scoringModel);
+    assert.equal(result.metadata.attempts[0].requested_model, scoringModel);
+    assert.equal(result.outputs.evaluation, 'complete');
+  }
+});
+
+test('gpt-5.6-sol connection experiments preserve the original full image payload and output budget', async (t) => {
+  const results = [];
+  for (const testConnection of [false, true]) {
+    const result = await scoringFixture(t).score({ dryRun: true, testConnection, testModel: 'gpt-5.6-sol' });
+    assert.equal(result.outputs.evaluation, 'complete');
+    assert.deepEqual(result.failures, []);
+    assert.equal(result.record.model, 'gpt-5.6-sol');
+    assert.equal(result.metadata.attempts[0].image_count, 4);
+    assert.deepEqual(Object.keys(result.requests[0]).sort(), ['input', 'model']);
+    assert.doesNotMatch(result.summary + JSON.stringify(result.metadata), /scoring\.example|fake-test-key|fake-dedicated-test-key|data:image/);
+    results.push(result);
+  }
+  assert.deepEqual(results[0].requests, results[1].requests, 'Changing connections must not change the scoring schema, prompt, evidence, or output budget');
 });
 
 test('429 retries retain sanitized failure metadata and fail without a green fallback', async (t) => {
@@ -613,55 +756,81 @@ test('dry-run request and response body timeouts fail clearly, retain metadata a
   assert.equal(result.outputs.evaluation, 'complete');
 });
 
+function minimalDiagnosticsFixture(t, {
+  status = 200, dryRun = true, testConnection = false, testModel = 'gpt-5.6-sol',
+  secrets = connectionSecrets, fetchImpl,
+} = {}) {
+  const inputs = { dry_run: dryRun, test_connection: testConnection, test_model: testModel };
+  validateScoringInputs(selectedEnvironment('Validate scoring inputs', { inputs, secrets }));
+  const env = selectedEnvironment('Check minimal text and image requests', { inputs, secrets });
+  const { rootDir, runnerDir } = scoringFixture(t);
+  const imagePath = path.join(rootDir, 'weekly-eval-bets/screenshots/original/above-the-fold.png');
+  fs.writeFileSync(imagePath, Buffer.from('89504e470d0a1a0a', 'hex'));
+  const calls = [];
+  const summaryPath = path.join(runnerDir, 'summary');
+  const mockFetch = async (url, options) => {
+    assert.equal(url, testConnection ? testResponsesEndpoint : responsesEndpoint);
+    assert.equal(options.headers['api-key'], testConnection ? 'fake-dedicated-test-key' : 'fake-test-key');
+    calls.push(JSON.parse(options.body));
+    if (fetchImpl) return fetchImpl(url, options);
+    return {
+      ok: status === 200, status, headers: { get: () => null },
+      text: async () => JSON.stringify(status === 200
+        ? { status: 'completed', output: [{ type: 'message', content: [{ type: 'output_text', text: 'OK' }] }] }
+        : { error: { message: `${env.FOUNDRY_RESPONSES_ENDPOINT} ${env.FOUNDRY_API_KEY}` } }),
+    };
+  };
+  const run = vm.runInNewContext(embeddedNode('Check minimal text and image requests'), {
+    require(name) {
+      if (name === 'node:fs') return {
+        ...fs,
+        readdirSync: (dir, options) => fs.readdirSync(path.join(rootDir, dir), options),
+        existsSync: (file) => fs.existsSync(path.resolve(rootDir, file)),
+        statSync: (file) => fs.statSync(path.resolve(rootDir, file)),
+      };
+      if (name === 'node:path') return { ...path, join: (...parts) => parts[0] === 'weekly-eval-bets/screenshots' ? path.join(rootDir, ...parts) : path.join(...parts) };
+      if (name === 'node:child_process') return { execFileSync: () => JSON.stringify({ state: 'open', labels: [{ name: 'status:ready' }] }) };
+      if (name.endsWith('eval-diagnostics.cjs')) return {
+        ...require('./eval-diagnostics.cjs'),
+        runDiagnostics: (options) => require('./eval-diagnostics.cjs').runDiagnostics({ fetchImpl: mockFetch, ...options }),
+      };
+      if (name.endsWith('eval-dry-run.cjs')) return {
+        createDryRunRecorder: (options) => require('./eval-dry-run.cjs').createDryRunRecorder({ ...options, fetchImpl: mockFetch }),
+      };
+      throw new Error(`Unexpected dependency: ${name}`);
+    },
+    process: { env: {
+      ...env,
+      RUNNER_TEMP: runnerDir, GITHUB_STEP_SUMMARY: summaryPath, ISSUE_NUMBER: '54',
+    } },
+  });
+  return { run, calls, runnerDir, summaryPath };
+}
+
 test('minimal dry-run diagnostics use the same deployment and retain failures without leaking service messages', async (t) => {
-  for (const status of [200, 429]) {
-    const { rootDir, runnerDir } = scoringFixture(t);
-    const imagePath = path.join(rootDir, 'weekly-eval-bets/screenshots/original/above-the-fold.png');
-    fs.writeFileSync(imagePath, Buffer.from('89504e470d0a1a0a', 'hex'));
-    const calls = [];
-    const summaryPath = path.join(runnerDir, 'summary');
-    const run = vm.runInNewContext(embeddedNode('Check minimal text and image requests'), {
-      require(name) {
-        if (name === 'node:fs') return {
-          ...fs,
-          readdirSync: (dir, options) => fs.readdirSync(path.join(rootDir, dir), options),
-          existsSync: (file) => fs.existsSync(path.resolve(rootDir, file)),
-          statSync: (file) => fs.statSync(path.resolve(rootDir, file)),
-        };
-        if (name === 'node:path') return { ...path, join: (...parts) => parts[0] === 'weekly-eval-bets/screenshots' ? path.join(rootDir, ...parts) : path.join(...parts) };
-        if (name === 'node:child_process') return { execFileSync: () => JSON.stringify({ state: 'open', labels: [{ name: 'status:ready' }] }) };
-        if (name.endsWith('eval-diagnostics.cjs')) return require('./eval-diagnostics.cjs');
-        if (name.endsWith('eval-dry-run.cjs')) return {
-          createDryRunRecorder: (options) => require('./eval-dry-run.cjs').createDryRunRecorder({
-            ...options,
-            fetchImpl: async (_url, options) => {
-              calls.push(JSON.parse(options.body));
-              return {
-                ok: status === 200, status, headers: { get: () => null },
-                text: async () => JSON.stringify(status === 200
-                  ? { status: 'completed', output: [{ type: 'message', content: [{ type: 'output_text', text: 'OK' }] }] }
-                  : { error: { message: `${responsesEndpoint} fake-test-key` } }),
-              };
-            },
-          }),
-        };
-        throw new Error(`Unexpected dependency: ${name}`);
-      },
-      process: { env: {
-        DRY_RUN: 'true', TEST_MODEL: 'gpt-5-mini', SCORING_MODEL: scoringModel,
-        RUNNER_TEMP: runnerDir, GITHUB_STEP_SUMMARY: summaryPath, ISSUE_NUMBER: '54',
-        FOUNDRY_RESPONSES_ENDPOINT: responsesEndpoint, FOUNDRY_API_KEY: 'fake-test-key',
-      } },
-    });
+  for (const [testConnection, status] of [[false, 200], [false, 429], [true, 200], [true, 429]]) {
+    const { run, calls, runnerDir, summaryPath } = minimalDiagnosticsFixture(t, { testConnection, status });
     if (status === 200) await run;
     else await assert.rejects(run, /Minimal Foundry checks failed/);
     assert.equal(calls.length, status === 200 ? 2 : 1);
-    assert.ok(calls.every(call => call.model === 'gpt-5-mini'));
+    assert.ok(calls.every(call => call.model === 'gpt-5.6-sol'));
     assert.equal(calls[0].input, 'Reply with OK');
     if (status === 200) assert.equal(calls[1].input[0].content.filter(item => item.type === 'input_image').length, 1);
     const metadata = JSON.parse(fs.readFileSync(path.join(runnerDir, 'eval-dry-run/diagnostics.json'), 'utf8'));
     assert.equal(metadata.outcome, status === 200 ? 'completed' : 'failed');
     assert.equal(metadata.attempts[0].http_status, status);
-    assert.doesNotMatch(fs.readFileSync(summaryPath, 'utf8'), /scoring\.example|fake-test-key/);
+    assert.doesNotMatch(fs.readFileSync(summaryPath, 'utf8') + JSON.stringify(metadata), /scoring\.example|fake-test-key|fake-dedicated-test-key/);
   }
+});
+
+test('invalid connection selection and missing test secrets stop minimal diagnostics before any fetch', (t) => {
+  let calls = 0;
+  const fetchImpl = async () => { calls += 1; };
+  assert.throws(() => minimalDiagnosticsFixture(t, { dryRun: false, testConnection: true, fetchImpl }), /test_connection is allowed only with dry_run=true/);
+  for (const name of ['FOUNDRY_TEST_RESPONSES_ENDPOINT', 'FOUNDRY_TEST_API_KEY']) {
+    assert.throws(() => minimalDiagnosticsFixture(t, {
+      testConnection: true, secrets: { ...connectionSecrets, [name]: '' }, fetchImpl,
+    }), { message: `Missing test secret: ${name}.` });
+  }
+  assert.equal(calls, 0);
 });
