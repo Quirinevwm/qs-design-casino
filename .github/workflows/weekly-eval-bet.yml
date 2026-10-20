@@ -29,6 +29,11 @@ on:
         description: 'Optional Azure deployment name, allowed only with dry_run'
         required: false
         type: string
+      test_max_output_tokens:
+        description: 'Dry-run output budget including reasoning (512-32768, 0 keeps deployment default)'
+        required: false
+        default: 0
+        type: number
       not_before:
         description: 'Optional one-time UTC start time, at most 4 hours ahead (YYYY-MM-DDTHH:mm:ssZ)'
         required: false
@@ -39,6 +44,7 @@ env:
   DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'true' || 'false' }}
   TEST_CONNECTION: ${{ github.event_name == 'workflow_dispatch' && inputs.test_connection && 'true' || 'false' }}
   TEST_MODEL: ${{ github.event_name == 'workflow_dispatch' && inputs.test_model || '' }}
+  TEST_MAX_OUTPUT_TOKENS: ${{ github.event_name == 'workflow_dispatch' && inputs.test_max_output_tokens || 0 }}
 
 permissions:
   contents: write
@@ -76,6 +82,14 @@ jobs:
           }
           if (process.env.TEST_MODEL && !/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(process.env.TEST_MODEL)) {
             throw new Error('test_model must be an Azure deployment name, not a URL or expression.');
+          }
+          const outputBudget = String(process.env.TEST_MAX_OUTPUT_TOKENS ?? '0');
+          if (!/^\d+$/.test(outputBudget) || !Number.isSafeInteger(Number(outputBudget))
+            || (Number(outputBudget) !== 0 && (Number(outputBudget) < 512 || Number(outputBudget) > 32768))) {
+            throw new Error('test_max_output_tokens must be 0 or an integer from 512 to 32768.');
+          }
+          if (Number(outputBudget) !== 0 && process.env.DRY_RUN !== 'true') {
+            throw new Error('test_max_output_tokens is allowed only with dry_run=true.');
           }
           const endpointSecret = testConnection ? 'FOUNDRY_TEST_RESPONSES_ENDPOINT' : 'FOUNDRY_RESPONSES_ENDPOINT';
           const keySecret = testConnection ? 'FOUNDRY_TEST_API_KEY' : 'FOUNDRY_SCORING_API_KEY';
@@ -322,8 +336,11 @@ jobs:
             const { prepareEvaluation, buildEvaluation } = require(path.resolve('.github/scripts/eval-scoring.cjs'));
             const scoringModel = process.env.TEST_MODEL || process.env.SCORING_MODEL;
             const dryRun = process.env.DRY_RUN === 'true';
+            const dryRunTools = dryRun
+              ? require(path.resolve('.eval-diagnostics-tools/.github/scripts/eval-dry-run.cjs'))
+              : null;
             const recorder = dryRun
-              ? require(path.resolve('.eval-diagnostics-tools/.github/scripts/eval-dry-run.cjs')).createDryRunRecorder({
+              ? dryRunTools.createDryRunRecorder({
                 directory: path.join(process.env.RUNNER_TEMP, 'eval-dry-run'),
                 summaryPath: process.env.GITHUB_STEP_SUMMARY,
                 phase: 'scoring',
@@ -347,9 +364,11 @@ jobs:
 
             const retryDelaysSeconds = [30, 60];
             const transientStatuses = new Set([429, 500, 502, 503, 504]);
+            const outputBudget = dryRun ? Number(process.env.TEST_MAX_OUTPUT_TOKENS || 0) : 0;
             const requestBody = JSON.stringify({
               model: scoringModel,
-              input: [{ role: 'user', content: requestContent }]
+              input: [{ role: 'user', content: requestContent }],
+              ...(outputBudget ? { max_output_tokens: outputBudget } : {})
             });
 
             let response;
@@ -381,27 +400,32 @@ jobs:
                   ? Number.parseInt(retryAfterHeader.trim(), 10)
                   : retryAfterHeader && Number.isFinite(Date.parse(retryAfterHeader))
                     ? Math.max(0, Math.ceil((Date.parse(retryAfterHeader) - Date.now()) / 1000)) : null;
-                const waitSeconds = retryAfterSeconds !== null
+                const legacyWaitSeconds = retryAfterSeconds !== null
                   ? Math.max(scheduledDelaySeconds, retryAfterSeconds)
                   : scheduledDelaySeconds;
-                if (dryRun && waitSeconds > 120) {
+                const waitMs = dryRun
+                  ? dryRunTools.getRetryDelayMs({ headers: response.headers, attempt })
+                  : legacyWaitSeconds * 1000;
+                if (dryRun && waitMs > 120000) {
                   core.setFailed('Foundry retry-after exceeds the dry-run wait limit (120s); no early retry was sent.');
                   return;
                 }
 
-                core.warning(`Foundry API attempt ${attempt} failed with status ${response.status}, retrying in ${waitSeconds}s.`);
-                await new Promise(resolve => setTimeout(resolve, waitSeconds * 1000));
+                core.warning(`Foundry API attempt ${attempt} failed with status ${response.status}, retrying in ${waitMs / 1000}s.`);
+                await new Promise(resolve => setTimeout(resolve, waitMs));
               }
 
               if (!response.ok) {
-                core.setFailed(`Foundry API error: ${response.status}. No evaluation was published.`);
+                const detail = recorder?.lastErrorMessage();
+                core.setFailed(`Foundry API error: ${detail || response.status}. No evaluation was published.`);
                 return;
               }
 
               const result = await response.json();
               if (result.status !== 'completed' || result.output?.some(item =>
                 item.type === 'message' && item.status && item.status !== 'completed')) {
-                core.setFailed('Foundry response was not completed. Partial output is not accepted.');
+                const detail = recorder?.lastErrorMessage();
+                core.setFailed(`Foundry response was not completed. Partial output is not accepted.${detail ? ` ${detail}` : ''}`);
                 return;
               }
               if (result.refusal || result.output?.some(item => item.type === 'refusal'

@@ -38,7 +38,7 @@ function selectedEnvironment(stepName, { eventName = 'workflow_dispatch', inputs
   const env = {};
   for (const source of [globalEnv, stepSource(stepName)]) {
     for (const [, name, expression] of source.matchAll(/^\s+([A-Z_]+): \$\{\{ (.*) \}\}$/gm)) {
-      if (['DRY_RUN', 'TEST_MODEL', 'TEST_CONNECTION', 'FOUNDRY_RESPONSES_ENDPOINT', 'FOUNDRY_API_KEY'].includes(name)) {
+      if (['DRY_RUN', 'TEST_MODEL', 'TEST_CONNECTION', 'TEST_MAX_OUTPUT_TOKENS', 'FOUNDRY_RESPONSES_ENDPOINT', 'FOUNDRY_API_KEY'].includes(name)) {
         env[name] = vm.runInNewContext(expression, bindings);
       }
     }
@@ -256,14 +256,14 @@ function scoringFixture(t) {
     filename = 'candidate-test.md', capture = 'original', title = 'Product first-impression craft',
     response = baselineResponse, expectedImages = 4, dryRun = false, testModel = '', testConnection = false,
     eventName = 'workflow_dispatch', secrets = connectionSecrets,
-    replies, fetchImpl, timeoutMs,
+    replies, fetchImpl, timeoutMs, maxOutputTokens = 0,
   } = {}) {
     const outputs = {};
     const failures = [];
     const waits = [];
     const requests = [];
     const writes = [];
-    const inputs = { dry_run: dryRun, test_model: testModel, test_connection: testConnection };
+    const inputs = { dry_run: dryRun, test_model: testModel, test_connection: testConnection, test_max_output_tokens: maxOutputTokens };
     const env = selectedEnvironment('Auto-score with Copilot', { eventName, inputs, secrets });
     validateScoringInputs(selectedEnvironment('Validate scoring inputs', { eventName, inputs, secrets }));
     const useTestConnection = eventName === 'workflow_dispatch' && dryRun && testConnection;
@@ -276,7 +276,9 @@ function scoringFixture(t) {
       const request = JSON.parse(options.body);
       requests.push(request);
       assert.equal(request.model, expectedModel);
-      assert.deepEqual(Object.keys(request).sort(), ['input', 'model'], 'Do not change the production payload or output budget');
+      const bounded = eventName === 'workflow_dispatch' && dryRun && maxOutputTokens !== 0;
+      assert.deepEqual(Object.keys(request).sort(), bounded ? ['input', 'max_output_tokens', 'model'] : ['input', 'model'], 'Only an explicitly bounded dry run may change the output budget');
+      if (bounded) assert.equal(request.max_output_tokens, Number(maxOutputTokens));
       const images = request.input[0].content.filter(item => item.type === 'input_image');
       assert.equal(images.length, expectedImages);
       for (const image of images) {
@@ -304,6 +306,7 @@ function scoringFixture(t) {
         if (name.endsWith('eval-dry-run.cjs')) {
           assert.equal(name, path.join(rootDir, '.eval-diagnostics-tools/.github/scripts/eval-dry-run.cjs'));
           return {
+            getRetryDelayMs: require('./eval-dry-run.cjs').getRetryDelayMs,
             createDryRunRecorder: (options) => require('./eval-dry-run.cjs').createDryRunRecorder({
               ...options, fetchImpl: mockFetch, ...(timeoutMs ? { timeoutMs } : {}),
             }),
@@ -621,6 +624,35 @@ test('gpt-5.6-sol connection experiments preserve the original full image payloa
   assert.deepEqual(results[0].requests, results[1].requests, 'Changing connections must not change the scoring schema, prompt, evidence, or output budget');
 });
 
+test('output budget is validated before requests and only applies to manual dry runs', async (t) => {
+  for (const value of [-1, 1, 511, 32769, 8192.5, 'NaN', 'Infinity', '1e4', '8192;exit']) {
+    const env = selectedEnvironment('Validate scoring inputs', {
+      inputs: { dry_run: true, test_max_output_tokens: value },
+    });
+    assert.throws(() => validateScoringInputs(env), /test_max_output_tokens must be/);
+  }
+  for (const value of [0, 512, 8192, 32768]) {
+    validateScoringInputs(selectedEnvironment('Validate scoring inputs', {
+      inputs: { dry_run: true, test_max_output_tokens: value },
+    }));
+  }
+  await assert.rejects(scoringFixture(t).score({ maxOutputTokens: 8192 }), /only with dry_run=true/);
+  const scheduled = await scoringFixture(t).score({ eventName: 'schedule', maxOutputTokens: 8192 });
+  assert.equal(scheduled.requests[0].max_output_tokens, undefined);
+  assert.equal(scheduled.outputs.evaluation, 'complete');
+});
+
+test('bounded scoring preserves every image and input while recording the selected output budget', async (t) => {
+  const { score } = scoringFixture(t);
+  const original = await score({ dryRun: true, testConnection: true, testModel: 'gpt-5.6-sol' });
+  const bounded = await score({ dryRun: true, testConnection: true, testModel: 'gpt-5.6-sol', maxOutputTokens: 8192 });
+  assert.deepEqual(bounded.requests[0].input, original.requests[0].input);
+  assert.equal(bounded.requests[0].max_output_tokens, 8192);
+  assert.equal(bounded.metadata.attempts[0].max_output_tokens, 8192);
+  assert.equal(bounded.outputs.evaluation, 'complete');
+  assert.deepEqual(bounded.failures, []);
+});
+
 test('429 retries retain sanitized failure metadata and fail without a green fallback', async (t) => {
   const result = await scoringFixture(t).score({
     dryRun: true, testModel: 'gpt-5-mini',
@@ -638,7 +670,57 @@ test('429 retries retain sanitized failure metadata and fail without a green fal
   assert.equal(result.metadata.outcome, 'failed');
   assert.deepEqual(result.metadata.attempts.map(attempt => attempt.http_status), [429, 429, 429]);
   assert.ok(result.metadata.attempts.every(attempt => attempt.error_code === 'http_error' && attempt.elapsed_ms >= 0));
-  assert.doesNotMatch(result.summary + JSON.stringify(result.metadata), /scoring\.example|fake-test-key|RateLimitReached/);
+  assert.match(result.failures.join(), /RateLimitReached/);
+  assert.doesNotMatch(result.summary + JSON.stringify(result.metadata), /scoring\.example|fake-test-key/);
+});
+
+test('dry-run HTTP failures surface the sanitized service code and explanation', async (t) => {
+  const result = await scoringFixture(t).score({
+    dryRun: true, maxOutputTokens: 8192,
+    replies: Array.from({ length: 3 }, () => ({
+      status: 429,
+      body: { error: { code: 'rate_limit_exceeded', message: `Peak capacity unavailable at ${responsesEndpoint} fake-test-key` } },
+    })),
+  });
+  assert.match(result.failures.join(), /rate_limit_exceeded/);
+  assert.match(result.failures.join(), /Peak capacity unavailable/);
+  assert.doesNotMatch(result.failures.join() + result.summary, /scoring\.example|fake-test-key/);
+  assert.equal(result.markdown, null);
+  assert.equal(result.outputs.evaluation, undefined);
+});
+
+test('dry-run retries respect Azure millisecond hints and do not retry sooner than requested', async (t) => {
+  const result = await scoringFixture(t).score({
+    dryRun: true,
+    replies: [
+      { status: 429, headers: { 'retry-after-ms': '45123' }, body: { error: { code: 'rate_limit_exceeded' } } },
+      { status: 503, headers: { 'x-ms-retry-after-ms': '75000' }, body: { error: {} } },
+      {},
+    ],
+  });
+  assert.deepEqual(result.waits, [45123, 75000]);
+  assert.equal(result.outputs.evaluation, 'complete');
+  const blocked = await scoringFixture(t).score({
+    dryRun: true,
+    replies: [{ status: 429, headers: { 'retry-after-ms': '180000' }, body: { error: {} } }],
+  });
+  assert.deepEqual(blocked.waits, []);
+  assert.equal(blocked.requests.length, 1);
+  assert.match(blocked.failures.join(), /no early retry/);
+});
+
+test('a bounded incomplete response reports its reason and never publishes partial scores', async (t) => {
+  const result = await scoringFixture(t).score({
+    dryRun: true, maxOutputTokens: 8192,
+    replies: [{ body: {
+      status: 'incomplete', incomplete_details: { reason: 'max_output_tokens' },
+      output: [{ type: 'message', content: [{ type: 'output_text', text: JSON.stringify(baselineResponse) }] }],
+    } }],
+  });
+  assert.match(result.failures.join(), /max_output_tokens/);
+  assert.equal(result.outputs.evaluation, undefined);
+  assert.equal(result.markdown, null);
+  assert.deepEqual(result.writes, []);
 });
 
 test('production and dry-run retries retain the 30/60-second policy and the identical full payload', async (t) => {
