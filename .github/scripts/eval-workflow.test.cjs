@@ -38,7 +38,7 @@ function selectedEnvironment(stepName, { eventName = 'workflow_dispatch', inputs
   const env = {};
   for (const source of [globalEnv, stepSource(stepName)]) {
     for (const [, name, expression] of source.matchAll(/^\s+([A-Z_]+): \$\{\{ (.*) \}\}$/gm)) {
-      if (['DRY_RUN', 'TEST_MODEL', 'TEST_CONNECTION', 'TEST_MAX_OUTPUT_TOKENS', 'FOUNDRY_RESPONSES_ENDPOINT', 'FOUNDRY_API_KEY'].includes(name)) {
+      if (['DRY_RUN', 'TEST_MODEL', 'TEST_CONNECTION', 'TEST_MAX_OUTPUT_TOKENS', 'TEST_COMPACT_EVIDENCE', 'FOUNDRY_RESPONSES_ENDPOINT', 'FOUNDRY_API_KEY'].includes(name)) {
         env[name] = vm.runInNewContext(expression, bindings);
       }
     }
@@ -198,7 +198,8 @@ test('workflow keeps immutable report and capture paths and commits the sidecar'
   assert.ok(workflow.includes('filename=${CAPTURE_ID}.md'));
   assert.ok(workflow.includes('git add "weekly-eval-bets/${FILENAME%.md}.json" "$CAPTURE_DIR"'));
   assert.ok(workflow.includes('group: daily-eval-scoring'));
-  assert.ok(workflow.includes('content: requestContent'));
+  assert.ok(workflow.includes('content: modelContent'));
+  assert.ok(workflow.includes(': requestContent;'));
   assert.ok(!workflow.includes('use the craft rubric as a secondary lens'));
 });
 
@@ -256,14 +257,14 @@ function scoringFixture(t) {
     filename = 'candidate-test.md', capture = 'original', title = 'Product first-impression craft',
     response = baselineResponse, expectedImages = 4, dryRun = false, testModel = '', testConnection = false,
     eventName = 'workflow_dispatch', secrets = connectionSecrets,
-    replies, fetchImpl, timeoutMs, maxOutputTokens = 0,
+    replies, fetchImpl, timeoutMs, maxOutputTokens = 0, compactEvidence = false,
   } = {}) {
     const outputs = {};
     const failures = [];
     const waits = [];
     const requests = [];
     const writes = [];
-    const inputs = { dry_run: dryRun, test_model: testModel, test_connection: testConnection, test_max_output_tokens: maxOutputTokens };
+    const inputs = { dry_run: dryRun, test_model: testModel, test_connection: testConnection, test_max_output_tokens: maxOutputTokens, test_compact_evidence: compactEvidence };
     const env = selectedEnvironment('Auto-score with Copilot', { eventName, inputs, secrets });
     validateScoringInputs(selectedEnvironment('Validate scoring inputs', { eventName, inputs, secrets }));
     const useTestConnection = eventName === 'workflow_dispatch' && dryRun && testConnection;
@@ -303,6 +304,10 @@ function scoringFixture(t) {
     const bindings = {
       require: (name) => {
         if (name.endsWith('eval-scoring.cjs')) return require('./eval-scoring.cjs');
+        if (name.endsWith('eval-evidence-profile.cjs')) {
+          assert.equal(name, path.join(rootDir, '.eval-diagnostics-tools/.github/scripts/eval-evidence-profile.cjs'));
+          return require('./eval-evidence-profile.cjs');
+        }
         if (name.endsWith('eval-dry-run.cjs')) {
           assert.equal(name, path.join(rootDir, '.eval-diagnostics-tools/.github/scripts/eval-dry-run.cjs'));
           return {
@@ -651,6 +656,23 @@ test('bounded scoring preserves every image and input while recording the select
   assert.equal(bounded.metadata.attempts[0].max_output_tokens, 8192);
   assert.equal(bounded.outputs.evaluation, 'complete');
   assert.deepEqual(bounded.failures, []);
+});
+
+test('compact evidence is an explicit dry-run-only opt-in with truthful candidate attribution', async (t) => {
+  await assert.rejects(scoringFixture(t).score({ compactEvidence: true }), /test_compact_evidence is allowed only with dry_run=true/);
+  const scheduled = await scoringFixture(t).score({ eventName: 'schedule', compactEvidence: true });
+  assert.equal(scheduled.record.dryRun, undefined);
+  assert.ok(scheduled.requests[0].input[0].content.some(item => item.text?.includes('Fixture page-content.html')));
+  const result = await scoringFixture(t).score({ dryRun: true, compactEvidence: true, maxOutputTokens: 8192 });
+  assert.equal(result.outputs.evaluation, 'complete');
+  assert.equal(result.requests[0].input[0].content.filter(item => item.type === 'input_image').length, 4);
+  assert.ok(result.requests[0].input[0].content.some(item => item.text?.includes('Fixture rubric')));
+  assert.ok(result.requests[0].input[0].content.some(item => item.text?.includes('Omitted from compact model input')));
+  assert.ok(!result.requests[0].input[0].content.some(item => item.text?.includes('Fixture page-content.html')));
+  assert.equal(result.metadata.attempts[0].evidence_profile, 'compact');
+  assert.deepEqual(result.record.dryRun, { evidenceProfile: 'compact', maxOutputTokens: 8192 });
+  assert.match(result.markdown, /Not a published full-evidence baseline/);
+  assert.deepEqual(result.failures, []);
 });
 
 test('429 retries retain sanitized failure metadata and fail without a green fallback', async (t) => {

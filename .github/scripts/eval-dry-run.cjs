@@ -76,7 +76,8 @@ function createSanitizer(apiKey, endpoint) {
 }
 
 // Shared by minimal diagnostics and full scoring, loaded from the workflow revision.
-function createDryRunRecorder({ directory, summaryPath, phase, endpoint, apiKey, timeoutMs = 180000, fetchImpl = fetch }) {
+function createDryRunRecorder({ directory, summaryPath, phase, endpoint, apiKey, evidenceProfile = 'full', timeoutMs = 180000, fetchImpl = fetch }) {
+  if (!['full', 'compact'].includes(evidenceProfile)) throw new Error('Unsupported evidence profile');
   const attempts = [];
   const { sanitize, protect } = createSanitizer(apiKey, endpoint);
   const serviceError = error => {
@@ -113,6 +114,7 @@ function createDryRunRecorder({ directory, summaryPath, phase, endpoint, apiKey,
       const attempt = {
         attempt: attempts.length + 1,
         requested_model: sanitize(payload?.model, 128),
+        evidence_profile: evidenceProfile,
         payload_bytes: Buffer.byteLength(options.body),
         text_chars: typeof payload?.input === 'string' ? payload.input.length
           : content.reduce((sum, item) => sum + (item.type === 'input_text' && typeof item.text === 'string' ? item.text.length : 0), 0),

@@ -34,6 +34,11 @@ on:
         required: false
         default: 0
         type: number
+      test_compact_evidence:
+        description: 'Dry-run only: keep all screenshots and rubric, omit HTML and shorten page text'
+        required: false
+        default: false
+        type: boolean
       not_before:
         description: 'Optional one-time UTC start time, at most 4 hours ahead (YYYY-MM-DDTHH:mm:ssZ)'
         required: false
@@ -45,6 +50,7 @@ env:
   TEST_CONNECTION: ${{ github.event_name == 'workflow_dispatch' && inputs.test_connection && 'true' || 'false' }}
   TEST_MODEL: ${{ github.event_name == 'workflow_dispatch' && inputs.test_model || '' }}
   TEST_MAX_OUTPUT_TOKENS: ${{ github.event_name == 'workflow_dispatch' && inputs.test_max_output_tokens || 0 }}
+  TEST_COMPACT_EVIDENCE: ${{ github.event_name == 'workflow_dispatch' && inputs.test_compact_evidence && 'true' || 'false' }}
 
 permissions:
   contents: write
@@ -91,6 +97,9 @@ jobs:
           if (Number(outputBudget) !== 0 && process.env.DRY_RUN !== 'true') {
             throw new Error('test_max_output_tokens is allowed only with dry_run=true.');
           }
+          if (process.env.TEST_COMPACT_EVIDENCE === 'true' && process.env.DRY_RUN !== 'true') {
+            throw new Error('test_compact_evidence is allowed only with dry_run=true.');
+          }
           const endpointSecret = testConnection ? 'FOUNDRY_TEST_RESPONSES_ENDPOINT' : 'FOUNDRY_RESPONSES_ENDPOINT';
           const keySecret = testConnection ? 'FOUNDRY_TEST_API_KEY' : 'FOUNDRY_SCORING_API_KEY';
           for (const [name, value] of [
@@ -117,6 +126,7 @@ jobs:
           sparse-checkout: |
             .github/scripts/eval-diagnostics.cjs
             .github/scripts/eval-dry-run.cjs
+            .github/scripts/eval-evidence-profile.cjs
           sparse-checkout-cone-mode: false
 
       - name: Wait for the requested one-time start
@@ -336,6 +346,7 @@ jobs:
             const { prepareEvaluation, buildEvaluation } = require(path.resolve('.github/scripts/eval-scoring.cjs'));
             const scoringModel = process.env.TEST_MODEL || process.env.SCORING_MODEL;
             const dryRun = process.env.DRY_RUN === 'true';
+            const compactEvidence = dryRun && process.env.TEST_COMPACT_EVIDENCE === 'true';
             const dryRunTools = dryRun
               ? require(path.resolve('.eval-diagnostics-tools/.github/scripts/eval-dry-run.cjs'))
               : null;
@@ -344,6 +355,7 @@ jobs:
                 directory: path.join(process.env.RUNNER_TEMP, 'eval-dry-run'),
                 summaryPath: process.env.GITHUB_STEP_SUMMARY,
                 phase: 'scoring',
+                evidenceProfile: compactEvidence ? 'compact' : 'full',
                 endpoint: process.env.FOUNDRY_RESPONSES_ENDPOINT,
                 apiKey: process.env.FOUNDRY_API_KEY
               }) : null;
@@ -365,9 +377,12 @@ jobs:
             const retryDelaysSeconds = [30, 60];
             const transientStatuses = new Set([429, 500, 502, 503, 504]);
             const outputBudget = dryRun ? Number(process.env.TEST_MAX_OUTPUT_TOKENS || 0) : 0;
+            const modelContent = compactEvidence
+              ? require(path.resolve('.eval-diagnostics-tools/.github/scripts/eval-evidence-profile.cjs')).compactEvidenceContent(requestContent)
+              : requestContent;
             const requestBody = JSON.stringify({
               model: scoringModel,
-              input: [{ role: 'user', content: requestContent }],
+              input: [{ role: 'user', content: modelContent }],
               ...(outputBudget ? { max_output_tokens: outputBudget } : {})
             });
 
@@ -464,8 +479,15 @@ jobs:
                 model: scoringModel
               });
               const outputPath = dryRun ? path.join(process.env.RUNNER_TEMP, 'eval-dry-run', 'candidate.md') : reportPath;
-              fs.writeFileSync(outputPath, markdown);
-              fs.writeFileSync(outputPath.replace(/\.md$/, '.json'), JSON.stringify(record, null, 2) + '\n');
+              const candidateNote = compactEvidence
+                ? '> Experimental dry-run candidate: compact model input omits raw HTML and limits rendered text to 12000 characters per capture. Not a published full-evidence baseline.\n\n'
+                : '';
+              const outputRecord = dryRun ? {
+                ...record,
+                dryRun: { evidenceProfile: compactEvidence ? 'compact' : 'full', maxOutputTokens: outputBudget || null }
+              } : record;
+              fs.writeFileSync(outputPath, candidateNote + markdown);
+              fs.writeFileSync(outputPath.replace(/\.md$/, '.json'), JSON.stringify(outputRecord, null, 2) + '\n');
               completed = true;
               core.setOutput('evaluation', 'complete');
             } catch (error) {
