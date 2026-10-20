@@ -121,6 +121,7 @@ function createDryRunRecorder({ directory, summaryPath, phase, endpoint, apiKey,
         image_count: content.filter(item => item.type === 'input_image').length,
         max_output_tokens: Number.isSafeInteger(payload?.max_output_tokens) && payload.max_output_tokens > 0
           ? payload.max_output_tokens : null,
+        response_format: payload?.text?.format?.type === 'json_schema' ? 'json_schema' : null,
         http_status: null,
         elapsed_ms: null,
         headers: {},

@@ -38,7 +38,7 @@ function selectedEnvironment(stepName, { eventName = 'workflow_dispatch', inputs
   const env = {};
   for (const source of [globalEnv, stepSource(stepName)]) {
     for (const [, name, expression] of source.matchAll(/^\s+([A-Z_]+): \$\{\{ (.*) \}\}$/gm)) {
-      if (['DRY_RUN', 'TEST_MODEL', 'TEST_CONNECTION', 'TEST_MAX_OUTPUT_TOKENS', 'TEST_COMPACT_EVIDENCE', 'FOUNDRY_RESPONSES_ENDPOINT', 'FOUNDRY_API_KEY'].includes(name)) {
+      if (['DRY_RUN', 'TEST_MODEL', 'TEST_CONNECTION', 'TEST_MAX_OUTPUT_TOKENS', 'TEST_COMPACT_EVIDENCE', 'TEST_STRUCTURED_OUTPUT', 'FOUNDRY_RESPONSES_ENDPOINT', 'FOUNDRY_API_KEY'].includes(name)) {
         env[name] = vm.runInNewContext(expression, bindings);
       }
     }
@@ -257,14 +257,14 @@ function scoringFixture(t) {
     filename = 'candidate-test.md', capture = 'original', title = 'Product first-impression craft',
     response = baselineResponse, expectedImages = 4, dryRun = false, testModel = '', testConnection = false,
     eventName = 'workflow_dispatch', secrets = connectionSecrets,
-    replies, fetchImpl, timeoutMs, maxOutputTokens = 0, compactEvidence = false,
+    replies, fetchImpl, timeoutMs, maxOutputTokens = 0, compactEvidence = false, structuredOutput = false,
   } = {}) {
     const outputs = {};
     const failures = [];
     const waits = [];
     const requests = [];
     const writes = [];
-    const inputs = { dry_run: dryRun, test_model: testModel, test_connection: testConnection, test_max_output_tokens: maxOutputTokens, test_compact_evidence: compactEvidence };
+    const inputs = { dry_run: dryRun, test_model: testModel, test_connection: testConnection, test_max_output_tokens: maxOutputTokens, test_compact_evidence: compactEvidence, test_structured_output: structuredOutput };
     const env = selectedEnvironment('Auto-score with Copilot', { eventName, inputs, secrets });
     validateScoringInputs(selectedEnvironment('Validate scoring inputs', { eventName, inputs, secrets }));
     const useTestConnection = eventName === 'workflow_dispatch' && dryRun && testConnection;
@@ -278,7 +278,8 @@ function scoringFixture(t) {
       requests.push(request);
       assert.equal(request.model, expectedModel);
       const bounded = eventName === 'workflow_dispatch' && dryRun && maxOutputTokens !== 0;
-      assert.deepEqual(Object.keys(request).sort(), bounded ? ['input', 'max_output_tokens', 'model'] : ['input', 'model'], 'Only an explicitly bounded dry run may change the output budget');
+      const structured = eventName === 'workflow_dispatch' && dryRun && structuredOutput;
+      assert.deepEqual(Object.keys(request).sort(), ['input', 'model', ...(bounded ? ['max_output_tokens'] : []), ...(structured ? ['text'] : [])].sort(), 'Only explicit dry-run flags may change output parameters');
       if (bounded) assert.equal(request.max_output_tokens, Number(maxOutputTokens));
       const images = request.input[0].content.filter(item => item.type === 'input_image');
       assert.equal(images.length, expectedImages);
@@ -304,6 +305,10 @@ function scoringFixture(t) {
     const bindings = {
       require: (name) => {
         if (name.endsWith('eval-scoring.cjs')) return require('./eval-scoring.cjs');
+        if (name.endsWith('eval-response-schema.cjs')) {
+          assert.equal(name, path.join(rootDir, '.eval-diagnostics-tools/.github/scripts/eval-response-schema.cjs'));
+          return require('./eval-response-schema.cjs');
+        }
         if (name.endsWith('eval-evidence-profile.cjs')) {
           assert.equal(name, path.join(rootDir, '.eval-diagnostics-tools/.github/scripts/eval-evidence-profile.cjs'));
           return require('./eval-evidence-profile.cjs');
@@ -567,6 +572,7 @@ test('dry runs never publish, always retain attempted diagnostics, and load help
   assert.match(tools, /inputs\.dry_run/);
   assert.match(tools, /ref: \$\{\{ github\.sha \}\}/);
   assert.match(tools, /\.github\/scripts\/eval-dry-run\.cjs/);
+  assert.match(tools, /\.github\/scripts\/eval-response-schema\.cjs/);
 });
 
 test('full dry-run scoring sends the selected deployment, all images and rubric, and writes only an isolated candidate', async (t) => {
@@ -673,6 +679,44 @@ test('compact evidence is an explicit dry-run-only opt-in with truthful candidat
   assert.deepEqual(result.record.dryRun, { evidenceProfile: 'compact', maxOutputTokens: 8192 });
   assert.match(result.markdown, /Not a published full-evidence baseline/);
   assert.deepEqual(result.failures, []);
+});
+
+test('strict output is a dry-run-only opt-in that preserves full evidence and constrains craft placement', async (t) => {
+  assert.match(workflow, /test_structured_output:\n(?:.*\n)*?        default: false\n        type: boolean/);
+  await assert.rejects(scoringFixture(t).score({ structuredOutput: true }), /test_structured_output is allowed only with dry_run=true/);
+  const scheduled = await scoringFixture(t).score({ eventName: 'schedule', structuredOutput: true });
+  assert.equal(scheduled.requests[0].text, undefined);
+  assert.equal(scheduled.requests[0].input.length, 1);
+  assert.equal(scheduled.record.dryRun, undefined);
+  const { score } = scoringFixture(t);
+  const original = await score({ dryRun: true, testModel: 'gpt-5-mini', maxOutputTokens: 8192 });
+  const structured = await score({ dryRun: true, testModel: 'gpt-5-mini', maxOutputTokens: 8192, structuredOutput: true });
+  const request = structured.requests[0];
+  assert.deepEqual(request.input[0], original.requests[0].input[0]);
+  assert.equal(request.input[1].role, 'developer');
+  assert.match(request.input[1].content[0].text, /Never put craft scores in primary\.items/);
+  assert.equal(request.text.format.type, 'json_schema');
+  assert.equal(request.text.format.strict, true);
+  assert.equal(request.text.format.schema.properties.primary.properties.items.maxItems, 0);
+  assert.equal(request.text.format.schema.properties.craft.properties.dimensions.minItems, 6);
+  assert.equal(structured.metadata.attempts[0].response_format, 'json_schema');
+  assert.equal(structured.record.dryRun.responseFormat, 'json_schema');
+  assert.equal(structured.outputs.evaluation, 'complete');
+  assert.deepEqual(structured.failures, []);
+});
+
+test('strict output requests keep runtime validation and cannot publish misplaced scores', async (t) => {
+  const result = await scoringFixture(t).score({
+    dryRun: true, structuredOutput: true,
+    response: { ...baselineResponse, primary: {
+      ...emptyPrimary,
+      items: [{ name: 'Visual hierarchy', score: 4, rationale: 'Misplaced score.' }],
+    } },
+  });
+  assert.match(result.failures.join(), /Craft lens must not return primary score items/);
+  assert.equal(result.outputs.evaluation, undefined);
+  assert.equal(result.markdown, null);
+  assert.deepEqual(result.writes, []);
 });
 
 test('429 retries retain sanitized failure metadata and fail without a green fallback', async (t) => {
