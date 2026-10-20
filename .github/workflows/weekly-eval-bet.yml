@@ -414,9 +414,10 @@ jobs:
               core.setOutput('evaluation', 'complete');
             } catch (error) {
               if (!dryRun) throw error;
+              const detail = recorder.recordFailure(error);
               core.setFailed(error.code === 'timeout'
                 ? 'Foundry dry-run request or response body timed out (180s limit).'
-                : 'Dry-run request or evaluation validation failed. See the sanitized run summary and artifact.');
+                : `Dry-run request or evaluation validation failed: ${detail}`);
             } finally {
               recorder?.finish(completed ? 'validated' : 'failed');
             }

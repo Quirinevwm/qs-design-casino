@@ -7,9 +7,10 @@ const path = require('node:path');
 function createDryRunRecorder({ directory, summaryPath, phase, endpoint, apiKey, timeoutMs = 180000, fetchImpl = fetch }) {
   const attempts = [];
   let outcome = 'attempted';
+  let failure = null;
   const persist = () => {
     fs.mkdirSync(directory, { recursive: true });
-    fs.writeFileSync(path.join(directory, `${phase}.json`), JSON.stringify({ phase, outcome, attempts }, null, 2) + '\n');
+    fs.writeFileSync(path.join(directory, `${phase}.json`), JSON.stringify({ phase, outcome, attempts, ...(failure ? { failure } : {}) }, null, 2) + '\n');
   };
   const safeHeader = (response, name, pattern) => {
     const value = response?.headers?.get(name);
@@ -102,6 +103,17 @@ function createDryRunRecorder({ directory, summaryPath, phase, endpoint, apiKey,
         persist();
         fs.appendFileSync(summaryPath, `\n### Dry-run ${phase}, attempt ${attempt.attempt}\n\n\`\`\`json\n${JSON.stringify(attempt, null, 2)}\n\`\`\`\n`);
       }
+    },
+    recordFailure(error) {
+      let message = String(error?.message || 'Unknown dry-run error');
+      for (const secret of [apiKey, endpoint, new URL(endpoint).hostname]) {
+        if (secret) message = message.replaceAll(secret, '[REDACTED]');
+      }
+      message = message.replace(/[\x00-\x1f\x7f]/g, ' ').slice(0, 500);
+      failure = { message };
+      persist();
+      fs.appendFileSync(summaryPath, `\nDry-run failure:\n\n\`\`\`text\n${message.replaceAll('`', "'")}\n\`\`\`\n`);
+      return message;
     },
     finish(value) {
       if (!attempts.length) return;

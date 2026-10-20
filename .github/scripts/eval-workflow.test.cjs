@@ -564,6 +564,21 @@ test('non-transient HTTP and network failures retain sanitized diagnostics witho
   }
 });
 
+test('post-response validation failures retain an actionable sanitized reason', async (t) => {
+  const result = await scoringFixture(t).score({
+    dryRun: true,
+    replies: [{ body: {
+      status: 'completed',
+      output: [{ type: 'message', content: [{ type: 'output_text', text: '{"summaryMarkdown":"partial"}' }] }],
+    } }],
+  });
+  assert.equal(result.metadata.outcome, 'failed');
+  assert.match(result.metadata.failure.message, /response\.primary must be an object/);
+  assert.match(result.failures.join(), /response\.primary must be an object/);
+  assert.match(result.summary, /Dry-run failure/);
+  assert.equal(result.outputs.evaluation, undefined);
+});
+
 test('dry-run request and response body timeouts fail clearly, retain metadata and clear their timers', async (t) => {
   for (const bodyTimeout of [false, true]) {
     let signal;
