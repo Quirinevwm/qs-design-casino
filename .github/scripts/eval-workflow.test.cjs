@@ -807,8 +807,8 @@ function minimalDiagnosticsFixture(t, {
   return { run, calls, runnerDir, summaryPath };
 }
 
-test('minimal dry-run diagnostics use the same deployment and retain failures without leaking service messages', async (t) => {
-  for (const [testConnection, status] of [[false, 200], [false, 429], [true, 200], [true, 429]]) {
+test('minimal dry-run diagnostics use the same deployment and retain sanitized failures', async (t) => {
+  for (const [testConnection, status] of [[false, 200], [false, 429], [true, 200], [true, 429], [true, 503]]) {
     const { run, calls, runnerDir, summaryPath } = minimalDiagnosticsFixture(t, { testConnection, status });
     if (status === 200) await run;
     else await assert.rejects(run, /Minimal Foundry checks failed/);
@@ -819,6 +819,7 @@ test('minimal dry-run diagnostics use the same deployment and retain failures wi
     const metadata = JSON.parse(fs.readFileSync(path.join(runnerDir, 'eval-dry-run/diagnostics.json'), 'utf8'));
     assert.equal(metadata.outcome, status === 200 ? 'completed' : 'failed');
     assert.equal(metadata.attempts[0].http_status, status);
+    if (status !== 200) assert.match(metadata.failure.message, new RegExp(`text check failed \\(HTTP ${status}\\)`));
     assert.doesNotMatch(fs.readFileSync(summaryPath, 'utf8') + JSON.stringify(metadata), /scoring\.example|fake-test-key|fake-dedicated-test-key/);
   }
 });

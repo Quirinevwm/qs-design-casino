@@ -166,6 +166,10 @@ jobs:
               });
               if (!recorder) fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, renderSummary(result));
               success = result.success;
+              if (!success && recorder) {
+                const failedCheck = result.results.find(check => check.outcome === 'failed');
+                recorder.recordFailure(new Error(`${failedCheck.check} check failed (HTTP ${failedCheck.httpStatus ?? 'unknown'}): ${failedCheck.message}`));
+              }
             } finally {
               recorder?.finish(success ? 'completed' : 'failed');
             }
