@@ -395,6 +395,7 @@ jobs:
               ? require(path.resolve('.eval-diagnostics-tools/.github/scripts/eval-response-schema.cjs')).buildResponseFormat(evaluationContext)
               : null;
             const contractInstructions = structuredOutput ? [{
+              type: 'message',
               role: 'developer',
               content: [{
                 type: 'input_text',
@@ -409,7 +410,7 @@ jobs:
             }] : [];
             const requestBody = JSON.stringify({
               model: scoringModel,
-              input: [{ role: 'user', content: modelContent }, ...contractInstructions],
+              input: [{ ...(structuredOutput ? { type: 'message' } : {}), role: 'user', content: modelContent }, ...contractInstructions],
               ...(outputBudget ? { max_output_tokens: outputBudget } : {}),
               ...(responseFormat ? { text: { format: responseFormat } } : {})
             });

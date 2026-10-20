@@ -692,7 +692,10 @@ test('strict output is a dry-run-only opt-in that preserves full evidence and co
   const original = await score({ dryRun: true, testModel: 'gpt-5-mini', maxOutputTokens: 8192 });
   const structured = await score({ dryRun: true, testModel: 'gpt-5-mini', maxOutputTokens: 8192, structuredOutput: true });
   const request = structured.requests[0];
-  assert.deepEqual(request.input[0], original.requests[0].input[0]);
+  assert.equal(request.input[0].type, 'message');
+  assert.equal(request.input[0].role, original.requests[0].input[0].role);
+  assert.deepEqual(request.input[0].content, original.requests[0].input[0].content);
+  assert.equal(request.input[1].type, 'message');
   assert.equal(request.input[1].role, 'developer');
   assert.match(request.input[1].content[0].text, /Never put craft scores in primary\.items/);
   assert.equal(request.text.format.type, 'json_schema');
