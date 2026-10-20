@@ -15,6 +15,15 @@ on:
         required: false
         default: false
         type: boolean
+      dry_run:
+        description: 'Validate a candidate and retain diagnostics without publishing or updating issues'
+        required: false
+        default: false
+        type: boolean
+      test_model:
+        description: 'Optional Azure deployment name, allowed only with dry_run'
+        required: false
+        type: string
       not_before:
         description: 'Optional one-time UTC start time, at most 4 hours ahead (YYYY-MM-DDTHH:mm:ssZ)'
         required: false
@@ -22,6 +31,8 @@ on:
 
 env:
   SCORING_MODEL: 'gpt-6.1-sol'
+  DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'true' || 'false' }}
+  TEST_MODEL: ${{ github.event_name == 'workflow_dispatch' && inputs.test_model || '' }}
   FOUNDRY_RESPONSES_ENDPOINT: ${{ secrets.FOUNDRY_RESPONSES_ENDPOINT }}
 
 permissions:
@@ -45,8 +56,19 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Validate scoring inputs
+        run: |
+          node <<'EOF'
+          if (process.env.TEST_MODEL && process.env.DRY_RUN !== 'true') {
+            throw new Error('test_model is allowed only with dry_run=true.');
+          }
+          if (process.env.TEST_MODEL && !/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(process.env.TEST_MODEL)) {
+            throw new Error('test_model must be an Azure deployment name, not a URL or expression.');
+          }
+          EOF
+
       - name: Check out diagnostic tools from the workflow revision
-        if: github.event_name == 'workflow_dispatch' && (inputs.diagnostics_first || inputs.not_before != '')
+        if: github.event_name == 'workflow_dispatch' && (inputs.diagnostics_first || inputs.not_before != '' || inputs.dry_run)
         uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
@@ -54,6 +76,7 @@ jobs:
           persist-credentials: false
           sparse-checkout: |
             .github/scripts/eval-diagnostics.cjs
+            .github/scripts/eval-dry-run.cjs
           sparse-checkout-cone-mode: false
 
       - name: Wait for the requested one-time start
@@ -96,14 +119,30 @@ jobs:
                 return;
               }
             }
-            const result = await runDiagnostics({
-              endpoint: process.env.FOUNDRY_RESPONSES_ENDPOINT,
-              model: process.env.SCORING_MODEL,
-              apiKey: process.env.FOUNDRY_API_KEY,
-              imagePath
-            });
-            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, renderSummary(result));
-            if (!result.success) throw new Error('Minimal Foundry checks failed; the full evaluation and queue updates were not attempted. See the run summary.');
+            const recorder = process.env.DRY_RUN === 'true'
+              ? require('./.eval-diagnostics-tools/.github/scripts/eval-dry-run.cjs').createDryRunRecorder({
+                directory: path.join(process.env.RUNNER_TEMP, 'eval-dry-run'),
+                summaryPath: process.env.GITHUB_STEP_SUMMARY,
+                phase: 'diagnostics',
+                endpoint: process.env.FOUNDRY_RESPONSES_ENDPOINT,
+                apiKey: process.env.FOUNDRY_API_KEY,
+                timeoutMs: 90000
+              }) : null;
+            let success = false;
+            try {
+              const result = await runDiagnostics({
+                endpoint: process.env.FOUNDRY_RESPONSES_ENDPOINT,
+                model: process.env.TEST_MODEL || process.env.SCORING_MODEL,
+                apiKey: process.env.FOUNDRY_API_KEY,
+                imagePath,
+                ...(recorder ? { fetchImpl: recorder.fetch } : {})
+              });
+              if (!recorder) fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, renderSummary(result));
+              success = result.success;
+            } finally {
+              recorder?.finish(success ? 'completed' : 'failed');
+            }
+            if (!success) throw new Error('Minimal Foundry checks failed; the full evaluation and queue updates were not attempted. See the run summary.');
           })();
           EOF
 
@@ -134,9 +173,8 @@ jobs:
           echo "skip=false" >> "$GITHUB_OUTPUT"
 
           # Fetch issue details
-          gh issue view "$ISSUE_NUMBER" --json title,body > /tmp/issue.json
-          TITLE=$(jq -r '.title' /tmp/issue.json)
-          BODY=$(jq -r '.body' /tmp/issue.json)
+          gh issue view "$ISSUE_NUMBER" --json title,body > "$RUNNER_TEMP/issue.json"
+          TITLE=$(jq -r '.title' "$RUNNER_TEMP/issue.json")
           echo "title=$TITLE" >> "$GITHUB_OUTPUT"
 
           # Generate week identifier and slug
@@ -156,7 +194,7 @@ jobs:
           # Prefer the explicit target; older issues use their first HTTPS link.
           node <<'EOF'
           const fs = require('fs');
-          const { body } = JSON.parse(fs.readFileSync('/tmp/issue.json', 'utf8'));
+          const { body } = JSON.parse(fs.readFileSync(`${process.env.RUNNER_TEMP}/issue.json`, 'utf8'));
           const target = body.match(/(?:^|\n)### Target page[^\S\r\n]*\r?\n([\s\S]*?)(?=\r?\n### |$)/)?.[1].trim();
           const source = target && target !== '_No response_' ? target : body;
           const url = source.match(/https:\/\/[^\s)<>]+/)?.[0];
@@ -250,9 +288,19 @@ jobs:
             const fs = require('fs');
             const path = require('path');
             const { prepareEvaluation, buildEvaluation } = require(path.resolve('.github/scripts/eval-scoring.cjs'));
-            const scoringModel = process.env.SCORING_MODEL;
+            const scoringModel = process.env.TEST_MODEL || process.env.SCORING_MODEL;
+            const dryRun = process.env.DRY_RUN === 'true';
+            const recorder = dryRun
+              ? require(path.resolve('.eval-diagnostics-tools/.github/scripts/eval-dry-run.cjs')).createDryRunRecorder({
+                directory: path.join(process.env.RUNNER_TEMP, 'eval-dry-run'),
+                summaryPath: process.env.GITHUB_STEP_SUMMARY,
+                phase: 'scoring',
+                endpoint: process.env.FOUNDRY_RESPONSES_ENDPOINT,
+                apiKey: process.env.FOUNDRY_API_KEY
+              }) : null;
+            const request = recorder ? recorder.fetch : fetch;
 
-            const issueJson = JSON.parse(fs.readFileSync('/tmp/issue.json', 'utf8'));
+            const issueJson = JSON.parse(fs.readFileSync(`${process.env.RUNNER_TEMP}/issue.json`, 'utf8'));
             const rubric = fs.readFileSync('skills/first-impression-craft-rubric.md', 'utf8');
             const reportPath = `weekly-eval-bets/${process.env.FILENAME}`;
             const { context: evaluationContext, requestContent } = prepareEvaluation({
@@ -273,86 +321,118 @@ jobs:
             });
 
             let response;
+            let completed = false;
 
-            // Call Azure AI Foundry Responses API
-            for (let attempt = 1; attempt <= retryDelaysSeconds.length + 1; attempt += 1) {
-              response = await fetch(process.env.FOUNDRY_RESPONSES_ENDPOINT, {
-                method: 'POST',
-                headers: {
-                  'api-key': process.env.FOUNDRY_API_KEY,
-                  'Content-Type': 'application/json'
-                },
-                body: requestBody
-              });
+            try {
+              // Call Azure AI Foundry Responses API
+              for (let attempt = 1; attempt <= retryDelaysSeconds.length + 1; attempt += 1) {
+                response = await request(process.env.FOUNDRY_RESPONSES_ENDPOINT, {
+                  method: 'POST',
+                  headers: {
+                    'api-key': process.env.FOUNDRY_API_KEY,
+                    'Content-Type': 'application/json'
+                  },
+                  body: requestBody
+                });
 
-              if (response.ok) {
-                break;
+                if (response.ok) {
+                  break;
+                }
+
+                if (!transientStatuses.has(response.status) || attempt > retryDelaysSeconds.length) {
+                  break;
+                }
+
+                const scheduledDelaySeconds = retryDelaysSeconds[attempt - 1];
+                const retryAfterHeader = response.headers.get('retry-after');
+                const retryAfterSeconds = retryAfterHeader && /^\d+$/.test(retryAfterHeader.trim())
+                  ? Number.parseInt(retryAfterHeader.trim(), 10)
+                  : retryAfterHeader && Number.isFinite(Date.parse(retryAfterHeader))
+                    ? Math.max(0, Math.ceil((Date.parse(retryAfterHeader) - Date.now()) / 1000)) : null;
+                const waitSeconds = retryAfterSeconds !== null
+                  ? Math.max(scheduledDelaySeconds, retryAfterSeconds)
+                  : scheduledDelaySeconds;
+                if (dryRun && waitSeconds > 120) {
+                  core.setFailed('Foundry retry-after exceeds the dry-run wait limit (120s); no early retry was sent.');
+                  return;
+                }
+
+                core.warning(`Foundry API attempt ${attempt} failed with status ${response.status}, retrying in ${waitSeconds}s.`);
+                await new Promise(resolve => setTimeout(resolve, waitSeconds * 1000));
               }
 
-              if (!transientStatuses.has(response.status) || attempt > retryDelaysSeconds.length) {
-                break;
+              if (!response.ok) {
+                core.setFailed(`Foundry API error: ${response.status}. No evaluation was published.`);
+                return;
               }
 
-              const scheduledDelaySeconds = retryDelaysSeconds[attempt - 1];
-              const retryAfterHeader = response.headers.get('retry-after');
-              const retryAfterSeconds = retryAfterHeader && /^\d+$/.test(retryAfterHeader.trim())
-                ? Number.parseInt(retryAfterHeader.trim(), 10)
-                : null;
-              const waitSeconds = retryAfterSeconds !== null
-                ? Math.max(scheduledDelaySeconds, retryAfterSeconds)
-                : scheduledDelaySeconds;
+              const result = await response.json();
+              if (result.status !== 'completed' || result.output?.some(item =>
+                item.type === 'message' && item.status && item.status !== 'completed')) {
+                core.setFailed('Foundry response was not completed. Partial output is not accepted.');
+                return;
+              }
+              if (result.refusal || result.output?.some(item => item.type === 'refusal'
+                || item.content?.some(part => part.type === 'refusal'))) {
+                core.setFailed('Foundry response refused the evaluation.');
+                return;
+              }
 
-              core.warning(`Foundry API attempt ${attempt} failed with status ${response.status}, retrying in ${waitSeconds}s.`);
-              await new Promise(resolve => setTimeout(resolve, waitSeconds * 1000));
-            }
+              // Extract evaluation text from Responses API
+              let evaluation = null;
 
-            if (!response.ok) {
-              const err = await response.text();
-              core.setFailed(`Foundry API error: ${response.status} ${err}`);
-              return;
-            }
-
-            const result = await response.json();
-
-            // Extract evaluation text from Responses API
-            let evaluation = null;
-
-            if (result.output && Array.isArray(result.output)) {
-              // Find the message output (skip reasoning blocks)
-              const messageOutput = result.output.find(item => item.type === 'message');
-              if (messageOutput && messageOutput.content && Array.isArray(messageOutput.content)) {
-                const textContent = messageOutput.content.find(c => c.type === 'output_text' || c.type === 'text');
-                if (textContent) {
-                  evaluation = textContent.text;
+              if (result.output && Array.isArray(result.output)) {
+                // Find the message output (skip reasoning blocks)
+                const messageOutput = result.output.find(item => item.type === 'message');
+                if (messageOutput && messageOutput.content && Array.isArray(messageOutput.content)) {
+                  const textContent = messageOutput.content.find(c => c.type === 'output_text' || c.type === 'text');
+                  if (textContent) {
+                    evaluation = textContent.text;
+                  }
                 }
               }
-            }
 
-            // Fallback: Chat Completions format
-            if (!evaluation && result.choices && result.choices[0]) {
-              evaluation = result.choices[0].message.content;
-            }
+              // Fallback: Chat Completions format
+              if (!evaluation && result.choices && result.choices[0]) {
+                evaluation = result.choices[0].message.content;
+              }
 
-            if (!evaluation) {
-              const outputTypes = result.output ? result.output.map(i => i.type).join(', ') : 'null';
-              const messageItem = result.output ? result.output.find(i => i.type === 'message') : null;
-              const messageStr = messageItem ? JSON.stringify(messageItem).substring(0, 1000) : 'no message item found';
-              core.setFailed(`Could not extract evaluation. Output types: [${outputTypes}]. Message item: ${messageStr}`);
-              return;
-            }
+              if (!evaluation) {
+                core.setFailed('Completed Foundry response did not include evaluation text.');
+                return;
+              }
 
-            const { markdown, record } = buildEvaluation({
-              context: evaluationContext,
-              responseText: evaluation,
-              model: scoringModel
-            });
-            fs.writeFileSync(reportPath, markdown);
-            fs.writeFileSync(reportPath.replace(/\.md$/, '.json'), JSON.stringify(record, null, 2) + '\n');
-            core.setOutput('evaluation', 'complete');
+              const { markdown, record } = buildEvaluation({
+                context: evaluationContext,
+                responseText: evaluation,
+                model: scoringModel
+              });
+              const outputPath = dryRun ? path.join(process.env.RUNNER_TEMP, 'eval-dry-run', 'candidate.md') : reportPath;
+              fs.writeFileSync(outputPath, markdown);
+              fs.writeFileSync(outputPath.replace(/\.md$/, '.json'), JSON.stringify(record, null, 2) + '\n');
+              completed = true;
+              core.setOutput('evaluation', 'complete');
+            } catch (error) {
+              if (!dryRun) throw error;
+              core.setFailed(error.code === 'timeout'
+                ? 'Foundry dry-run request or response body timed out (180s limit).'
+                : 'Dry-run request or evaluation validation failed. See the sanitized run summary and artifact.');
+            } finally {
+              recorder?.finish(completed ? 'validated' : 'failed');
+            }
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Upload dry-run candidate and diagnostics
+        if: always() && env.DRY_RUN == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-dry-run-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/eval-dry-run/
+          if-no-files-found: ignore
+          retention-days: 14
+
       - name: Commit and push
-        if: steps.find-bet.outputs.skip == 'false'
+        if: env.DRY_RUN != 'true' && steps.auto-score.outputs.evaluation == 'complete' && steps.find-bet.outputs.skip == 'false'
         env:
           FILENAME: ${{ steps.find-bet.outputs.filename }}
           CAPTURE_DIR: weekly-eval-bets/screenshots/${{ steps.find-bet.outputs.capture_id }}
@@ -370,7 +450,7 @@ jobs:
           git push
 
       - name: Comment on issue
-        if: steps.find-bet.outputs.skip == 'false'
+        if: env.DRY_RUN != 'true' && steps.auto-score.outputs.evaluation == 'complete' && steps.find-bet.outputs.skip == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ steps.find-bet.outputs.issue_number }}

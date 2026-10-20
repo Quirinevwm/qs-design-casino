@@ -77,4 +77,12 @@ New auto-scored evaluations use **gpt-6.1-sol** via Microsoft Foundry. Diagnosti
 | Interim deployment attempt | gpt-6-astra-q | Returned capacity errors; no evaluation published |
 | Current configuration | gpt-6.1-sol | Endpoint and credentials configured privately |
 
+### Manual model dry runs
+
+Use the registered `weekly-eval-bet.yml` workflow with a feature-branch ref and inputs `issue_number=54`, `dry_run=true`, `test_model=gpt-5-mini`, and optionally `diagnostics_first=true`. `test_model` is the actual Azure deployment name and is rejected unless `dry_run=true`. An empty override tests the production model. Scheduled scoring stays on **gpt-6.1-sol**.
+
+Dry runs make real, billable calls. They recapture the target page using the full evidence and scoring pipeline, not byte-identical evidence from a failed historical run. Minimal diagnostics and full scoring use the selected deployment. No report or sidecar is written to production paths, nothing is committed, and no issue comments or labels change.
+
+The run summary and 14-day `eval-dry-run` artifact retain sanitized per-attempt HTTP status, timing, retry/rate-limit headers, request ID, payload size, and completion/token usage when available. A validated response adds `candidate.md` and `candidate.json` in runner storage. These are review candidates, not published baselines; their evidence links refer to repository capture paths, and screenshots/raw requests are not uploaded. Failed attempts still upload diagnostics. Capacity errors, incomplete responses, refusals, and invalid scores fail the run. Full dry-run requests and body reads time out after 180 seconds per attempt; retries keep the 30/60-second policy and respect `retry-after`, failing instead of waiting more than 120 seconds for a retry.
+
 **Bets create lenses. Lenses build stacks. Stacks raise the craft bar.**
