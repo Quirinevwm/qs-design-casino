@@ -20,7 +20,7 @@ The early-morning slot aims to reduce exposure to peak model demand, not guarant
 
 ### Step by step
 
-1. **Find the bet** -- Picks the oldest `status:ready` issue (or a specific one if triggered manually). Extracts the title and body, then generates a filename containing the week, slug, workflow run ID, and attempt. Reruns do not overwrite earlier evidence or reports.
+1. **Find and guard the bet** -- Picks the oldest `status:ready` issue (or a specific one if triggered manually). Every mode verifies that the selected issue is open with `status:ready` before diagnostics or scoring; otherwise it skips the evaluation. Extracts the title and body, then generates a filename containing the week, slug, workflow run ID, and attempt. Eligible retries do not overwrite earlier evidence or reports.
 
 2. **Resolve the target page** -- Uses the issue's Target page field, falling back to the first HTTPS link for older issues. The URL must identify the page being evaluated, not merely a source issue or reference article.
 
@@ -34,13 +34,15 @@ The early-morning slot aims to reduce exposure to peak model demand, not guarant
 
 4. **Choose the craft scope** -- Match the target URL, rendering settings, rubric version, and captured evidence against prior machine-readable evaluation records. Choose a new baseline, an existing baseline reference, or a changed-evidence comparison as described below.
 
-5. **Auto-score with gpt-6.1-sol through Azure AI Foundry** -- Both diagnostics and scoring read the endpoint from `FOUNDRY_RESPONSES_ENDPOINT` and the key from `FOUNDRY_SCORING_API_KEY` in GitHub Actions secrets. Keep service URLs, resource identifiers, and incident details out of public descriptions and comments. There is no fallback to another resource or key. Send the named lens, bet details, rubric, captured text/HTML, and screenshots. For changed evidence, also send the baseline evidence. The model returns structured scores and a narrative. Validate dimensions and score ranges, calculate totals, and render the report in code. Invalid output fails the run; it does not publish missing scores as `?`. New reports record the model used; historical scores and model attribution remain unchanged.
+5. **Auto-score with gpt-5-mini through Microsoft Foundry** -- Production input validation, diagnostics, and scoring exclusively use `FOUNDRY_SWEDEN_RESPONSES_ENDPOINT` and `FOUNDRY_SWEDEN_API_KEY`, configured privately. Legacy `FOUNDRY_RESPONSES_ENDPOINT` and `FOUNDRY_SCORING_API_KEY` are not used in production; do not delete them. Never publish service URLs, resource/project identifiers, or secret values. There is no fallback connection. Send full evidence: the named lens, bet details, rubric, captured text/HTML, screenshots, and baseline evidence for changes. Production always uses the strict lens/mode Responses schema and trusted developer scoring policy, with `max_output_tokens=8192` including reasoning. Validate dimensions and score ranges, calculate totals, and render the report in code. Invalid or incomplete output fails without partial scores. Preserve existing reports, human ratings, and historical model attribution.
 
 6. **Build a scoped human review** -- Include the named lens dimensions. Include all six craft dimensions only when establishing a baseline; show only reassessed dimensions for a change review; otherwise link the baseline without requesting another craft score. Keep role-specific audience validation separate from design-lead review.
 
-7. **Commit and push** -- Save the markdown report, a same-name JSON sidecar with AI scores and evidence provenance, and the immutable capture folder to `weekly-eval-bets/` on main. Scoring runs are serialized so later runs can see earlier baselines.
+7. **Commit and push the validated evaluation** -- Save the markdown report, a same-name JSON sidecar with AI scores and evidence provenance, and the immutable capture folder to `weekly-eval-bets/` on main. Publication requires successful validation, commit, and confirmed push. Scoring runs remain serialized so later runs can see earlier baselines.
 
-8. **Comment on the issue** -- Post the report location and flip the label from `status:ready` to `status:reviewed`. This means AI-scored, not human-approved.
+8. **Comment on the issue only after confirmed push** -- Post the report location and flip the label from `status:ready` to `status:reviewed` only after publication succeeds. A failed commit or push leaves the issue unchanged. This means AI-scored, not human-approved.
+
+These are the production rollout's code defaults, not confirmation of live operational changes. Verify private configuration, GitHub workflow enablement, and recovery eligibility separately before live rollout. Production scoring reuses the bounded request helper: each request plus body read has a 180-second limit, with up to two transient retries waiting at least 30 and 60 seconds and honoring `retry-after`, `retry-after-ms`, and `x-ms-retry-after-ms`. Retry hints above 120 seconds fail rather than retry early or hold the queue indefinitely. Only selected sanitized service details appear in the run summary and runner-local `eval-scoring` metadata, never raw requests or response bodies.
 
 ### Craft once per comparable page version
 
@@ -76,11 +78,17 @@ A separate workflow (`friday-eval-review.yml`) runs every Friday. It gathers eve
 
 ### Manual trigger
 
-The workflow can be triggered manually from the Actions tab with an optional `issue_number` input to evaluate a specific bet out of order.
+The workflow can be triggered manually from the Actions tab with an optional `issue_number` input to evaluate a selected open `status:ready` bet out of order. The readiness guard applies before diagnostics and scoring in every mode.
 
 For a hosted diagnostic run, enable `diagnostics_first`. The workflow sends one minimal text request, then one existing screenshot under 1 MB. Only completed, usable responses from both controls allow the normal evaluation to proceed. Failures appear in the Actions run summary and stop before any scoring or queue updates.
 
 The optional `not_before` field delays a single manual run until an explicit UTC timestamp such as `2026-10-16T05:00:00Z` (October 15 at 10 p.m. Pacific). It accepts at most four hours of waiting and rejects stale timestamps. The wait happens on a GitHub-hosted runner, not your laptop, and does not add a recurring schedule. The run uses hosted runner time during the wait, and GitHub may delay its initial start. Manual diagnostics use the tools from the dispatched workflow revision, including when testing an unmerged PR branch. Model and endpoint settings are shared with the full scorer.
+
+Model, connection, output-budget, compact-evidence, and nonstrict-output test controls remain manual dry-run-only. Test secret names are selected before dereferencing, with no fallback if missing. Production remains full-evidence and strict even with `test_structured_output=false`; `test_max_output_tokens=0` omits the parameter only in dry runs. See [manual model dry runs](../weekly-eval-bets/README.md#manual-model-dry-runs) for controls and artifact isolation.
+
+### Recovery boundary
+
+Recovery is limited to verified failed evaluations still pending human review whose source issue remains open with `status:ready`. Never rescore successful or reviewed reports, requeue issues, or edit existing reports, human ratings, or historical attribution for recovery. Independently audit failure history and human-review status before selecting eligible issues for manual dispatch. This document establishes no specific case as eligible.
 
 ## Screenshots captured per evaluation
 
