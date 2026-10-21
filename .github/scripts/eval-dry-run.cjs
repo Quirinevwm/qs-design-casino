@@ -75,8 +75,9 @@ function createSanitizer(apiKey, endpoint) {
   return { sanitize, protect };
 }
 
-// Shared by minimal diagnostics and full scoring, loaded from the workflow revision.
-function createDryRunRecorder({ directory, summaryPath, phase, endpoint, apiKey, evidenceProfile = 'full', timeoutMs = 180000, fetchImpl = fetch }) {
+// Shared by minimal diagnostics and full scoring in production and dry runs.
+function createDryRunRecorder({ directory, summaryPath, phase, endpoint, apiKey, label = 'Dry-run', evidenceProfile = 'full', timeoutMs = 180000, fetchImpl = fetch }) {
+  if (!['Dry-run', 'Production'].includes(label)) throw new Error('Unsupported recorder label');
   if (!['full', 'compact'].includes(evidenceProfile)) throw new Error('Unsupported evidence profile');
   const attempts = [];
   const { sanitize, protect } = createSanitizer(apiKey, endpoint);
@@ -156,7 +157,15 @@ function createDryRunRecorder({ directory, summaryPath, phase, endpoint, apiKey,
             attempt.request_id = ['x-request-id', 'apim-request-id', 'x-ms-request-id']
               .map(name => safeHeader(response, name, /^[A-Za-z0-9_-]{1,128}$/)).find(Boolean) || null;
             const body = await response.text();
-            return { ok: response.ok, status: response.status, headers: response.headers, text: async () => body, json: async () => JSON.parse(body) };
+            return {
+              ok: response.ok, status: response.status, headers: response.headers, text: async () => body,
+              json: async () => {
+                try { return JSON.parse(body); } catch (error) {
+                  if (error instanceof SyntaxError) throw new SyntaxError('Foundry response body was not valid JSON');
+                  throw error;
+                }
+              },
+            };
           })(),
           new Promise((_, reject) => {
             timer = setTimeout(() => {
@@ -219,14 +228,14 @@ function createDryRunRecorder({ directory, summaryPath, phase, endpoint, apiKey,
         return response;
       } catch (error) {
         attempt.error_code = error?.code === 'timeout' || error?.name === 'AbortError' ? 'timeout' : 'network_error';
-        const failure = new Error(`Foundry dry-run ${attempt.error_code}`);
+        const failure = new Error(`Foundry ${label.toLowerCase()} ${attempt.error_code}`);
         failure.code = attempt.error_code;
         throw failure;
       } finally {
         clearTimeout(timer);
         attempt.elapsed_ms = Date.now() - start;
         persist();
-        fs.appendFileSync(summaryPath, `\n### Dry-run ${phase}, attempt ${attempt.attempt}\n\n\`\`\`json\n${JSON.stringify(attempt, null, 2)}\n\`\`\`\n`);
+        fs.appendFileSync(summaryPath, `\n### ${label} ${phase}, attempt ${attempt.attempt}\n\n\`\`\`json\n${JSON.stringify(attempt, null, 2)}\n\`\`\`\n`);
       }
     },
     lastErrorMessage() {
@@ -239,17 +248,17 @@ function createDryRunRecorder({ directory, summaryPath, phase, endpoint, apiKey,
       ].filter(Boolean).join(': '));
     },
     recordFailure(error) {
-      const message = sanitize(error?.message) || 'Unknown dry-run error';
+      const message = sanitize(error?.message) || `Unknown ${label.toLowerCase()} error`;
       failure = { message };
       persist();
-      fs.appendFileSync(summaryPath, `\nDry-run failure:\n\n\`\`\`text\n${message.replaceAll('`', "'")}\n\`\`\`\n`);
+      fs.appendFileSync(summaryPath, `\n${label} failure:\n\n\`\`\`text\n${message.replaceAll('`', "'")}\n\`\`\`\n`);
       return message;
     },
     finish(value) {
       if (!attempts.length) return;
       outcome = value;
       persist();
-      fs.appendFileSync(summaryPath, `\nDry-run ${phase}: ${outcome}.\n`);
+      fs.appendFileSync(summaryPath, `\n${label} ${phase}: ${outcome}.\n`);
     },
   };
 }

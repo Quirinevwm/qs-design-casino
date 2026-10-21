@@ -9,8 +9,8 @@ const scoringModel = workflow.match(/^  SCORING_MODEL: '([^']+)'/m)?.[1];
 const responsesEndpoint = 'https://scoring.example/api/projects/test/openai/v1/responses';
 const testResponsesEndpoint = 'https://test-scoring.example/openai/v1/responses';
 const connectionSecrets = {
-  FOUNDRY_RESPONSES_ENDPOINT: responsesEndpoint,
-  FOUNDRY_SCORING_API_KEY: 'fake-test-key',
+  FOUNDRY_SWEDEN_RESPONSES_ENDPOINT: responsesEndpoint,
+  FOUNDRY_SWEDEN_API_KEY: 'fake-test-key',
   FOUNDRY_TEST_RESPONSES_ENDPOINT: testResponsesEndpoint,
   FOUNDRY_TEST_API_KEY: 'fake-dedicated-test-key',
 };
@@ -204,7 +204,7 @@ test('workflow keeps immutable report and capture paths and commits the sidecar'
 });
 
 test('one-time diagnostics wait on GitHub and gate scoring without changing the regular schedule', () => {
-  assert.equal(scoringModel, 'gpt-6.1-sol');
+  assert.equal(scoringModel, 'gpt-5-mini');
   assert.equal(selectedEnvironment('Check minimal text and image requests', { eventName: 'schedule' }).FOUNDRY_RESPONSES_ENDPOINT, responsesEndpoint);
   assert.ok(workflow.includes('timeout-minutes: 330'));
   assert.ok(workflow.includes('ref: ${{ github.sha }}'));
@@ -212,19 +212,19 @@ test('one-time diagnostics wait on GitHub and gate scoring without changing the 
   const wait = workflow.indexOf('- name: Wait for the requested one-time start');
   const checks = workflow.indexOf('- name: Check minimal text and image requests');
   const find = workflow.indexOf('- name: Find ready bet');
-  assert.ok(wait >= 0 && checks > wait && find > checks);
+  assert.ok(wait >= 0 && find > wait && checks > find);
   assert.ok(workflow.includes("if (!success) throw new Error('Minimal Foundry checks failed"));
-  assert.ok(workflow.includes('fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, renderSummary(result))'));
+  assert.ok(workflow.includes("recorder.finish(success ? 'completed' : 'failed')"));
   const tools = workflow.split('- name: Check out diagnostic tools from the workflow revision')[1].split('- name: Wait')[0];
   assert.ok(tools.includes("if: github.event_name == 'workflow_dispatch'"));
-  const checkStep = workflow.split('- name: Check minimal text and image requests')[1].split('- name: Find ready bet')[0];
-  assert.ok(checkStep.includes("if: github.event_name == 'workflow_dispatch' && inputs.diagnostics_first"));
+  const checkStep = stepSource('Check minimal text and image requests');
+  assert.ok(checkStep.includes("if: github.event_name == 'workflow_dispatch' && inputs.diagnostics_first && steps.find-bet.outputs.skip == 'false'"));
 });
 
 test('diagnostics and scoring use secret-backed configuration without public service identifiers', () => {
   const condition = "github.event_name == 'workflow_dispatch' && inputs.dry_run && inputs.test_connection";
-  const endpointBinding = `FOUNDRY_RESPONSES_ENDPOINT: \${{ secrets[${condition} && 'FOUNDRY_TEST_RESPONSES_ENDPOINT' || 'FOUNDRY_RESPONSES_ENDPOINT'] }}`;
-  const keyBinding = `FOUNDRY_API_KEY: \${{ secrets[${condition} && 'FOUNDRY_TEST_API_KEY' || 'FOUNDRY_SCORING_API_KEY'] }}`;
+  const endpointBinding = `FOUNDRY_RESPONSES_ENDPOINT: \${{ secrets[${condition} && 'FOUNDRY_TEST_RESPONSES_ENDPOINT' || 'FOUNDRY_SWEDEN_RESPONSES_ENDPOINT'] }}`;
+  const keyBinding = `FOUNDRY_API_KEY: \${{ secrets[${condition} && 'FOUNDRY_TEST_API_KEY' || 'FOUNDRY_SWEDEN_API_KEY'] }}`;
   for (const name of connectionSteps) {
     assert.ok(stepSource(name).includes(endpointBinding), `${name} must select the endpoint secret name before dereferencing`);
     assert.ok(stepSource(name).includes(keyBinding), `${name} must select the key secret name before dereferencing`);
@@ -277,10 +277,11 @@ function scoringFixture(t) {
       const request = JSON.parse(options.body);
       requests.push(request);
       assert.equal(request.model, expectedModel);
-      const bounded = eventName === 'workflow_dispatch' && dryRun && maxOutputTokens !== 0;
-      const structured = eventName === 'workflow_dispatch' && dryRun && structuredOutput;
-      assert.deepEqual(Object.keys(request).sort(), ['input', 'model', ...(bounded ? ['max_output_tokens'] : []), ...(structured ? ['text'] : [])].sort(), 'Only explicit dry-run flags may change output parameters');
-      if (bounded) assert.equal(request.max_output_tokens, Number(maxOutputTokens));
+      const isDryRun = eventName === 'workflow_dispatch' && dryRun;
+      const bounded = !isDryRun || maxOutputTokens !== 0;
+      const structured = !isDryRun || structuredOutput;
+      assert.deepEqual(Object.keys(request).sort(), ['input', 'model', ...(bounded ? ['max_output_tokens'] : []), ...(structured ? ['text'] : [])].sort(), 'Production always uses strict output and the bounded allowance; dry-run controls remain independent');
+      if (bounded) assert.equal(request.max_output_tokens, isDryRun ? Number(maxOutputTokens) : 8192);
       const images = request.input[0].content.filter(item => item.type === 'input_image');
       assert.equal(images.length, expectedImages);
       for (const image of images) {
@@ -306,7 +307,7 @@ function scoringFixture(t) {
       require: (name) => {
         if (name.endsWith('eval-scoring.cjs')) return require('./eval-scoring.cjs');
         if (name.endsWith('eval-response-schema.cjs')) {
-          assert.equal(name, path.join(rootDir, '.eval-diagnostics-tools/.github/scripts/eval-response-schema.cjs'));
+          assert.equal(name, path.join(rootDir, env.DRY_RUN === 'true' ? '.eval-diagnostics-tools/.github/scripts/eval-response-schema.cjs' : '.github/scripts/eval-response-schema.cjs'));
           return require('./eval-response-schema.cjs');
         }
         if (name.endsWith('eval-evidence-profile.cjs')) {
@@ -314,7 +315,7 @@ function scoringFixture(t) {
           return require('./eval-evidence-profile.cjs');
         }
         if (name.endsWith('eval-dry-run.cjs')) {
-          assert.equal(name, path.join(rootDir, '.eval-diagnostics-tools/.github/scripts/eval-dry-run.cjs'));
+          assert.equal(name, path.join(rootDir, env.DRY_RUN === 'true' ? '.eval-diagnostics-tools/.github/scripts/eval-dry-run.cjs' : '.github/scripts/eval-dry-run.cjs'));
           return {
             getRetryDelayMs: require('./eval-dry-run.cjs').getRetryDelayMs,
             createDryRunRecorder: (options) => require('./eval-dry-run.cjs').createDryRunRecorder({
@@ -365,13 +366,13 @@ function scoringFixture(t) {
     };
     const run = new AsyncFunction(...Object.keys(bindings), source);
     await run(...Object.values(bindings));
-    const directory = path.join(runnerDir, 'eval-dry-run');
-    const outputPath = dryRun ? path.join(directory, 'candidate.md') : path.join(rootDir, 'weekly-eval-bets', filename);
+    const directory = path.join(runnerDir, env.DRY_RUN === 'true' ? 'eval-dry-run' : 'eval-scoring');
+    const outputPath = env.DRY_RUN === 'true' ? path.join(directory, 'candidate.md') : path.join(rootDir, 'weekly-eval-bets', filename);
     return {
       outputs, failures, waits, requests, writes,
       markdown: fs.existsSync(outputPath) ? fs.readFileSync(outputPath, 'utf8') : null,
       record: fs.existsSync(outputPath) ? JSON.parse(fs.readFileSync(outputPath.replace(/\.md$/, '.json'), 'utf8')) : null,
-      metadata: dryRun && fs.existsSync(path.join(directory, 'scoring.json'))
+      metadata: fs.existsSync(path.join(directory, 'scoring.json'))
         ? JSON.parse(fs.readFileSync(path.join(directory, 'scoring.json'), 'utf8')) : null,
       summary: fs.existsSync(path.join(runnerDir, 'summary')) ? fs.readFileSync(path.join(runnerDir, 'summary'), 'utf8') : '',
     };
@@ -385,8 +386,8 @@ test('scoring step runs with github-script bindings for baseline, reuse, and a f
     const published = await runScore(options);
     assert.equal(published.outputs.evaluation, 'complete');
     assert.deepEqual(published.failures, []);
-    assert.equal(published.record.model, 'gpt-6.1-sol');
-    assert.ok(published.markdown.includes('*Scoring model: gpt-6.1-sol*'));
+    assert.equal(published.record.model, 'gpt-5-mini');
+    assert.ok(published.markdown.includes('*Scoring model: gpt-5-mini*'));
     return published;
   };
 
@@ -401,6 +402,8 @@ test('scoring step runs with github-script bindings for baseline, reuse, and a f
     },
   });
   assert.equal(baseline.record.ai.craft.totalScore, 28);
+  assert.deepEqual(baseline.requests[0].text.format.schema.properties.craft.properties.mode.enum, ['baseline']);
+  assert.deepEqual(baseline.requests[0].text.format.schema.properties.craft.properties.dimensions.items.properties.name.enum, dimensions);
   const reused = await score({
     filename: 'trust.md',
     title: 'Product trust architecture',
@@ -418,6 +421,11 @@ test('scoring step runs with github-script bindings for baseline, reuse, and a f
   assert.match(reused.markdown, /\| Sequence \| 3\/5 \|/);
   assert.doesNotMatch(reused.markdown, /### Human craft review/);
   assert.equal(reused.record.ai.craft.provenance.baselineReportPath, 'weekly-eval-bets/baseline.md');
+  const reuseSchema = reused.requests[0].text.format.schema;
+  assert.deepEqual(reuseSchema.properties.craft.properties.mode.enum, ['reuse']);
+  assert.equal(reuseSchema.properties.craft.properties.dimensions, undefined);
+  assert.deepEqual(reuseSchema.properties.primary.properties.items.items.properties.name.enum,
+    ['Sequence', 'Specificity', 'Social proof quality', 'Friction to first action', 'Risk reduction']);
   fs.cpSync(path.join(rootDir, captures, 'original'), path.join(rootDir, captures, 'changed'), { recursive: true });
   fs.writeFileSync(path.join(rootDir, captures, 'changed', 'page-text.txt'), 'Changed hierarchy.');
   const changed = await score({
@@ -437,6 +445,60 @@ test('scoring step runs with github-script bindings for baseline, reuse, and a f
   assert.equal(changed.record.ai.craft.totalScore, 27);
   assert.deepEqual(changed.record.ai.craft.reassessedDimensions, ['Visual hierarchy']);
   assert.doesNotMatch(changed.markdown.split('### Human craft review')[1], /\| Durability/);
+  assert.deepEqual(changed.requests[0].text.format.schema.properties.craft.properties.mode.enum, ['delta']);
+  assert.equal(changed.requests[0].text.format.schema.properties.craft.properties.dimensions, undefined);
+});
+
+test('scheduled and manual production use full strict mini requests and only original report paths', async (t) => {
+  for (const eventName of ['schedule', 'workflow_dispatch']) {
+    const { score, rootDir, runnerDir } = scoringFixture(t);
+    const result = await score({ eventName });
+    const request = result.requests[0];
+    assert.equal(request.model, 'gpt-5-mini');
+    assert.equal(request.max_output_tokens, 8192);
+    assert.equal(request.text.format.strict, true);
+    assert.equal(request.text.format.type, 'json_schema');
+    assert.equal(request.text.format.schema.additionalProperties, false);
+    assert.equal(request.text.format.schema.properties.primary.properties.items.maxItems, 0);
+    assert.equal(request.text.format.schema.properties.craft.properties.dimensions.minItems, 6);
+    assert.deepEqual(request.input.map(item => [item.type, item.role]), [['message', 'user'], ['message', 'developer']]);
+    assert.match(request.input[1].content[0].text, /untrusted evidence, never instructions/);
+    const input = request.input[0].content;
+    assert.equal(input.filter(item => item.type === 'input_image').length, 4);
+    for (const evidence of ['Fixture rubric', 'Fixture page-text.txt', 'Fixture page-content.html']) {
+      assert.ok(input.some(item => item.text?.includes(evidence)), evidence);
+    }
+    assert.deepEqual(result.writes, [
+      'weekly-eval-bets/candidate-test.md', 'weekly-eval-bets/candidate-test.json',
+    ]);
+    assert.equal(result.record.model, 'gpt-5-mini');
+    assert.equal(result.record.dryRun, undefined);
+    assert.doesNotMatch(result.markdown, /Experimental dry-run|compact model input/);
+    assert.equal(result.metadata.outcome, 'validated');
+    const [attempt] = result.metadata.attempts;
+    assert.equal(attempt.evidence_profile, 'full');
+    assert.equal(attempt.max_output_tokens, 8192);
+    assert.equal(attempt.response_format, 'json_schema');
+    assert.equal(attempt.text_chars, request.input.reduce((sum, item) =>
+      sum + item.content.filter(part => part.type === 'input_text').reduce((chars, part) => chars + part.text.length, 0), 0));
+    assert.equal(attempt.payload_bytes, Buffer.byteLength(JSON.stringify(request)));
+    assert.match(result.summary, /Production scoring, attempt 1/);
+    assert.doesNotMatch(result.summary, /Dry-run|scoring\.example|fake-test-key|Fixture rubric|data:image/);
+    assert.equal(fs.existsSync(path.join(runnerDir, 'eval-scoring/scoring.json')), true);
+    assert.equal(fs.existsSync(path.join(runnerDir, 'eval-dry-run')), false);
+    assert.deepEqual(fs.readdirSync(path.join(rootDir, 'weekly-eval-bets')).sort(),
+      ['candidate-test.json', 'candidate-test.md', 'screenshots']);
+  }
+});
+
+test('manual issue number validation rejects unsafe values without reflecting input', () => {
+  const env = selectedEnvironment('Validate scoring inputs');
+  for (const ISSUE_NUMBER of ['0', '-1', '01', '1.5', '1e4', '9007199254740992', ' 54', '54\nskip=false', '$(touch injected)']) {
+    assert.throws(() => validateScoringInputs({ ...env, ISSUE_NUMBER }), { message: 'issue_number must be a positive safe integer.' });
+  }
+  for (const ISSUE_NUMBER of ['', '54', '9007199254740991']) {
+    validateScoringInputs({ ...env, ISSUE_NUMBER });
+  }
 });
 
 test('manual dry-run inputs are explicit booleans and reject a publishing override before any requests', () => {
@@ -503,7 +565,7 @@ test('connection expressions select test secret names only for an explicitly opt
 
 test('default connections do not require test secrets and selected tests do not require production secrets', () => {
   for (const [inputs, secrets] of [
-    [{ dry_run: true }, { FOUNDRY_RESPONSES_ENDPOINT: responsesEndpoint, FOUNDRY_SCORING_API_KEY: 'fake-test-key' }],
+    [{ dry_run: true }, { FOUNDRY_SWEDEN_RESPONSES_ENDPOINT: responsesEndpoint, FOUNDRY_SWEDEN_API_KEY: 'fake-test-key' }],
     [{ dry_run: true, test_connection: true }, { FOUNDRY_TEST_RESPONSES_ENDPOINT: testResponsesEndpoint, FOUNDRY_TEST_API_KEY: 'fake-dedicated-test-key' }],
   ]) {
     for (const step of connectionSteps) {
@@ -530,9 +592,25 @@ test('missing selected test secrets never fall back to populated production secr
   }
 });
 
+test('production secrets never fall back to legacy or test credentials', () => {
+  for (const name of ['FOUNDRY_SWEDEN_RESPONSES_ENDPOINT', 'FOUNDRY_SWEDEN_API_KEY']) {
+    for (const eventName of ['schedule', 'workflow_dispatch']) {
+      const secrets = {
+        ...connectionSecrets, [name]: '',
+        FOUNDRY_RESPONSES_ENDPOINT: 'https://legacy.example/responses',
+        FOUNDRY_SCORING_API_KEY: 'fake-legacy-key',
+      };
+      for (const step of connectionSteps) {
+        const env = selectedEnvironment(step, { eventName, secrets });
+        assert.throws(() => validateScoringInputs(env), { message: `Missing secret: ${name}.` });
+      }
+    }
+  }
+});
+
 test('selected endpoint validation requires HTTPS without exposing the endpoint or credentials', () => {
   for (const testConnection of [false, true]) {
-    const name = testConnection ? 'FOUNDRY_TEST_RESPONSES_ENDPOINT' : 'FOUNDRY_RESPONSES_ENDPOINT';
+    const name = testConnection ? 'FOUNDRY_TEST_RESPONSES_ENDPOINT' : 'FOUNDRY_SWEDEN_RESPONSES_ENDPOINT';
     for (const endpoint of ['invalid-private-value', 'http://example.com/responses', 'https://private-user:private-key@example.com/responses']) {
       const env = selectedEnvironment('Validate scoring inputs', {
         inputs: { dry_run: true, test_connection: testConnection },
@@ -635,7 +713,7 @@ test('gpt-5.6-sol connection experiments preserve the original full image payloa
   assert.deepEqual(results[0].requests, results[1].requests, 'Changing connections must not change the scoring schema, prompt, evidence, or output budget');
 });
 
-test('output budget is validated before requests and only applies to manual dry runs', async (t) => {
+test('output budget override is validated before requests and only applies to manual dry runs', async (t) => {
   for (const value of [-1, 1, 511, 32769, 8192.5, 'NaN', 'Infinity', '1e4', '8192;exit']) {
     const env = selectedEnvironment('Validate scoring inputs', {
       inputs: { dry_run: true, test_max_output_tokens: value },
@@ -649,7 +727,7 @@ test('output budget is validated before requests and only applies to manual dry 
   }
   await assert.rejects(scoringFixture(t).score({ maxOutputTokens: 8192 }), /only with dry_run=true/);
   const scheduled = await scoringFixture(t).score({ eventName: 'schedule', maxOutputTokens: 8192 });
-  assert.equal(scheduled.requests[0].max_output_tokens, undefined);
+  assert.equal(scheduled.requests[0].max_output_tokens, 8192);
   assert.equal(scheduled.outputs.evaluation, 'complete');
 });
 
@@ -681,12 +759,12 @@ test('compact evidence is an explicit dry-run-only opt-in with truthful candidat
   assert.deepEqual(result.failures, []);
 });
 
-test('strict output is a dry-run-only opt-in that preserves full evidence and constrains craft placement', async (t) => {
+test('strict output is mandatory in production and an independent dry-run opt-in', async (t) => {
   assert.match(workflow, /test_structured_output:\n(?:.*\n)*?        default: false\n        type: boolean/);
   await assert.rejects(scoringFixture(t).score({ structuredOutput: true }), /test_structured_output is allowed only with dry_run=true/);
   const scheduled = await scoringFixture(t).score({ eventName: 'schedule', structuredOutput: true });
-  assert.equal(scheduled.requests[0].text, undefined);
-  assert.equal(scheduled.requests[0].input.length, 1);
+  assert.equal(scheduled.requests[0].text.format.strict, true);
+  assert.equal(scheduled.requests[0].input.length, 2);
   assert.equal(scheduled.record.dryRun, undefined);
   const { score } = scoringFixture(t);
   const original = await score({ dryRun: true, testModel: 'gpt-5-mini', maxOutputTokens: 8192 });
@@ -778,6 +856,56 @@ test('dry-run retries respect Azure millisecond hints and do not retry sooner th
   assert.match(blocked.failures.join(), /no early retry/);
 });
 
+test('production retries honor millisecond hints and retain sanitized service errors', async (t) => {
+  for (const testConnection of [false, true]) {
+    const result = await scoringFixture(t).score({
+      eventName: 'schedule', testConnection,
+      replies: [
+        { status: 429, headers: { 'retry-after-ms': '45123' }, body: { error: { code: 'rate_limit_exceeded' } } },
+        { status: 503, headers: { 'x-ms-retry-after-ms': '75000' }, body: { error: {} } },
+        { status: 429, body: { error: {
+          code: 'rate_limit_exceeded',
+          message: `Capacity unavailable at ${responsesEndpoint} scoring.example test fake-test-key`,
+        } } },
+      ],
+    });
+    assert.deepEqual(result.waits, [45123, 75000]);
+    assert.equal(result.outputs.evaluation, undefined);
+    assert.equal(result.metadata.outcome, 'failed');
+    assert.equal(result.metadata.attempts.length, 3);
+    assert.equal(result.metadata.attempts[0].max_output_tokens, 8192);
+    assert.equal(result.metadata.attempts[0].response_format, 'json_schema');
+    assert.match(result.failures.join(), /rate_limit_exceeded: Capacity unavailable/);
+    assert.doesNotMatch(result.summary + JSON.stringify(result.metadata) + result.failures.join(), /scoring\.example|fake-test-key|\/projects\/test|Dry-run/);
+    assert.deepEqual(result.writes, []);
+    assert.equal(result.markdown, null);
+  }
+});
+
+test('production retry hints cannot exceed two minutes or overflow timers', async (t) => {
+  for (const headers of [
+    { 'x-ms-retry-after-ms': '180000' },
+    { 'retry-after-ms': '120001' },
+    { 'retry-after': '121' },
+    { 'retry-after': new Date(Date.now() + 3600000).toUTCString() },
+    { 'retry-after-ms': '2147483648' },
+    { 'retry-after': '2147484' },
+  ]) {
+    const result = await scoringFixture(t).score({ replies: [{ status: 429, headers, body: { error: {} } }] });
+    assert.equal(result.requests.length, 1);
+    assert.deepEqual(result.waits, []);
+    assert.match(result.failures.join(), /production wait limit \(120s\); no early retry/);
+    assert.equal(result.metadata.outcome, 'failed');
+    assert.equal(result.outputs.evaluation, undefined);
+    assert.deepEqual(result.writes, []);
+  }
+  const bounded = await scoringFixture(t).score({
+    replies: [{ status: 429, headers: { 'retry-after-ms': '120000' }, body: { error: {} } }, {}],
+  });
+  assert.deepEqual(bounded.waits, [120000]);
+  assert.equal(bounded.outputs.evaluation, 'complete');
+});
+
 test('a bounded incomplete response reports its reason and never publishes partial scores', async (t) => {
   const result = await scoringFixture(t).score({
     dryRun: true, maxOutputTokens: 8192,
@@ -830,15 +958,41 @@ test('full scoring rejects incomplete HTTP 200, refusals, missing output, malfor
     ['not JSON', 'invalid_json'],
     [{ output: [{ type: 'message', content: [{ type: 'output_text', text: JSON.stringify(baselineResponse) }] }] }, 'response_not_completed'],
   ]) {
-    const result = await scoringFixture(t).score({ dryRun: true, replies: [{ body }] });
-    assert.equal(result.failures.length, 1, JSON.stringify(body));
+    for (const dryRun of [false, true]) {
+      const result = await scoringFixture(t).score({ dryRun, replies: [{ body }] });
+      assert.equal(result.failures.length, 1, JSON.stringify(body));
+      assert.equal(result.outputs.evaluation, undefined);
+      assert.equal(result.markdown, null);
+      assert.deepEqual(result.writes, []);
+      assert.equal(result.metadata.outcome, 'failed');
+      assert.equal(result.metadata.attempts[0].http_status, 200);
+      assert.equal(result.metadata.attempts[0].error_code, errorCode);
+      assert.doesNotMatch(result.summary, /scoring\.example|Do not log this/);
+    }
+  }
+});
+
+test('completed service errors and misplaced scores never become a production evaluation', async (t) => {
+  for (const [body, failure] of [
+    [{
+      status: 'completed',
+      error: { code: 'InternalFailure', message: `Try again at ${responsesEndpoint} fake-test-key` },
+      output: [{ type: 'message', content: [{ type: 'output_text', text: JSON.stringify(baselineResponse) }] }],
+    }, /Foundry service error: HTTP 200: service_error: InternalFailure: Try again/],
+    [{
+      status: 'completed',
+      output: [{ type: 'message', content: [{ type: 'output_text', text: JSON.stringify({
+        ...baselineResponse, primary: { ...emptyPrimary, items: [{ name: 'Visual hierarchy', score: 4, rationale: 'Misplaced.' }] },
+      }) }] }],
+    }, /Craft lens must not return primary score items/],
+  ]) {
+    const result = await scoringFixture(t).score({ replies: [{ body }] });
+    assert.match(result.failures.join(), failure);
+    assert.equal(result.metadata.outcome, 'failed');
     assert.equal(result.outputs.evaluation, undefined);
     assert.equal(result.markdown, null);
     assert.deepEqual(result.writes, []);
-    assert.equal(result.metadata.outcome, 'failed');
-    assert.equal(result.metadata.attempts[0].http_status, 200);
-    assert.equal(result.metadata.attempts[0].error_code, errorCode);
-    assert.doesNotMatch(result.summary, /scoring\.example|Do not log this/);
+    assert.doesNotMatch(result.summary + result.failures.join(), /scoring\.example|fake-test-key/);
   }
 });
 
@@ -847,14 +1001,16 @@ test('non-transient HTTP and network failures retain sanitized diagnostics witho
     { replies: [{ status: 400, body: { error: { message: responsesEndpoint } } }] },
     { fetchImpl: async () => { throw new Error(`${responsesEndpoint} fake-test-key`); } },
   ]) {
-    const result = await scoringFixture(t).score({ dryRun: true, ...options });
-    assert.equal(result.requests.length, 1);
-    assert.deepEqual(result.waits, []);
-    assert.equal(result.outputs.evaluation, undefined);
-    assert.equal(result.failures.length, 1);
-    assert.equal(result.metadata.outcome, 'failed');
-    assert.equal(result.metadata.attempts[0].error_code, options.replies ? 'http_error' : 'network_error');
-    assert.doesNotMatch(result.summary + result.failures.join(), /scoring\.example|fake-test-key/);
+    for (const dryRun of [false, true]) {
+      const result = await scoringFixture(t).score({ dryRun, ...options });
+      assert.equal(result.requests.length, 1);
+      assert.deepEqual(result.waits, []);
+      assert.equal(result.outputs.evaluation, undefined);
+      assert.equal(result.failures.length, 1);
+      assert.equal(result.metadata.outcome, 'failed');
+      assert.equal(result.metadata.attempts[0].error_code, options.replies ? 'http_error' : 'network_error');
+      assert.doesNotMatch(result.summary + result.failures.join(), /scoring\.example|fake-test-key/);
+    }
   }
 });
 
@@ -873,38 +1029,40 @@ test('post-response validation failures retain an actionable sanitized reason', 
   assert.equal(result.outputs.evaluation, undefined);
 });
 
-test('dry-run request and response body timeouts fail clearly, retain metadata and clear their timers', async (t) => {
-  for (const bodyTimeout of [false, true]) {
+test('production and dry-run request and body timeouts fail clearly and clear their timers', async (t) => {
+  for (const dryRun of [false, true]) {
+    for (const bodyTimeout of [false, true]) {
+      let signal;
+      const result = await scoringFixture(t).score({
+        dryRun, timeoutMs: 5,
+        fetchImpl: async (_url, options) => {
+          signal = options.signal;
+          if (!bodyTimeout) return new Promise(() => {});
+          return { ok: true, status: 200, headers: { get: () => null }, text: () => new Promise(() => {}) };
+        },
+      });
+      assert.equal(signal.aborted, true);
+      assert.match(result.failures.join(), /timed out/);
+      assert.equal(result.outputs.evaluation, undefined);
+      assert.equal(result.metadata.outcome, 'failed');
+      assert.equal(result.metadata.attempts[0].http_status, bodyTimeout ? 200 : null);
+      assert.equal(result.metadata.attempts[0].error_code, 'timeout');
+      assert.deepEqual(result.writes, []);
+    }
     let signal;
     const result = await scoringFixture(t).score({
-      dryRun: true, timeoutMs: 5,
+      dryRun, timeoutMs: 5,
       fetchImpl: async (_url, options) => {
         signal = options.signal;
-        if (!bodyTimeout) return new Promise(() => {});
-        return { ok: true, status: 200, headers: { get: () => null }, text: () => new Promise(() => {}) };
+        return { ok: true, status: 200, headers: { get: () => null }, text: async () => JSON.stringify({
+          status: 'completed', output: [{ type: 'message', content: [{ type: 'output_text', text: JSON.stringify(baselineResponse) }] }],
+        }) };
       },
     });
-    assert.equal(signal.aborted, true);
-    assert.match(result.failures.join(), /timed out/);
-    assert.equal(result.outputs.evaluation, undefined);
-    assert.equal(result.metadata.outcome, 'failed');
-    assert.equal(result.metadata.attempts[0].http_status, bodyTimeout ? 200 : null);
-    assert.equal(result.metadata.attempts[0].error_code, 'timeout');
-    assert.deepEqual(result.writes, []);
+    await new Promise(resolve => setTimeout(resolve, 15));
+    assert.equal(signal.aborted, false, 'Successful requests must clear their timeout');
+    assert.equal(result.outputs.evaluation, 'complete');
   }
-  let signal;
-  const result = await scoringFixture(t).score({
-    dryRun: true, timeoutMs: 5,
-    fetchImpl: async (_url, options) => {
-      signal = options.signal;
-      return { ok: true, status: 200, headers: { get: () => null }, text: async () => JSON.stringify({
-        status: 'completed', output: [{ type: 'message', content: [{ type: 'output_text', text: JSON.stringify(baselineResponse) }] }],
-      }) };
-    },
-  });
-  await new Promise(resolve => setTimeout(resolve, 15));
-  assert.equal(signal.aborted, false, 'Successful requests must clear their timeout');
-  assert.equal(result.outputs.evaluation, 'complete');
 });
 
 function minimalDiagnosticsFixture(t, {
@@ -940,14 +1098,16 @@ function minimalDiagnosticsFixture(t, {
         statSync: (file) => fs.statSync(path.resolve(rootDir, file)),
       };
       if (name === 'node:path') return { ...path, join: (...parts) => parts[0] === 'weekly-eval-bets/screenshots' ? path.join(rootDir, ...parts) : path.join(...parts) };
-      if (name === 'node:child_process') return { execFileSync: () => JSON.stringify({ state: 'open', labels: [{ name: 'status:ready' }] }) };
       if (name.endsWith('eval-diagnostics.cjs')) return {
         ...require('./eval-diagnostics.cjs'),
         runDiagnostics: (options) => require('./eval-diagnostics.cjs').runDiagnostics({ fetchImpl: mockFetch, ...options }),
       };
-      if (name.endsWith('eval-dry-run.cjs')) return {
-        createDryRunRecorder: (options) => require('./eval-dry-run.cjs').createDryRunRecorder({ ...options, fetchImpl: mockFetch }),
-      };
+      if (name.endsWith('eval-dry-run.cjs')) {
+        assert.equal(name, dryRun ? './.eval-diagnostics-tools/.github/scripts/eval-dry-run.cjs' : './.github/scripts/eval-dry-run.cjs');
+        return {
+          createDryRunRecorder: (options) => require('./eval-dry-run.cjs').createDryRunRecorder({ ...options, fetchImpl: mockFetch }),
+        };
+      }
       throw new Error(`Unexpected dependency: ${name}`);
     },
     process: { env: {
@@ -972,6 +1132,40 @@ test('minimal dry-run diagnostics use the same deployment and retain sanitized f
     assert.equal(metadata.attempts[0].http_status, status);
     if (status !== 200) assert.match(metadata.failure.message, new RegExp(`text check failed \\(HTTP ${status}\\)`));
     assert.doesNotMatch(fs.readFileSync(summaryPath, 'utf8') + JSON.stringify(metadata), /scoring\.example|fake-test-key|fake-dedicated-test-key/);
+  }
+});
+
+test('minimal production diagnostics use mini and redact endpoint namespaces and credentials', async (t) => {
+  for (const status of [200, 429]) {
+    const { run, calls, runnerDir, summaryPath } = minimalDiagnosticsFixture(t, {
+      dryRun: false, testModel: '', status,
+    });
+    if (status === 200) await run;
+    else await assert.rejects(run, /Minimal Foundry checks failed/);
+    assert.equal(calls.length, status === 200 ? 2 : 1);
+    assert.ok(calls.every(call => call.model === 'gpt-5-mini'));
+    const metadata = JSON.parse(fs.readFileSync(path.join(runnerDir, 'eval-scoring/diagnostics.json'), 'utf8'));
+    assert.equal(metadata.outcome, status === 200 ? 'completed' : 'failed');
+    assert.equal(fs.existsSync(path.join(runnerDir, 'eval-dry-run')), false);
+    const summary = fs.readFileSync(summaryPath, 'utf8');
+    assert.match(summary, /Production diagnostics/);
+    assert.doesNotMatch(summary + JSON.stringify(metadata), /scoring\.example|\/projects\/test|fake-test-key|Dry-run/);
+  }
+});
+
+test('malformed response and evaluation JSON never log body excerpts in either mode', async (t) => {
+  for (const dryRun of [false, true]) {
+    for (const body of [
+      'private-body-must-not-be-logged',
+      { status: 'completed', output: [{ type: 'message', content: [{ type: 'output_text', text: 'private-body-must-not-be-logged' }] }] },
+    ]) {
+      const result = await scoringFixture(t).score({ dryRun, replies: [{ body }] });
+      assert.equal(result.outputs.evaluation, undefined);
+      assert.equal(result.metadata.outcome, 'failed');
+      assert.match(result.failures.join(), /valid (?:evaluation )?JSON/);
+      assert.doesNotMatch(result.failures.join() + result.summary + JSON.stringify(result.metadata), /private-body-must-not-be-logged/);
+      assert.deepEqual(result.writes, []);
+    }
   }
 });
 

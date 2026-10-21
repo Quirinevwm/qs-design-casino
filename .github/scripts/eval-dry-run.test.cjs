@@ -105,12 +105,29 @@ test('non-JSON HTTP failures are flagged without persisting any body excerpt', a
   const f = fixture(t, { fetchImpl: async () => new Response(raw, { status: 503 }) });
   const result = await f.send();
   assert.equal(await result.text(), raw);
-  await assert.rejects(result.json(), SyntaxError);
+  await assert.rejects(result.json(), { name: 'SyntaxError', message: 'Foundry response body was not valid JSON' });
   assert.equal(f.read().attempts[0].error_code, 'http_error');
   assert.equal(f.read().attempts[0].response_body_type, 'invalid_json');
   assert.equal(f.read().attempts[0].service_error, null);
   assert.equal(f.recorder.lastErrorMessage(), 'HTTP 503: http_error');
   assert.doesNotMatch(f.artifacts(), /PRIVATE_HTML|<html>|fixture-private|private-resource|private-project/);
+});
+
+test('production labels reuse sanitized recording without changing the dry-run default API', async (t) => {
+  const f = fixture(t, { label: 'Production', fetchImpl: async () => response(429, {
+    error: { code: 'rate_limit_exceeded', message: `Capacity unavailable at ${ENDPOINT} ${API_KEY}` },
+  }) });
+  await f.send();
+  f.recorder.recordFailure(new Error(f.recorder.lastErrorMessage()));
+  f.recorder.finish('failed');
+  assert.equal(f.read().outcome, 'failed');
+  assert.match(f.artifacts(), /Production scoring, attempt 1/);
+  assert.match(f.artifacts(), /Production failure/);
+  assert.match(f.artifacts(), /Production scoring: failed/);
+  assert.doesNotMatch(f.artifacts(), /Dry-run|private-resource|private-project|fixture-private-api-key/);
+  const network = fixture(t, { label: 'Production', fetchImpl: async () => { throw new Error(ENDPOINT); } });
+  await assert.rejects(network.send(), { message: 'Foundry production network_error', code: 'network_error' });
+  assert.throws(() => fixture(t, { label: 'Untrusted' }), /Unsupported recorder label/);
 });
 
 test('all captured service strings and recordFailure use the same bounded sanitizer', async (t) => {
