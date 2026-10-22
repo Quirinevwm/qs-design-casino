@@ -1099,10 +1099,14 @@ function renderMarkdown(record) {
   lines.push(`- Canonical URL: ${record.canonicalUrl}`);
   lines.push(`- [Page text](${record.links.pageText})`);
   lines.push(`- [HTML snapshot](${record.links.pageHtml})`);
-  lines.push(`- [Above the fold screenshot](${record.links.aboveTheFold})`);
-  lines.push(`- [Full page screenshot](${record.links.fullPage})`);
-  lines.push(`- [Mid page screenshot](${record.links.midPage})`);
-  lines.push(`- [Mobile screenshot](${record.links.mobile})`);
+  for (const [key, alt, caption] of [
+    ['aboveTheFold', 'Above the fold screenshot', 'Desktop viewport: above the fold.'],
+    ['fullPage', 'Full page screenshot', 'Desktop viewport: full page.'],
+    ['midPage', 'Mid page screenshot', 'Desktop viewport: mid-page.'],
+    ['mobile', 'Mobile screenshot', 'Mobile viewport.'],
+  ]) {
+    lines.push('', `![${alt}](${record.links[key]})`, '', `*${caption}*`);
+  }
   lines.push('');
   lines.push(...renderPrimarySection(record));
   lines.push(...renderCraftSection(record));

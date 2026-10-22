@@ -86,6 +86,33 @@ test('baseline create includes exact arithmetic and one-time craft baseline', ()
   writeArtifacts(rootDir, reportPath, built);
 });
 
+test('report renders all four existing screenshots inline with captions and retains source links', () => {
+  const rootDir = createRepoRoot();
+  const { built } = createBaselineRecord({
+    rootDir,
+    reportPath: 'weekly-eval-bets/inline-evidence.md',
+    captureDir: 'weekly-eval-bets/screenshots/inline-evidence',
+    lensTitle: 'Example first-impression craft',
+    lensBody: '### Primary lens\nCraft',
+  });
+  const evidence = between(built.markdown, '## Evidence', '## Craft review');
+  const images = [...evidence.matchAll(/!\[([^\]]+)\]\(([^)]+)\)\n\n\*([^*]+)\*/g)];
+  assert.deepEqual(images.map(([, alt, imagePath, caption]) => ({ alt, imagePath, caption })), [
+    { alt: 'Above the fold screenshot', imagePath: built.record.links.aboveTheFold, caption: 'Desktop viewport: above the fold.' },
+    { alt: 'Full page screenshot', imagePath: built.record.links.fullPage, caption: 'Desktop viewport: full page.' },
+    { alt: 'Mid page screenshot', imagePath: built.record.links.midPage, caption: 'Desktop viewport: mid-page.' },
+    { alt: 'Mobile screenshot', imagePath: built.record.links.mobile, caption: 'Mobile viewport.' },
+  ]);
+  for (const [, , imagePath] of images) {
+    assert.ok(fs.existsSync(path.resolve(rootDir, 'weekly-eval-bets', imagePath)));
+  }
+  assert.ok(evidence.includes(`- [Page text](${built.record.links.pageText})`));
+  assert.ok(evidence.includes(`- [HTML snapshot](${built.record.links.pageHtml})`));
+  assert.doesNotMatch(evidence, /^- \[(?:Above the fold|Full page|Mid page|Mobile) screenshot\]/m);
+  assert.equal(built.record.ai.craft.totalScore, 28);
+  assert.match(built.markdown, /\*Scoring model: test-model\*/);
+});
+
 test('exact reuse across weeks and lenses keeps craft separate from new primary scoring', () => {
   const rootDir = createRepoRoot();
   const baseline = createBaselineRecord({
