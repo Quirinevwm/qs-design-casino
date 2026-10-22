@@ -20,10 +20,22 @@ Anti-patterns to avoid
 - Canonical URL: https://claude.com/platform/api
 - [Page text](screenshots/2026-W43_anthropic-claude-platform-signed-out-page-first-impression-craft_39661530259_1/page-text.txt)
 - [HTML snapshot](screenshots/2026-W43_anthropic-claude-platform-signed-out-page-first-impression-craft_39661530259_1/page-content.html)
-- [Above the fold screenshot](screenshots/2026-W43_anthropic-claude-platform-signed-out-page-first-impression-craft_39661530259_1/above-the-fold.png)
-- [Full page screenshot](screenshots/2026-W43_anthropic-claude-platform-signed-out-page-first-impression-craft_39661530259_1/full-page.png)
-- [Mid page screenshot](screenshots/2026-W43_anthropic-claude-platform-signed-out-page-first-impression-craft_39661530259_1/mid-page.png)
-- [Mobile screenshot](screenshots/2026-W43_anthropic-claude-platform-signed-out-page-first-impression-craft_39661530259_1/mobile.png)
+
+![Above the fold screenshot](screenshots/2026-W43_anthropic-claude-platform-signed-out-page-first-impression-craft_39661530259_1/above-the-fold.png)
+
+*Desktop viewport: above the fold.*
+
+![Full page screenshot](screenshots/2026-W43_anthropic-claude-platform-signed-out-page-first-impression-craft_39661530259_1/full-page.png)
+
+*Desktop viewport: full page.*
+
+![Mid page screenshot](screenshots/2026-W43_anthropic-claude-platform-signed-out-page-first-impression-craft_39661530259_1/mid-page.png)
+
+*Desktop viewport: mid-page.*
+
+![Mobile screenshot](screenshots/2026-W43_anthropic-claude-platform-signed-out-page-first-impression-craft_39661530259_1/mobile.png)
+
+*Mobile viewport.*
 
 ## Craft review
 
