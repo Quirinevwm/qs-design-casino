@@ -2,6 +2,14 @@
 
 ## Evaluation summary
 
+**AI craft score:** 20/35
+
+**Human craft score:** 18/35
+
+**Human verdict:** Confirmed.
+
+The original AI assessment and baseline are preserved below. Human scores and notes are recorded in the [human craft review](#human-craft-review) section.
+
 The page makes a strong initial product impression through a clear hero, prominent primary action, consistent typography, and polished product imagery. Its craft weakens below the fold: repeated text-and-screenshot modules, very large empty intervals, layered navigation, and persistent assistant prompts make the experience feel heavier and less controlled than the hero suggests. The mobile hero adapts well, but the assistant cards obscure the next section and dominate the viewport.
 
 **Patterns worth borrowing**
@@ -47,21 +55,25 @@ The baseline shows a polished and legible hero followed by a less disciplined lo
 
 | Dimension | AI score | Human score | Notes |
 |---|---:|---:|---|
-| Visual hierarchy | 4/5 |  |  |
-| Information density | 2/5 |  |  |
-| Readability | 3/5 |  |  |
-| Coherence (2x) | 3/5 |  |  |
-| Durability | 2/5 |  |  |
-| Intentionality | 3/5 |  |  |
-| **Total** | **20/35** |  |  |
+| Visual hierarchy | 4/5 | 3/5 | Lots of marketing imagery, but the page isn't really clear as you scroll down. |
+| Information density | 2/5 | 3/5 | I think they have consolidated a lot. |
+| Readability | 3/5 | 3/5 | Score explicitly confirmed; no additional note provided. |
+| Coherence (2x) | 3/5 | 2/5 | The sections don't flow, and the visual style is very different in each section. |
+| Durability | 2/5 | 2/5 | Score explicitly confirmed; no additional note provided. |
+| Intentionality | 3/5 | 3/5 | Score explicitly confirmed; no additional note provided. |
+| **Total** | **20/35** | **18/35** | Visual hierarchy -1, information density +1, coherence -1 (weighted -2). |
 
 ## Human verdict
 
-Reviewed:
+Reviewed: 2026-10-27
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
 
-Record any scope exclusions explicitly. Confirmation applies only to the supplied human ratings or validation.
+Confirmed on submission of the human craft rating. Readability, durability, and intentionality were explicitly retained at their AI scores; no additional observations were supplied for those dimensions.
+
+### Review synthesis (AI-assisted)
+
+**Consolidated content, fragmented story.** The human review gives the page more credit for consolidating information, but marketing imagery does not sustain clarity farther down the page. Sections do not flow, and their different visual styles weaken the sense of one coherent experience. The next improvement is to connect those sections through a more consistent visual language and clearer transitions, rather than relying on imagery to carry the story.
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: human craft review confirmed*
