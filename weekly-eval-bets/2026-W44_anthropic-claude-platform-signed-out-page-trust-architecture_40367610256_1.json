@@ -1,0 +1,126 @@
+{
+  "schemaVersion": "eval-scoring/v1",
+  "createdAt": "2026-10-26T17:21:19.129Z",
+  "reportPath": "weekly-eval-bets/2026-W44_anthropic-claude-platform-signed-out-page-trust-architecture_40367610256_1.md",
+  "captureDir": "weekly-eval-bets/screenshots/2026-W44_anthropic-claude-platform-signed-out-page-trust-architecture_40367610256_1",
+  "targetUrl": "https://claude.com/platform/api",
+  "canonicalUrl": "https://claude.com/platform/api",
+  "primaryLens": "trust",
+  "rubricHash": "8df8d4cf81dd06544d99a4ea07ce6e9ce15b3a74bf124f9a09e606a2e1d37c5b",
+  "rubric": "# First-impression craft rubric\n\nA reusable 5-point rubric for evaluating the design craft of any product landing page or signed-out state.\n\n## When to use\n\nApply this rubric when you want to assess whether a page makes a strong first impression through design quality alone, independent of content strategy or conversion goals.\n\nEstablish a craft baseline once per comparable page version. Promise, trust, audience, and other evaluations should reference it rather than request the same six scores again. Revisit only affected craft dimensions when captured evidence changes materially; use a new baseline when the page, rendering context, or rubric is not comparable.\n\n## Dimensions\n\n| # | Dimension | Weight | Question | 5 (best) | 1 (worst) |\n|---|-----------|--------|----------|-----------|-----------|\n| 1 | Visual hierarchy | 1x | Can you identify the primary message and action within 3 seconds? | Instant | Buried |\n| 2 | Information density | 1x | Is every element earning its space? | Nothing to remove | Noise competes with signal |\n| 3 | Readability | 1x | Do typography, contrast, and sentence length support scanning? | Effortless | Labored |\n| 4 | Coherence | 2x | Does the page feel like one designed thing? | Unified | Assembled from parts |\n| 5 | Durability | 1x | Would this design hold if content changed by 30%? | Resilient | Brittle |\n| 6 | Intentionality | 1x | Can you tell why every design decision was made? | Every choice has a reason | Arbitrary or defaulted |\n\n## Scoring guide\n\nCoherence is weighted 2x. Max score: 35.\n\n- **29-35:** Exceptional craft. Study and reference.\n- **22-28:** Solid craft with specific areas to sharpen.\n- **15-21:** Functional but lacking intentionality.\n- **7-14:** Needs structural rethinking.\n\n## How to apply\n\n1. Open the page cold (no prior context, clear cache if possible).\n2. Score each dimension independently, 1-5.\n3. Write one sentence per dimension noting what earned or cost the score.\n4. Sum the total. Use the scoring guide to frame the verdict.\n5. End with two lists: patterns worth borrowing, and anti-patterns to avoid.\n\nFor subsequent lenses, link the baseline and its evidence. For a changed-dimension review, record the prior score, new score, and observed change for each reassessed dimension. Preserve unaffected scores as inherited context, not new judgments. Keep AI scores distinct from human overrides, and never transfer scores between page versions without comparing the evidence.\n\n---\n\n*This is a living rubric. Adjust dimensions, weights, or scoring anchors as your evaluation practice evolves.*\n",
+  "captureContextHash": "4b899014cf36f7c1e52fb0b2d2a03b9b14e4b155da082a400f8553f97b021c6f",
+  "captureContext": {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "mobileViewport": {
+      "width": 390,
+      "height": 844
+    },
+    "deviceScaleFactor": 2,
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
+    "locale": "en-US",
+    "timezoneId": "America/Los_Angeles",
+    "colorScheme": "light",
+    "evidenceVersion": 1,
+    "browserVersion": "156.0.8078.4"
+  },
+  "evidenceHash": "028e0bc054522edac5e586b6717da648ba5c7ee35065c875ca8d9c0b877b2700",
+  "issueTitle": "Anthropic Claude Platform signed-out page: trust architecture",
+  "issueBody": "### Bet title\n\nAnthropic Claude Platform signed-out page: trust architecture\n\n### Primary lens\n\nTrust architecture\n\n### Target page\n\nhttps://claude.com/platform/api\n\n### Evaluator class\n\nDesign quality (craft, coherence, accessibility)\n\n### Evidence type\n\nRubric-scored (criteria checklist)\n\n### Design relevance\n\nCompare how agent platforms present their promise, build trust, and earn a first impression for cold, signed-out visitors.\n\n### Suggested evaluation approach\n\nChecked review across sequence, specificity, social proof quality, friction to first action, and risk reduction.\n",
+  "links": {
+    "pageText": "screenshots/2026-W44_anthropic-claude-platform-signed-out-page-trust-architecture_40367610256_1/page-text.txt",
+    "pageHtml": "screenshots/2026-W44_anthropic-claude-platform-signed-out-page-trust-architecture_40367610256_1/page-content.html",
+    "aboveTheFold": "screenshots/2026-W44_anthropic-claude-platform-signed-out-page-trust-architecture_40367610256_1/above-the-fold.png",
+    "fullPage": "screenshots/2026-W44_anthropic-claude-platform-signed-out-page-trust-architecture_40367610256_1/full-page.png",
+    "midPage": "screenshots/2026-W44_anthropic-claude-platform-signed-out-page-trust-architecture_40367610256_1/mid-page.png",
+    "mobile": "screenshots/2026-W44_anthropic-claude-platform-signed-out-page-trust-architecture_40367610256_1/mobile.png"
+  },
+  "model": "gpt-5-mini",
+  "ai": {
+    "summaryMarkdown": "What the capture shows: the signed-out Claude Platform landing preserves the large serif hero headline, concise supporting copy, two primary CTAs (Start building, Contact sales), an illustrative motif, and trust content lower on the page (testimonials, trust badges, security/residency statements). The HTML and screenshots show the same responsive stacking and modular sections visible in the baseline. Patterns worth borrowing: a dominant, readable hero headline that sets the promise quickly; an immediate, high-contrast primary CTA paired with a secondary sales CTA; explicit risk-reduction signals grouped (security, residency, trust center) close enough to product claims to be discoverable; consistent illustration and typographic system that unifies the page. Anti-patterns to avoid: burying detailed model pricing and long testimonial blocks too close to the first fold where they can dilute the promise; adding redundant navigation controls or large dropdown content that increases cognitive load; putting critical trust details only far below the fold so cold visitors must hunt for them.",
+    "primary": {
+      "noteMarkdown": "",
+      "inconclusive": false,
+      "items": [
+        {
+          "name": "Sequence",
+          "score": 5,
+          "rationale": "The page presents a clear sequence: large promise in the hero, concise supporting benefits, then two CTAs; downstream sections expand on capabilities and trust without interrupting the primary conversion path, so intent is discoverable in the expected order."
+        },
+        {
+          "name": "Specificity",
+          "score": 4,
+          "rationale": "The page balances high-level promise with concrete details later (model names, token pricing, feature tiles), but the hero remains intentionally broad which reduces immediate specificity for cold visitors."
+        },
+        {
+          "name": "Social proof quality",
+          "score": 5,
+          "rationale": "Captured content includes named customer quotes, multiple long-form customer stories, and recognizable trust badges and compliance logos, providing layered, high-quality social proof for enterprise visitors."
+        },
+        {
+          "name": "Friction to first action",
+          "score": 5,
+          "rationale": "Primary CTA is visually prominent and labeled 'Start building'; secondary 'Contact sales' is available; the hero-level actions are obvious and require minimal navigation from the signed-out state, reducing first-action friction."
+        },
+        {
+          "name": "Risk reduction",
+          "score": 5,
+          "rationale": "Security and privacy signals are present and explicit (enterprise safeguards, residency options, statement that customer data is not used to train Claude by default, links to a trust center), which meaningfully reduces perceived technical and data risk for enterprise buyers."
+        }
+      ]
+    },
+    "craft": {
+      "evaluationMode": "no-material-change",
+      "referenceStatus": "reused",
+      "summaryMarkdown": "Delta assessment against baseline: no material design-craft changes detected. The current screenshots and HTML show the same hero composition, typographic scale, CTA treatments, illustration style, feature/trust modules, and responsive stacking that formed the baseline. Because the page structure, visual language, and component treatments remain consistent with the baseline evidence, there are no changed craft scores to record.",
+      "scores": [
+        {
+          "name": "Visual hierarchy",
+          "score": 5,
+          "rationale": "The hero establishes a clear primary message and action: a very large serif headline ('Build frontier agents on the Claude Platform') and a high-contrast 'Start building' button are visually dominant on desktop and stack sensibly on mobile, making intent discoverable within three seconds."
+        },
+        {
+          "name": "Information density",
+          "score": 4,
+          "rationale": "The hero and feature cards use ample white space so every element mostly earns its place, but the page includes many downstream details (model pricing tiles, long testimonial blocks, large nav dropdowns) that increase density and could be trimmed for an even cleaner first impression."
+        },
+        {
+          "name": "Readability",
+          "score": 5,
+          "rationale": "Typography and contrast support fast scanning: the serif headline is large and readable, body copy uses comfortable sizes and line lengths, and CTAs have strong contrast on the light background; the mobile layout preserves legibility with clear stacking of elements."
+        },
+        {
+          "name": "Coherence",
+          "score": 5,
+          "rationale": "The page feels like one designed thing: the color palette, illustration style, iconography, and button treatments are applied consistently across the hero, features, trust badges, and footer, creating a unified visual language."
+        },
+        {
+          "name": "Durability",
+          "score": 5,
+          "rationale": "The layout is modular (hero, feature cards, model tiles, trust logos) and uses responsive rules shown in the mobile screenshot, so the design should hold well if content changes by roughly 30 percent; components are reusable and spacing appears resilient."
+        },
+        {
+          "name": "Intentionality",
+          "score": 4,
+          "rationale": "Most design choices read as deliberate (prominent CTA, illustrative motif, trust signals). A few elements, such as extensive model pricing details near the top and multiple large testimonial blocks, feel more like marketing density than distilled decisions, which reduces perceived intentionality slightly."
+        }
+      ],
+      "totalScore": 33,
+      "maxScore": 35,
+      "reassessedDimensions": [],
+      "changes": [],
+      "noMaterialChangeExplanation": "I compared the captured HTML and multiple screenshots (desktop hero, mid-page trust/security tiles, mobile stacking) to the baseline evidence. The hero headline size, serif type, supporting body copy, two-button CTA pattern, illustration placement, card-like feature rows, and the presence of compliance badges and trust statements all match the baseline. That parity indicates no material change to visual hierarchy, information density, readability, coherence, durability, or intentionality since the baseline.",
+      "provenance": {
+        "baselineReportPath": "weekly-eval-bets/2026-W43_anthropic-claude-platform-signed-out-page-first-impression-craft_39661530259_1.md",
+        "baselineCaptureDir": "weekly-eval-bets/screenshots/2026-W43_anthropic-claude-platform-signed-out-page-first-impression-craft_39661530259_1",
+        "baselineEvidenceHash": "3f810d153dd06d571af21f48bdc85f1908021ba42969ece2fee46697d989be87",
+        "comparedToReportPath": "weekly-eval-bets/2026-W43_anthropic-claude-platform-signed-out-page-first-impression-craft_39661530259_1.md",
+        "comparedToCaptureDir": "weekly-eval-bets/screenshots/2026-W43_anthropic-claude-platform-signed-out-page-first-impression-craft_39661530259_1",
+        "comparedToEvidenceHash": "3f810d153dd06d571af21f48bdc85f1908021ba42969ece2fee46697d989be87",
+        "exactReuseSourceReportPath": null
+      }
+    }
+  }
+}

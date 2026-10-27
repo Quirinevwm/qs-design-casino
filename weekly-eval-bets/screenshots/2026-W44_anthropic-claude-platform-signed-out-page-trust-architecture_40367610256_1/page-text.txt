@@ -1,0 +1,577 @@
+Skip to main content
+Product
+Developers
+Enterprise
+Resources
+Pricing
+Login
+Contact sales
+Try Claude
+Claude Platform
+Explore here
+Claude Platform
+Build frontier agents on the Claude Platform
+
+Frontier models, harnesses, context management, and infrastructure designed to work together.
+
+Start building
+(opens in new tab)
+Contact sales
+Trusted by
+Claude models for every job
+
+Save 50% with batch processing. Learn more
+(opens in new tab)
+
+Batch processing
+Fable 5.1
+
+Next generation intelligence for long-running agents
+
+Multi-day autonomous projects
+Expert-level work for frontier research
+Prompt caching
+Read
+$0.25 / MTok
+Write
+$12.50 / MTok
+Input
+$10 / MTok
+Output
+$50 / MTok
+Explore Fable
+(opens in new tab)
+Opus 5.5
+
+Daily driver for agentic coding and enterprise work
+
+Long-horizon coding and large migrations
+Multi-step agents across enterprise tools and data
+Prompt caching
+Read
+$0.20 / MTok
+Write
+$5 / MTok
+Input
+$4 / MTok
+Output
+$20 / MTok
+Explore Opus
+(opens in new tab)
+Sonnet 5.5
+
+High-performance model for coding and agents
+
+Everyday coding and developer loops
+Customer-facing agents and multi-tool workflows at scale
+Prompt caching
+Read
+$0.10 / MTok
+Write
+$2.50 / MTok
+Input
+$2 / MTok
+Output
+$10 / MTok
+Explore Sonnet
+(opens in new tab)
+Haiku 5.5
+
+Fastest, most cost-effective model
+
+Real-time, latency-sensitive product experiences
+Sub-agents inside larger multi-model systems
+Prompt caching
+Prompts ≤ 100K tokens
+Read
+$0.01 / MTok
+Write
+$0.125 / MTok
+Prompts > 100K tokens
+Read
+$0.05 / MTok
+Write
+$0.625 / MTok
+Input
+Prompts ≤ 100K tokens
+$0.10 / MTok
+Prompts > 100K tokens
+$0.50 / MTok
+Output
+Prompts ≤ 100K tokens
+$0.50 / MTok
+Prompts > 100K tokens
+$2.50 / MTok
+Explore Haiku
+(opens in new tab)
+
+For workloads that need to run in the US, US-only inference is available at 1.1x pricing for input and output tokens. Learn more.
+
+Get up to 2.5x faster speeds with fast mode for Opus 5.5 at 2x standard pricing. Learn more.
+
+Prompt caching pricing reflects 5-minute TTL. Learn about extended prompt caching.
+
+APIs designed for Claude
+
+Access Claude’s frontier models through the Messages API to build with full control and customization.
+
+Code execution
+
+Run Python code, create visualizations, and analyze data in API calls.
+
+Structured outputs
+
+Ensure Claude's responses conform to your JSON schema.
+
+Tool use
+
+Allow Claude to interact with hundreds of external tools and APIs so it can perform a wider range of tasks.
+
+Computer use
+
+Let Claude see and operate a browser or desktop to automate work in applications that have no API.
+
+Citations
+
+Ground responses in source documents.
+
+Files
+
+Upload and reference documents across conversations.
+
+Context window
+
+Run more comprehensive and data-intensive use cases with up to 1 million tokens of context.
+
+Compaction
+
+Automatically summarize older context when approaching token limits.
+
+Context editing
+
+Automatically clear tool calls and results.
+
+Web search and fetch
+
+Bring current data from the web into Claude.
+
+Customer story
+
+5 million
+
+AI agents running in customer business workflows each month
+
+10x
+
+faster to build production agents
+
+BETA
+Power your most ambitious workloads with Claude Managed Agents
+
+Build and deploy long-running agents at scale.
+
+Learn more
+(opens in new tab)
+See features
+Security by design
+
+Credentials stay out of the sandbox, encryption is built in, and state persists automatically.
+
+Observable end to end
+
+Session tracing records what every agent did and why, with built-in analytics to improve agent performance.
+
+Built for Claude
+
+The underlying harness is optimized for Claude. As the model improves, your agents improve with it.
+
+Connect to your systems and knowledge
+
+Extend and customize what Claude can do.
+
+Model Context Protocol (MCP)
+
+Connect Claude to your tools and data through the open standard for AI integrations.
+
+Explore MCP
+(opens in new tab)
+Skills
+
+Teach Claude your expertise, procedures, and best practices through pre-built or customizable skills.
+
+Learn more
+(opens in new tab)
+Memory stores
+
+Agents remember across sessions, keeping memory files on your infrastructure.
+
+Learn more
+(opens in new tab)
+Claude Marketplace
+
+Use your existing Anthropic commitment to pay for Claude-powered solutions from our partners.
+
+Explore partners
+Built for enterprise workloads
+
+Controls and safeguards for your data.
+
+Enterprise Frontier Safeguards
+
+Gives eligible customers the privacy of zero data retention (ZDR) along with state-of-the-art safeguards for detecting misuse.
+
+Learn more
+(opens in new tab)
+Residency
+
+On your cloud provider, choose where your data is stored and where requests are processed, with regions in Asia-Pacific, Canada, Europe, and the United States.
+
+Learn more
+(opens in new tab)
+Your data stays yours
+
+By default, Anthropic does not use customer data from commercial deployments to train Claude.
+
+Visit the trust center
+(opens in new tab)
+
+Available on all major cloud providers
+
+Build directly on the Claude Platform, with enterprise security and support built in. Or use Claude in the cloud you already use, including Amazon Web Services, Google Cloud, or Microsoft Foundry.
+
+Control cost and performance
+Read documentation
+(opens in new tab)
+Batch processing
+
+Process large volumes of requests asynchronously at reduced cost.
+
+Prompt caching
+
+Give Claude background knowledge and examples to reduce costs by up to approximately 97% and latency by approximately 60% for long prompts.
+
+Effort
+
+Choose how hard Claude works on a task.
+
+Advisor strategy (beta)
+
+Faster, affordable models call more intelligent models to evaluate plans or work to improve performance.
+
+Batch processing
+
+For Quora, batch processing provides cost savings while also reducing the complexity of running a large number of queries that don't need to be processed in real time.
+
+Read more
+Observe and manage your agents with the Claude Console
+
+Your command center, with analytics and controls built in.
+
+Build your request
+
+Classify all customer support tickets into the most relevant category.
+
+Here is the list of categories to choose from:
+{{CATEGORY_LIST}}
+
+Here is the content of the support ticket:
+{{TICKET_CONTENT}}
+
+You are an AI assistant specialized in classifying customer support tickets. Your task is to analyze the content of a given ticket and assign it to the most appropriate category from a predefined list. You will also provide reasoning for your classification decision.
+
+ 
+
+First, let's review the available categories:
+
+<category_list>
+{{CATEGORY_LIST}}
+</category_list>
+
+ 
+
+Now, here is the content of the support ticket you need to classify:
+
+<ticket_content>
+{{TICKET_CONTENT}}
+</ticket_content>
+
+ 
+
+Please follow these steps to complete the task:
+– Carefully read and analyze the ticket content.
+– Consider how the content relates to each of the available categories.
+– Choose the most appropriate category for the ticket.
+– Provide a detailed explanation of your reasoning process.
+
+ 
+
+Use the following structure for your response:
+<classification_analysis>
+
+In this section, break down your thought process:
+– Quote the most relevant parts of the ticket content.
+– List each category and note how it relates to the ticket content.
+– For each category, provide arguments for and against classifying the ticket into that category.
+– Rank the top 3 most likely categories.
+</classification_analysis>
+
+<classification>
+<category>Your chosen category goes here</category>
+<reasoning>A concise summary of your reasoning for choosing this category</reasoning>
+</classification>
+
+Remember to be thorough in your analysis and clear in your explanation. Your goal is to provide an accurate classification with well-supported reasoning.
+
+Build
+
+Prototype prompts, upload skills and files, configure your agents.
+
+Deploy
+
+Run agents on hosted environments with vaults and memory.
+
+Monitor
+
+Track usage, cost, caching, and rate limits by model and by API key.
+
+Manage
+
+Control API keys, members, token limits, and security per workspace.
+
+See why businesses build on the Claude Platform
+
+“On our research suite, Claude Fable 5.1 set new best scores. On one task it came up with a novel solution along a completely different axis than we'd seen from other models or from human researchers in the past, which took its results well above the previous plateau. It's better at creative problem solving and getting that flash of insight you need to solve a difficult problem.”
+
+Marquis Wong, Principal AI Engineer
+
+“The decision to choose Claude was entirely data-driven. We tested multiple model providers side by side, and Claude consistently delivered the best results for case resolution rates and customer satisfaction scores.”
+
+Timothy Addison, Engineering Org Chief of Staff
+Read story
+
+“The partnership with Anthropic has been exceptional—their guidance and support have helped our engineering teams maximize the models.”
+
+Joel Hron, CTO
+Read story
+
+“Developers want agents that can take on real software work and finish it. In our testing across GitHub Copilot CLI and VS Code, Claude Opus 5.5 used among the fewest tokens and steps we measured. In VS Code, it solved more terminal tasks than Opus 5 in less than half the steps. More than making individual tasks more efficient, it’s making developers’ bigger projects more achievable.”
+
+Mario Rodriguez, Chief Product Officer
+
+“For Lovable builders, Opus 5.5 means faster builds with the same quality, whether you’re starting from scratch or working on a live app. It gathers context once, makes fewer and more complete edits, and doesn’t get stuck retrying, finishing in a third to half fewer steps and using significantly fewer tokens along the way.”
+
+Fabian Hedin, CTO & Co-founder
+
+“With Claude Opus 5.5, we’ve seen a clear improvement in token efficiency across our internal evaluations, as we’ve been able to complete the same tasks both cheaper and faster.”
+
+Aleksandar Mitic, Senior Engineer
+
+“Financial firms need outputs that are consistently correct. At its lowest effort setting, Claude Opus 5.5 beat Opus 5 at high effort on our BigFinance Bench with about 60% fewer output tokens. Its answers are shorter and better structured, and its slides come out denser, more in line with industry standards.”
+
+Strib Walker, Head of Product
+
+“Claude Opus 5.5 is the first model we’d default to at medium effort. In our testing it matched Opus 5 on high effort, while using 20 to 25% fewer output tokens. On long, messy investigations it always came back with a clear, actionable answer. This means our customers get more done for less.”
+
+Zimu Li, Member of Technical Staff
+
+“Our customers use Box AI on enormous amounts of content, so speed and cost are a top priority. In our evaluations, Claude Opus 5.5 used a third of the tokens Opus 5 did, and its answers were 40% less verbose without losing accuracy. We expect that to matter a lot for teams running agents across their content in areas like financial services and the public sector.”
+
+Yashodha Bhavnani, VP of AI Products
+
+“In Epic’s early testing, Claude Sonnet 5.5 cleared the same quality bar you’d expect from a higher-tier model, holding up on a system design audit and a data-flow review. The new model managed tens of thousands of lines of code for gameplay system architecture, kept responses snappy, handled multi-hour tasks, and delivered with less prescriptive prompting.”
+
+Daniel Vogel, Chief Operating Officer
+
+“Without changing any of our prompts, Claude Sonnet 5.5 did better than Sonnet 5 on almost all of our offline Slackbot evals, in fewer steps and with about 14% fewer output tokens. When someone gives Slackbot a task, quality and speed are what matter most, and Sonnet 5.5 allows Slackbot to deliver better outcomes for users, faster.”
+
+Curtis Allen, Principal Engineer
+
+“We fed Claude Sonnet 5.5 hundreds of real support use cases across replies and escalation requests. It made fewer wrong decisions and resolved tickets faster than the Claude models we use in production today. Tickets were processed 20% faster, getting our customers the help they need without the wait.”
+
+Abhinay Kathuria, Director of AI
+
+“Claude Fable 5.1 is a leading model for our incident investigation evals, which use real production incidents to assess how effectively our agent, Bits Investigation, can produce root cause analyses. We evaluate our agent's output against root causes identified by our engineers. In these evaluations, it has demonstrated stronger reasoning than Opus 5 and has successfully diagnosed the most complex production incidents we've tested.”
+
+Daniel Shan, Staff Engineer
+
+“We're moving our Opus 5 traffic in Devin to Claude Fable 5.1 on launch day. It matched or edged out Fable 5 in our testing at a lower cost per task, and with the new cache read pricing a Fable-class model is finally economical for the workloads we'd kept on Opus, starting with code review.”
+
+Walden Yan, Co-founder and CPO
+
+“We asked Claude Fable 5.1 to review a clinical research project for Rakuten Medical that three other frontier models had signed off on. It found a gap none of them had seen and insisted on testing it further. It then proposed a completely new hypothesis, turning a dataset we had written off into a new research direction in one afternoon. It's the first time a frontier model like Claude has empowered us to explore new research in this way.”
+
+Felix Giovanni Virgo, Principal AI Engineer
+
+“The standout in Claude Fable 5.1 is the writing: more understandable, more meaningful, and it follows our writing guidance better. In blind tests against Fable 5, I preferred its writing and output. And in Canva Code it built a rhythm game with real music and on-beat gameplay matched to the level it generated, something no other model we tested delivered.”
+
+Danny Wu, Head of AI
+
+“On our research suite, Claude Fable 5.1 set new best scores. On one task it came up with a novel solution along a completely different axis than we'd seen from other models or from human researchers in the past, which took its results well above the previous plateau. It's better at creative problem solving and getting that flash of insight you need to solve a difficult problem.”
+
+Marquis Wong, Principal AI Engineer
+
+“The decision to choose Claude was entirely data-driven. We tested multiple model providers side by side, and Claude consistently delivered the best results for case resolution rates and customer satisfaction scores.”
+
+Timothy Addison, Engineering Org Chief of Staff
+Read story
+
+“The partnership with Anthropic has been exceptional—their guidance and support have helped our engineering teams maximize the models.”
+
+Joel Hron, CTO
+Read story
+
+“Developers want agents that can take on real software work and finish it. In our testing across GitHub Copilot CLI and VS Code, Claude Opus 5.5 used among the fewest tokens and steps we measured. In VS Code, it solved more terminal tasks than Opus 5 in less than half the steps. More than making individual tasks more efficient, it’s making developers’ bigger projects more achievable.”
+
+Mario Rodriguez, Chief Product Officer
+
+“For Lovable builders, Opus 5.5 means faster builds with the same quality, whether you’re starting from scratch or working on a live app. It gathers context once, makes fewer and more complete edits, and doesn’t get stuck retrying, finishing in a third to half fewer steps and using significantly fewer tokens along the way.”
+
+Fabian Hedin, CTO & Co-founder
+
+“With Claude Opus 5.5, we’ve seen a clear improvement in token efficiency across our internal evaluations, as we’ve been able to complete the same tasks both cheaper and faster.”
+
+Aleksandar Mitic, Senior Engineer
+Technical resources
+
+Reducing cost and improving performance with Claude Platform
+
+Blog
+
+Demystifying evals for AI agents
+
+Blog
+
+Claude Cookbook: Practical guides and examples for using Claude effectively
+
+Cookbook
+
+Claude Managed Agents overview
+
+Docs
+
+CLI, SDKs, and libraries
+
+Docs
+
+Building agents that reach production systems with MCP
+
+Blog
+
+Scaling Managed Agents: Decoupling the brain from the hands
+
+Blog
+
+Effective harnesses for long-running agents
+
+Blog
+Build on the Claude Platform
+Start building
+Read documentation
+Get the developer newsletter
+
+Product updates, how-tos, community spotlights, and more. Delivered monthly to your inbox.
+
+Please provide your email address if you'd like to receive our monthly developer newsletter. You can unsubscribe at any time.
+
+© 2026 Anthropic PBC
+
+Products
+Claude
+Claude Code
+Claude Cowork
+Claude Duet
+Claude Tag
+Claude Science
+Claude Security
+Download app
+Pricing
+Log in
+Capabilities
+Artifacts
+Design
+Connectors
+Plugins
+Skills
+Extensions
+Claude in Chrome
+Claude for Google Workspace
+Claude for Microsoft 365
+Models
+Mythos (including Fable)
+Opus
+Sonnet
+Haiku
+Enterprise
+Overview
+Claude Code for Enterprise
+Departments
+Customer support
+Cybersecurity
+Legal
+Sales
+Industries
+Financial advisors
+Financial services
+Government
+Healthcare
+Higher education
+K-12 teachers
+Life sciences
+Nonprofits
+Small business
+Programs
+Campus
+Frontier Academy
+Scientists
+Startups
+Developers
+Developer docs
+Developer blog
+Community
+Console
+Engineering at Anthropic
+Platform
+Overview
+Marketplace
+Claude on AWS
+Google Cloud
+Microsoft Foundry
+Managed Agents
+Resources
+Overview
+Articles
+Webinars
+Claude partner network
+Claude Academy
+Customer stories
+Events
+Powered by Claude
+Service partners
+Help and security
+Availability
+Check files
+Regional compliance
+Report abuse
+Security and compliance
+Status
+Support center
+Company
+Anthropic
+Careers
+Policy
+Research
+Anthropic news
+Policy on the AI Exponential
+Responsible Scaling Policy
+Transparency
+Terms and policies
+Privacy choices
+Privacy policy
+Responsible disclosure policy
+Terms of service: Commercial
+Terms of service: Consumer
+Terms of Service: US K-12
+Data Processing Agreement: US K-12
+Usage Policy
+Add to Preferred Sources
+English
