@@ -2,6 +2,16 @@
 
 ## Evaluation summary
 
+**AI trust score:** 20/25
+
+**Human trust score:** 16/25
+
+**Human verdict:** Confirmed.
+
+**Human craft scope:** Not rescored in this trust-only review.
+
+The original AI assessment is preserved below. Human scores and notes are recorded in the [human review](#human-review) section.
+
 The page builds trust through a strong progression from a concise production promise to concrete platform capabilities, security details, quantified outcomes, named customer stories, and documentation-oriented next steps. It demonstrates credible specificity through framework names, authentication and access-control scenarios, automated reasoning references, benchmark figures, and customer outcomes. These statements are presented by the page and are not independently verified by the capture.
 
 **Patterns worth borrowing**
@@ -44,12 +54,12 @@ This assessment describes the trust architecture demonstrated by the captured pa
 
 | Dimension | AI score | Human score | Notes |
 |---|---:|---:|---|
-| Sequence | 4/5 |  |  |
-| Specificity | 4/5 |  |  |
-| Social proof quality | 4/5 |  |  |
-| Friction to first action | 4/5 |  |  |
-| Risk reduction | 4/5 |  |  |
-| **Total** | **20/25** |  |  |
+| Sequence | 4/5 | 3/5 | The "why" at the bottom would make more sense earlier on the page. |
+| Specificity | 4/5 | 3/5 | It's quite generic. |
+| Social proof quality | 4/5 | 2/5 | Just three customer cases. |
+| Friction to first action | 4/5 | 4/5 | Agree. It seems simple enough with a click. |
+| Risk reduction | 4/5 | 4/5 | Score explicitly confirmed; no additional note provided. |
+| **Total** | **20/25** | **16/25** | Sequence -1, specificity -1, social proof quality -2. Friction to first action and risk reduction retained. |
 
 ## Craft review
 
@@ -61,11 +71,15 @@ The current evidence is visually and structurally equivalent to the prior eviden
 
 ## Human verdict
 
-Reviewed:
+Reviewed: 2026-10-27
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
 
-Record any scope exclusions explicitly. Confirmation applies only to the supplied human ratings or validation.
+Confirmed on submission of the human trust rating. Risk reduction was explicitly retained at 4/5 without an additional observation. Confirmation applies to trust architecture only. Craft was not rescored, and no human craft scores are copied from another report.
+
+### Review synthesis (AI-assisted)
+
+**Easy to start, limited proof.** The first action seems simple, but the explanation of why the platform matters arrives too late. The human review finds the claims generic and gives the three customer cases less credit than the AI assessment. The opportunity is to bring the "why" forward and strengthen the specificity and breadth of customer evidence while preserving the easy first step.
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: human trust review confirmed; craft not rescored in this review*
