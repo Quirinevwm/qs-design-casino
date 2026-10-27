@@ -2,6 +2,16 @@
 
 ## Evaluation summary
 
+**AI promise clarity score:** 19/25
+
+**Human promise clarity score:** 16/25
+
+**Human verdict:** Confirmed.
+
+**Human craft scope:** Not rescored in this promise-only review.
+
+The original AI assessment is preserved below. Human scores and notes are recorded in the [human review](#human-review) section.
+
 The page communicates a strong, developer-oriented promise: AgentCore is a production platform for building, connecting, securing, debugging, and scaling AI agents across frameworks and models. The hero is concise and the following sections unpack the promise into concrete jobs, but the page gradually broadens from one platform promise into several overlapping speed, flexibility, security, and infrastructure messages. Trust is supported by named frameworks, AWS security mechanisms, sourced performance figures, and customer outcomes, although the captured evidence does not verify those claims. Patterns worth borrowing include a short hero promise, a task-specific primary action, concrete technical vocabulary, and benefit sections that map to recognizable production problems. Anti-patterns to avoid include repeating the same flexibility and security phrases, presenting two competing hero actions without clarifying the intended visitor path, and allowing promotional assistant overlays to obscure the supporting explanation.
 
 ## Evidence
@@ -32,12 +42,12 @@ The current plain-text extraction shows unloaded values such as 0% and 0.0x, whi
 
 | Dimension | AI score | Human score | Notes |
 |---|---:|---:|---|
-| Singular message | 4/5 |  |  |
-| Audience alignment | 4/5 |  |  |
-| CTA focus | 4/5 |  |  |
-| Claim specificity | 4/5 |  |  |
-| Redundancy | 3/5 |  |  |
-| **Total** | **19/25** |  |  |
+| Singular message | 4/5 | 3/5 | "Build, connect, and optimize" is strong, but agents need models, tools, and more. Where are they? |
+| Audience alignment | 4/5 | 3/5 | They target enterprise, but don't really elaborate on the value to that audience. |
+| CTA focus | 4/5 | 4/5 | Score explicitly confirmed; no additional note provided. |
+| Claim specificity | 4/5 | 3/5 | I like their SDK breadth callout. It becomes a little less clear around connections and optimization. |
+| Redundancy | 3/5 | 3/5 | Score explicitly confirmed; no additional note provided. |
+| **Total** | **19/25** | **16/25** | Singular message -1, audience alignment -1, claim specificity -1. CTA focus and redundancy retained. |
 
 ## Craft review
 
@@ -49,11 +59,15 @@ The current page text and baseline page text are effectively the same, and corre
 
 ## Human verdict
 
-Reviewed:
+Reviewed: 2026-10-27
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
 
-Record any scope exclusions explicitly. Confirmation applies only to the supplied human ratings or validation.
+Confirmed on submission of the human promise rating. CTA focus and redundancy were explicitly retained at their AI scores; no additional observations were supplied for those dimensions. Confirmation applies to promise clarity only. Craft was not rescored, and no human craft scores are copied from another report.
+
+### Review synthesis (AI-assisted)
+
+**SDK breadth, a less connected story.** The SDK breadth callout gives the platform a useful concrete anchor. "Build, connect, and optimize" is a strong promise, but the models, tools, and other agent building blocks are harder to locate, and the connections and optimization story becomes less clear. Enterprise targeting is apparent without an equally developed explanation of enterprise value. The next improvement is to show how the building blocks connect and what that enables for the intended audience.
 
 *Scoring model: gpt-5.6-sol*
-*Status: auto-scored, pending human review*
+*Status: human promise review confirmed; craft not rescored in this review*
