@@ -2,6 +2,14 @@
 
 ## Evaluation summary
 
+**AI craft score:** 33/35
+
+**Human craft score:** 31/35
+
+**Human verdict:** Confirmed.
+
+The original AI assessment and baseline are preserved below. Human scores and notes are recorded in the [human craft review](#human-craft-review) section.
+
 Baseline craft assessment for the Claude Platform /platform/api signed-out landing. The page makes a confident first impression through a bold typographic hero, obvious primary CTA, and a consistent visual system. The hero headline and primary button are immediately legible on desktop and mobile, and subsequent sections are organized into modular feature, trust, and pricing blocks that scale across breakpoints. Evidence: large serif headline "Build frontier agents on the Claude Platform," two clear CTAs (Start building, Contact sales), right-side illustration, feature cards (security, residency, data), model pricing tiles, and trust logos visible in the captured screenshots and HTML.
 
 Patterns worth borrowing
@@ -57,21 +65,25 @@ This baseline establishes the page's craft at the time of capture. The design re
 
 | Dimension | AI score | Human score | Notes |
 |---|---:|---:|---|
-| Visual hierarchy | 5/5 |  |  |
-| Information density | 4/5 |  |  |
-| Readability | 5/5 |  |  |
-| Coherence (2x) | 5/5 |  |  |
-| Durability | 5/5 |  |  |
-| Intentionality | 4/5 |  |  |
-| **Total** | **33/35** |  |  |
+| Visual hierarchy | 5/5 | 4/5 | The natural progression makes sense, but it's sometimes too abstract. |
+| Information density | 4/5 | 5/5 | They are good at progressive disclosure. |
+| Readability | 5/5 | 4/5 | Movement doesn't help focused reading; sometimes a bit more context is helpful. |
+| Coherence (2x) | 5/5 | 5/5 | Score explicitly confirmed; no additional note provided. |
+| Durability | 5/5 | 4/5 | Modules can be swapped, but the changes are abrupt the longer you scroll. |
+| Intentionality | 4/5 | 4/5 | Score explicitly confirmed; no additional note provided. |
+| **Total** | **33/35** | **31/35** | Visual hierarchy -1, information density +1, readability -1, durability -1. Coherence is weighted 2x and unchanged. |
 
 ## Human verdict
 
-Reviewed:
+Reviewed: 2026-10-28
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
 
-Record any scope exclusions explicitly. Confirmation applies only to the supplied human ratings or validation.
+Confirmed on submission of the human craft rating. Coherence and intentionality were explicitly retained at their AI scores; no additional observations were supplied for those dimensions.
+
+### Review synthesis (AI-assisted)
+
+**Coherent design, abstract moments.** Progressive disclosure gives the page a strong balance of detail, and its natural progression makes sense. But abstract moments, movement that competes with reading, and abrupt section changes farther down weaken clarity and continuity. The opportunity is to preserve that disclosure while adding context where needed and smoothing transitions.
 
 *Scoring model: gpt-5-mini*
-*Status: auto-scored, pending human review*
+*Status: human craft review confirmed*
