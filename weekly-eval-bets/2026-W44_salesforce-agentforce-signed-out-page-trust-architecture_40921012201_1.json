@@ -1,0 +1,126 @@
+{
+  "schemaVersion": "eval-scoring/v1",
+  "createdAt": "2026-10-29T17:25:43.402Z",
+  "reportPath": "weekly-eval-bets/2026-W44_salesforce-agentforce-signed-out-page-trust-architecture_40921012201_1.md",
+  "captureDir": "weekly-eval-bets/screenshots/2026-W44_salesforce-agentforce-signed-out-page-trust-architecture_40921012201_1",
+  "targetUrl": "https://www.salesforce.com/agentforce/",
+  "canonicalUrl": "https://www.salesforce.com/agentforce/",
+  "primaryLens": "trust",
+  "rubricHash": "8df8d4cf81dd06544d99a4ea07ce6e9ce15b3a74bf124f9a09e606a2e1d37c5b",
+  "rubric": "# First-impression craft rubric\n\nA reusable 5-point rubric for evaluating the design craft of any product landing page or signed-out state.\n\n## When to use\n\nApply this rubric when you want to assess whether a page makes a strong first impression through design quality alone, independent of content strategy or conversion goals.\n\nEstablish a craft baseline once per comparable page version. Promise, trust, audience, and other evaluations should reference it rather than request the same six scores again. Revisit only affected craft dimensions when captured evidence changes materially; use a new baseline when the page, rendering context, or rubric is not comparable.\n\n## Dimensions\n\n| # | Dimension | Weight | Question | 5 (best) | 1 (worst) |\n|---|-----------|--------|----------|-----------|-----------|\n| 1 | Visual hierarchy | 1x | Can you identify the primary message and action within 3 seconds? | Instant | Buried |\n| 2 | Information density | 1x | Is every element earning its space? | Nothing to remove | Noise competes with signal |\n| 3 | Readability | 1x | Do typography, contrast, and sentence length support scanning? | Effortless | Labored |\n| 4 | Coherence | 2x | Does the page feel like one designed thing? | Unified | Assembled from parts |\n| 5 | Durability | 1x | Would this design hold if content changed by 30%? | Resilient | Brittle |\n| 6 | Intentionality | 1x | Can you tell why every design decision was made? | Every choice has a reason | Arbitrary or defaulted |\n\n## Scoring guide\n\nCoherence is weighted 2x. Max score: 35.\n\n- **29-35:** Exceptional craft. Study and reference.\n- **22-28:** Solid craft with specific areas to sharpen.\n- **15-21:** Functional but lacking intentionality.\n- **7-14:** Needs structural rethinking.\n\n## How to apply\n\n1. Open the page cold (no prior context, clear cache if possible).\n2. Score each dimension independently, 1-5.\n3. Write one sentence per dimension noting what earned or cost the score.\n4. Sum the total. Use the scoring guide to frame the verdict.\n5. End with two lists: patterns worth borrowing, and anti-patterns to avoid.\n\nFor subsequent lenses, link the baseline and its evidence. For a changed-dimension review, record the prior score, new score, and observed change for each reassessed dimension. Preserve unaffected scores as inherited context, not new judgments. Keep AI scores distinct from human overrides, and never transfer scores between page versions without comparing the evidence.\n\n---\n\n*This is a living rubric. Adjust dimensions, weights, or scoring anchors as your evaluation practice evolves.*\n",
+  "captureContextHash": "4b899014cf36f7c1e52fb0b2d2a03b9b14e4b155da082a400f8553f97b021c6f",
+  "captureContext": {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "mobileViewport": {
+      "width": 390,
+      "height": 844
+    },
+    "deviceScaleFactor": 2,
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
+    "locale": "en-US",
+    "timezoneId": "America/Los_Angeles",
+    "colorScheme": "light",
+    "evidenceVersion": 1,
+    "browserVersion": "156.0.8078.4"
+  },
+  "evidenceHash": "f1989a9505b8a0b48563fe8dabf17498454e362afcf4766562f3384a7309f965",
+  "issueTitle": "Salesforce Agentforce signed-out page: trust architecture",
+  "issueBody": "### Bet title\n\nSalesforce Agentforce signed-out page: trust architecture\n\n### Primary lens\n\nTrust architecture\n\n### Target page\n\nhttps://www.salesforce.com/agentforce/\n\n### Evaluator class\n\nDesign quality (craft, coherence, accessibility)\n\n### Evidence type\n\nRubric-scored (criteria checklist)\n\n### Design relevance\n\nCompare how agent platforms present their promise, build trust, and earn a first impression for cold, signed-out visitors.\n\n### Suggested evaluation approach\n\nChecked review across sequence, specificity, social proof quality, friction to first action, and risk reduction.\n",
+  "links": {
+    "pageText": "screenshots/2026-W44_salesforce-agentforce-signed-out-page-trust-architecture_40921012201_1/page-text.txt",
+    "pageHtml": "screenshots/2026-W44_salesforce-agentforce-signed-out-page-trust-architecture_40921012201_1/page-content.html",
+    "aboveTheFold": "screenshots/2026-W44_salesforce-agentforce-signed-out-page-trust-architecture_40921012201_1/above-the-fold.png",
+    "fullPage": "screenshots/2026-W44_salesforce-agentforce-signed-out-page-trust-architecture_40921012201_1/full-page.png",
+    "midPage": "screenshots/2026-W44_salesforce-agentforce-signed-out-page-trust-architecture_40921012201_1/mid-page.png",
+    "mobile": "screenshots/2026-W44_salesforce-agentforce-signed-out-page-trust-architecture_40921012201_1/mobile.png"
+  },
+  "model": "gpt-5-mini",
+  "ai": {
+    "summaryMarkdown": "The Agentforce signed-out page presents a confident, product-first trust architecture: a large promise-driven hero, a single prominent primary CTA (Access all demos), and multiple downstream trust signals (G2/IDC mentions, customer proof sections and FAQs). Patterns worth borrowing: a bold two-line hero that states the outcome and platform name, a single large primary CTA above the fold, and visible third-party endorsements (G2/IDC) that follow the hero. Anti-patterns to avoid: burying the primary CTA behind competing banners or dense navigation, vague benefit language without quick evidence, and scattering small competing CTAs that dilute the first user decision.",
+    "primary": {
+      "noteMarkdown": "",
+      "inconclusive": false,
+      "items": [
+        {
+          "name": "Sequence",
+          "score": 4,
+          "rationale": "The page leads with a strong outcome-focused hero ('Drive outcomes with Agentforce') and an obvious next step CTA, then surfaces product capabilities and proof (customer proof, IDC excerpt, guides). The ordering supports a cold visitor's trust journey, though some proof points sit lower on the page and require scrolling."
+        },
+        {
+          "name": "Specificity",
+          "score": 3,
+          "rationale": "The page includes some specific claims (24/7 autonomous support, 'Over 18K companies', IDC/G2 endorsements), but most benefits are described at a high level without quantified ROI, concrete success metrics, or short exemplar use cases in the hero region."
+        },
+        {
+          "name": "Social proof quality",
+          "score": 4,
+          "rationale": "High-quality third-party signals appear (IDC MarketScape, G2 leader badges) and a company-count claim is present, which are credible trust anchors; however, prominent customer logos or succinct testimonial snippets are not above the fold to accelerate trust instantly."
+        },
+        {
+          "name": "Friction to first action",
+          "score": 5,
+          "rationale": "A single, visually dominant primary CTA ('Access all demos') is available in the hero and clearly actionable, reducing friction for exploration from new visitors; header CTAs are present but do not obscure the hero action."
+        },
+        {
+          "name": "Risk reduction",
+          "score": 3,
+          "rationale": "The site provides supporting content (excerpts, guides, FAQs, demos) that reduce perceived risk for buyers, but explicit assurances about security, compliance, implementation timelines, or pricing clarity are not prominent on the initial screen."
+        }
+      ]
+    },
+    "craft": {
+      "evaluationMode": "no-material-change",
+      "referenceStatus": "reused",
+      "summaryMarkdown": "I compared the current captures to the baseline (weekly-eval-bets/2026-W44... promise-clarity-audit) and found no material visual changes to the page's top-level design craft. The hero composition, typography scale, primary CTA prominence, color system, and the presence of trust sections (IDC/G2 references, customer proof) remain consistent. Because the page structure and above-the-fold arrangement are effectively unchanged, no craft dimension required rescoring.",
+      "scores": [
+        {
+          "name": "Visual hierarchy",
+          "score": 5,
+          "rationale": "The hero headline and primary CTA are visually dominant in the screenshots and render above the fold; a large two-line headline, strong size contrast, and a prominent 'Access all demos' button make the primary message and action obvious within seconds despite a narrow top announcement bar."
+        },
+        {
+          "name": "Information density",
+          "score": 5,
+          "rationale": "The top-level announcement banner that appeared in the baseline screenshots is absent in the current above-the-fold capture, reducing competing chrome above the hero and clarifying the page's focal area. With the banner gone, the hero and its primary CTA occupy the intended visual priority and the initial screen shows fewer competing links and copy blocks."
+        },
+        {
+          "name": "Readability",
+          "score": 4,
+          "rationale": "Headlines use large, high‑contrast type and body copy is readable against the dark blue gradient in the screenshots; small decorative text and some lighter UI elements may reduce legibility in edge cases but overall scanning is well supported."
+        },
+        {
+          "name": "Coherence",
+          "score": 5,
+          "rationale": "The visual system is consistent across the captured views: shared colors (deep blues and teals), rounded cards, circular motifs, and consistent CTA styling create a unified, intentional page that reads as one designed thing."
+        },
+        {
+          "name": "Durability",
+          "score": 4,
+          "rationale": "The layout uses modular blocks and a strong hero treatment that should absorb content changes (new copy, additional proof points) without breaking the visual structure, though an overabundance of small CTAs or banner messages could destabilize focus if added."
+        },
+        {
+          "name": "Intentionality",
+          "score": 4,
+          "rationale": "Most design choices communicate clear goals: hero to articulate promise, demos CTA to drive product exploration, and trust sections for proof; some decorative floating elements and the persistent announcement strip feel more ornamental or tactical and slightly reduce the sense that every decision is strictly purposeful."
+        }
+      ],
+      "totalScore": 32,
+      "maxScore": 35,
+      "reassessedDimensions": [],
+      "changes": [],
+      "noMaterialChangeExplanation": "Baseline craft scores remain valid. Current screenshots and HTML show the same hero layout, dominant headline and CTA, consistent color/shape system, and the same downstream proof blocks as the baseline. There is no visible new chrome, removed hero element, or typographic/systemic change that would materially affect visual hierarchy, information density, readability, coherence, durability, or intentionality compared with the baseline evidence.",
+      "provenance": {
+        "baselineReportPath": "weekly-eval-bets/2026-W44_salesforce-agentforce-signed-out-page-promise-clarity-audit_40732910308_1.md",
+        "baselineCaptureDir": "weekly-eval-bets/screenshots/2026-W44_salesforce-agentforce-signed-out-page-promise-clarity-audit_40732910308_1",
+        "baselineEvidenceHash": "21fb71a3017056b26e9367f5e60e6fe660aa5aca2de0e67d0a552bedfaf71252",
+        "comparedToReportPath": "weekly-eval-bets/2026-W44_salesforce-agentforce-signed-out-page-promise-clarity-audit_40732910308_1.md",
+        "comparedToCaptureDir": "weekly-eval-bets/screenshots/2026-W44_salesforce-agentforce-signed-out-page-promise-clarity-audit_40732910308_1",
+        "comparedToEvidenceHash": "21fb71a3017056b26e9367f5e60e6fe660aa5aca2de0e67d0a552bedfaf71252",
+        "exactReuseSourceReportPath": null
+      }
+    }
+  }
+}
