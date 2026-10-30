@@ -2,6 +2,16 @@
 
 ## Evaluation summary
 
+**AI trust score:** 24/25
+
+**Human trust score:** 20/25
+
+**Human verdict:** Confirmed.
+
+**Human craft scope:** Not rescored in this trust-only review.
+
+The original AI assessment is preserved below. Human scores and notes are recorded in the [human review](#human-review) section.
+
 What the capture shows: the signed-out Claude Platform landing preserves the large serif hero headline, concise supporting copy, two primary CTAs (Start building, Contact sales), an illustrative motif, and trust content lower on the page (testimonials, trust badges, security/residency statements). The HTML and screenshots show the same responsive stacking and modular sections visible in the baseline. Patterns worth borrowing: a dominant, readable hero headline that sets the promise quickly; an immediate, high-contrast primary CTA paired with a secondary sales CTA; explicit risk-reduction signals grouped (security, residency, trust center) close enough to product claims to be discoverable; consistent illustration and typographic system that unifies the page. Anti-patterns to avoid: burying detailed model pricing and long testimonial blocks too close to the first fold where they can dilute the promise; adding redundant navigation controls or large dropdown content that increases cognitive load; putting critical trust details only far below the fold so cold visitors must hunt for them.
 
 ## Evidence
@@ -42,12 +52,12 @@ What the capture shows: the signed-out Claude Platform landing preserves the lar
 
 | Dimension | AI score | Human score | Notes |
 |---|---:|---:|---|
-| Sequence | 5/5 |  |  |
-| Specificity | 4/5 |  |  |
-| Social proof quality | 5/5 |  |  |
-| Friction to first action | 5/5 |  |  |
-| Risk reduction | 5/5 |  |  |
-| **Total** | **24/25** |  |  |
+| Sequence | 5/5 | 4/5 | It could be more elaborate and insightful. |
+| Specificity | 4/5 | 4/5 | Score explicitly confirmed; no additional note provided. |
+| Social proof quality | 5/5 | 4/5 | Good signals for enterprises and leaders. More interesting verbatim quotes across disciplines would help. |
+| Friction to first action | 5/5 | 5/5 | Agreed. Very smooth. |
+| Risk reduction | 5/5 | 3/5 | It's not very clear what the Trust Center really is or how it is controlled. |
+| **Total** | **24/25** | **20/25** | Sequence -1, social proof quality -1, risk reduction -2. Specificity and friction to first action retained. |
 
 ## Craft review
 
@@ -59,11 +69,15 @@ I compared the captured HTML and multiple screenshots (desktop hero, mid-page tr
 
 ## Human verdict
 
-Reviewed:
+Reviewed: 2026-10-30
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
 
-Record any scope exclusions explicitly. Confirmation applies only to the supplied human ratings or validation.
+Confirmed on submission of the human trust rating. Specificity was explicitly retained at 4/5 without an additional observation. Confirmation applies to trust architecture only. Craft was not rescored, and no human craft scores are copied from another report.
+
+### Review synthesis (AI-assisted)
+
+**Smooth entry, trust details need clarity.** Claude makes the first action feel smooth and offers useful signals for enterprises and leaders. The human review asks for a more elaborate, insightful progression and more interesting quotes from different disciplines. The larger gap is clarity about the Trust Center and how it is controlled. Make those details easier to understand without adding friction to the entry experience.
 
 *Scoring model: gpt-5-mini*
-*Status: auto-scored, pending human review*
+*Status: human trust review confirmed; craft not rescored in this review*
