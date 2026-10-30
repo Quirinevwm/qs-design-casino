@@ -2,6 +2,16 @@
 
 ## Evaluation summary
 
+**AI promise clarity score:** 22/25
+
+**Human promise clarity score:** 22/25
+
+**Human verdict:** Confirmed.
+
+**Human craft scope:** Not rescored in this promise-only review.
+
+The original AI assessment is preserved below. Human scores and notes are recorded in the [human review](#human-review) section.
+
 First impression: the page delivers a clear promise in the hero — a very large serif headline that reads "Build frontier agents on the Claude Platform," a short supporting sentence, and a high-contrast primary CTA. The captured screenshots and HTML show the same layout and treatments as the baseline, so the page still presents a unified visual language, strong CTA prominence, and developer/enterprise-oriented signals. Patterns worth borrowing: a single large headline that names the product promise, concise supporting sentence that narrows scope, a visually dominant primary CTA with a muted secondary CTA for sales, consistent illustration and trust sections to support credibility. Anti-patterns to avoid: burying the promise under dense pricing or long testimonial blocks near the hero, adding competing CTAs with equal emphasis, and introducing excessive copy above the fold that forces longer reading to understand the primary offer.
 
 ## Evidence
@@ -44,12 +54,12 @@ Assessment based on the provided screenshots, page text, and HTML snapshot. Thos
 
 | Dimension | AI score | Human score | Notes |
 |---|---:|---:|---|
-| Singular message | 5/5 |  |  |
-| Audience alignment | 4/5 |  |  |
-| CTA focus | 5/5 |  |  |
-| Claim specificity | 4/5 |  |  |
-| Redundancy | 4/5 |  |  |
-| **Total** | **22/25** |  |  |
+| Singular message | 5/5 | 4/5 | A very clear pitch, but its impact across industries is a little light. |
+| Audience alignment | 4/5 | 5/5 | Their customer notes from product leaders are super strong. |
+| CTA focus | 5/5 | 5/5 | Very clear. |
+| Claim specificity | 4/5 | 4/5 | Score explicitly confirmed; no additional note provided. |
+| Redundancy | 4/5 | 4/5 | Score explicitly confirmed; no additional note provided. |
+| **Total** | **22/25** | **22/25** | Singular message -1, audience alignment +1. CTA focus, claim specificity, and redundancy retained. |
 
 ## Craft review
 
@@ -61,11 +71,15 @@ Compared to the baseline report, the captured hero, CTA treatments, illustration
 
 ## Human verdict
 
-Reviewed:
+Reviewed: 2026-10-28
 
-[ ] Confirmed / [ ] Needs revision
+[x] Confirmed / [ ] Needs revision
 
-Record any scope exclusions explicitly. Confirmation applies only to the supplied human ratings or validation.
+Confirmed on submission of the human promise rating. Claim specificity and redundancy were explicitly retained at 4/5 without additional observations. Confirmation applies to promise clarity only. Craft was not rescored, and no human craft scores are copied from another report.
+
+### Review synthesis (AI-assisted)
+
+**Customer proof strengthens the audience fit.** Customer notes from product leaders strongly reinforce who the platform is for, and the pitch and CTA are very clear. The main gap is a lighter account of impact across industries. Keep those customer voices while making cross-industry outcomes more concrete.
 
 *Scoring model: gpt-5-mini*
-*Status: auto-scored, pending human review*
+*Status: human promise review confirmed; craft not rescored in this review*
