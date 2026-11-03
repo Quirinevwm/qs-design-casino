@@ -1,0 +1,126 @@
+{
+  "schemaVersion": "eval-scoring/v1",
+  "createdAt": "2026-11-03T19:29:15.435Z",
+  "reportPath": "weekly-eval-bets/2026-W45_langchain-langgraph-signed-out-page-promise-clarity-audit_41703405319_1.md",
+  "captureDir": "weekly-eval-bets/screenshots/2026-W45_langchain-langgraph-signed-out-page-promise-clarity-audit_41703405319_1",
+  "targetUrl": "https://www.langchain.com/langgraph",
+  "canonicalUrl": "https://www.langchain.com/langgraph",
+  "primaryLens": "promise",
+  "rubricHash": "8df8d4cf81dd06544d99a4ea07ce6e9ce15b3a74bf124f9a09e606a2e1d37c5b",
+  "rubric": "# First-impression craft rubric\n\nA reusable 5-point rubric for evaluating the design craft of any product landing page or signed-out state.\n\n## When to use\n\nApply this rubric when you want to assess whether a page makes a strong first impression through design quality alone, independent of content strategy or conversion goals.\n\nEstablish a craft baseline once per comparable page version. Promise, trust, audience, and other evaluations should reference it rather than request the same six scores again. Revisit only affected craft dimensions when captured evidence changes materially; use a new baseline when the page, rendering context, or rubric is not comparable.\n\n## Dimensions\n\n| # | Dimension | Weight | Question | 5 (best) | 1 (worst) |\n|---|-----------|--------|----------|-----------|-----------|\n| 1 | Visual hierarchy | 1x | Can you identify the primary message and action within 3 seconds? | Instant | Buried |\n| 2 | Information density | 1x | Is every element earning its space? | Nothing to remove | Noise competes with signal |\n| 3 | Readability | 1x | Do typography, contrast, and sentence length support scanning? | Effortless | Labored |\n| 4 | Coherence | 2x | Does the page feel like one designed thing? | Unified | Assembled from parts |\n| 5 | Durability | 1x | Would this design hold if content changed by 30%? | Resilient | Brittle |\n| 6 | Intentionality | 1x | Can you tell why every design decision was made? | Every choice has a reason | Arbitrary or defaulted |\n\n## Scoring guide\n\nCoherence is weighted 2x. Max score: 35.\n\n- **29-35:** Exceptional craft. Study and reference.\n- **22-28:** Solid craft with specific areas to sharpen.\n- **15-21:** Functional but lacking intentionality.\n- **7-14:** Needs structural rethinking.\n\n## How to apply\n\n1. Open the page cold (no prior context, clear cache if possible).\n2. Score each dimension independently, 1-5.\n3. Write one sentence per dimension noting what earned or cost the score.\n4. Sum the total. Use the scoring guide to frame the verdict.\n5. End with two lists: patterns worth borrowing, and anti-patterns to avoid.\n\nFor subsequent lenses, link the baseline and its evidence. For a changed-dimension review, record the prior score, new score, and observed change for each reassessed dimension. Preserve unaffected scores as inherited context, not new judgments. Keep AI scores distinct from human overrides, and never transfer scores between page versions without comparing the evidence.\n\n---\n\n*This is a living rubric. Adjust dimensions, weights, or scoring anchors as your evaluation practice evolves.*\n",
+  "captureContextHash": "4b899014cf36f7c1e52fb0b2d2a03b9b14e4b155da082a400f8553f97b021c6f",
+  "captureContext": {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "mobileViewport": {
+      "width": 390,
+      "height": 844
+    },
+    "deviceScaleFactor": 2,
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
+    "locale": "en-US",
+    "timezoneId": "America/Los_Angeles",
+    "colorScheme": "light",
+    "evidenceVersion": 1,
+    "browserVersion": "156.0.8078.4"
+  },
+  "evidenceHash": "3649661b7d8a0f20d6d820d65edc67d2efe3eca3b314a451e8ddd6bebb67676b",
+  "issueTitle": "LangChain LangGraph signed-out page: promise clarity audit",
+  "issueBody": "### Bet title\n\nLangChain LangGraph signed-out page: promise clarity audit\n\n### Primary lens\n\nPromise clarity\n\n### Target page\n\nhttps://www.langchain.com/langgraph\n\n### Evaluator class\n\nDesign quality (craft, coherence, accessibility)\n\n### Evidence type\n\nRubric-scored (criteria checklist)\n\n### Design relevance\n\nCompare how agent platforms present their promise, build trust, and earn a first impression for cold, signed-out visitors.\n\n### Suggested evaluation approach\n\nChecked review across singular message, audience alignment, CTA focus, claim specificity, and redundancy.\n",
+  "links": {
+    "pageText": "screenshots/2026-W45_langchain-langgraph-signed-out-page-promise-clarity-audit_41703405319_1/page-text.txt",
+    "pageHtml": "screenshots/2026-W45_langchain-langgraph-signed-out-page-promise-clarity-audit_41703405319_1/page-content.html",
+    "aboveTheFold": "screenshots/2026-W45_langchain-langgraph-signed-out-page-promise-clarity-audit_41703405319_1/above-the-fold.png",
+    "fullPage": "screenshots/2026-W45_langchain-langgraph-signed-out-page-promise-clarity-audit_41703405319_1/full-page.png",
+    "midPage": "screenshots/2026-W45_langchain-langgraph-signed-out-page-promise-clarity-audit_41703405319_1/mid-page.png",
+    "mobile": "screenshots/2026-W45_langchain-langgraph-signed-out-page-promise-clarity-audit_41703405319_1/mobile.png"
+  },
+  "model": "gpt-5-mini",
+  "ai": {
+    "summaryMarkdown": "The current capture matches the existing baseline and does not change the page promise or first impression. Patterns worth borrowing: the hero layout is clear and scannable with a short headline, supporting sentence, and two CTAs that are visually prominent; a trust band of customer logos directly under the hero helps build credibility; consistent dark theme, blue accent color, and the decorative waveform create a unified visual identity. Anti-patterns to avoid: visible placeholder dumps and repeated tokens lower on the page that create noise and look unfinished; long vertical whitespace and empty regions that break the content flow; using a monospace display font for long paragraph copy which reduces reading comfort for nontechnical visitors. This run compares the current evidence against the baseline file weekly-eval-bets/2026-W45_langchain-langgraph-signed-out-page-first-impression-craft_41530577000_1.md and finds no material craft changes.",
+    "primary": {
+      "noteMarkdown": "",
+      "inconclusive": false,
+      "items": [
+        {
+          "name": "Singular message",
+          "score": 4,
+          "rationale": "The hero headline \"Balance agent control with agency,\" a short supporting sentence, and two primary CTAs are visually prominent and deliver a single product promise within seconds."
+        },
+        {
+          "name": "Audience alignment",
+          "score": 3,
+          "rationale": "Language and feature callouts (human-in-the-loop, streaming, memory) align with developer and engineering audiences, but the use of a monospace font for general copy and dense technical phrases may slightly hinder broader product manager or nontechnical stakeholder readability."
+        },
+        {
+          "name": "CTA focus",
+          "score": 4,
+          "rationale": "Two clear CTAs (start building, read the docs) support both immediate trial and documentation exploration, and they are visually distinct in the hero area."
+        },
+        {
+          "name": "Claim specificity",
+          "score": 3,
+          "rationale": "The page lists concrete capabilities (streaming, memory, human-in-the-loop) but keeps claims at a moderately high level without measurable outcomes or quick examples that would increase credibility for unfamiliar visitors."
+        },
+        {
+          "name": "Redundancy",
+          "score": 2,
+          "rationale": "Significant repeated placeholder text and token dumps lower on the page cause noise and create redundant, distracting content that competes with the hero message."
+        }
+      ]
+    },
+    "craft": {
+      "evaluationMode": "no-material-change",
+      "referenceStatus": "reused",
+      "summaryMarkdown": "No craft dimensions were materially changed since the prior baseline. I inspected the hero area (headline, supporting copy, CTAs, decorative waveform), the trust band, the feature callouts, the midpage sections, and the raw placeholder text found lower on the page. All visible layout, typographic, and content artifacts in the current capture match the baseline evidence, so no reassessment of craft scores was required.",
+      "scores": [
+        {
+          "name": "Visual hierarchy",
+          "score": 4,
+          "rationale": "The hero headline, short supporting copy, and two CTAs are visually prominent and findable within seconds, supported by a large decorative waveform that frames the right side of the area."
+        },
+        {
+          "name": "Information density",
+          "score": 3,
+          "rationale": "Above the fold is clean and purposeful with a clear trust band, but the page contains long vertical spacing and repeated placeholder text lower down that creates noise and reduces the sense that every element earns its space."
+        },
+        {
+          "name": "Readability",
+          "score": 3,
+          "rationale": "Headlines and CTAs read clearly on the high-contrast dark background, but the site includes JetBrains Mono and some small or dense blocks of text that make longer paragraphs and footer content harder to scan comfortably."
+        },
+        {
+          "name": "Coherence",
+          "score": 4,
+          "rationale": "The site feels like one designed thing at first glance with a consistent dark theme, blue accents, and shared iconography, though the abrupt presence of placeholder dumps and mismatched content sections weakens the unified experience."
+        },
+        {
+          "name": "Durability",
+          "score": 4,
+          "rationale": "The modular section structure, clear hero, and restrained visual language suggest the design would survive moderate content changes, but brittle areas include long empty regions and hardcoded filler that could break if copy changes substantially."
+        },
+        {
+          "name": "Intentionality",
+          "score": 3,
+          "rationale": "Most decisions (hero-first messaging, trust logos, feature callouts) read as deliberate, but the choice of a monospace coding font for general copy and visible placeholder text make some decisions look accidental or unfinished."
+        }
+      ],
+      "totalScore": 25,
+      "maxScore": 35,
+      "reassessedDimensions": [],
+      "changes": [],
+      "noMaterialChangeExplanation": "Compared with the baseline report, the current capture shows the same hero headline and supporting copy, the same pair of CTAs, the identical trust logo band, the same section ordering for feature callouts, and the same placeholder and repeated-token content lower on the page. Screenshots and the HTML snapshot show no structural or visual updates that would alter visual hierarchy, information density, readability, coherence, durability, or intentionality. Because the visible evidence is effectively unchanged from the baseline, there are no materially changed craft dimensions to rescore.",
+      "provenance": {
+        "baselineReportPath": "weekly-eval-bets/2026-W45_langchain-langgraph-signed-out-page-first-impression-craft_41530577000_1.md",
+        "baselineCaptureDir": "weekly-eval-bets/screenshots/2026-W45_langchain-langgraph-signed-out-page-first-impression-craft_41530577000_1",
+        "baselineEvidenceHash": "fab3b80062db345f3fe434f9a4c0ab4a017ddbbb777af8e210341f0cb5650882",
+        "comparedToReportPath": "weekly-eval-bets/2026-W45_langchain-langgraph-signed-out-page-first-impression-craft_41530577000_1.md",
+        "comparedToCaptureDir": "weekly-eval-bets/screenshots/2026-W45_langchain-langgraph-signed-out-page-first-impression-craft_41530577000_1",
+        "comparedToEvidenceHash": "fab3b80062db345f3fe434f9a4c0ab4a017ddbbb777af8e210341f0cb5650882",
+        "exactReuseSourceReportPath": null
+      }
+    }
+  }
+}
