@@ -1,0 +1,160 @@
+{
+  "schemaVersion": "eval-scoring/v1",
+  "createdAt": "2026-11-04T19:43:56.983Z",
+  "reportPath": "weekly-eval-bets/2026-W45_langchain-langgraph-signed-out-page-trust-architecture_41899564877_1.md",
+  "captureDir": "weekly-eval-bets/screenshots/2026-W45_langchain-langgraph-signed-out-page-trust-architecture_41899564877_1",
+  "targetUrl": "https://www.langchain.com/langgraph",
+  "canonicalUrl": "https://www.langchain.com/langgraph",
+  "primaryLens": "trust",
+  "rubricHash": "8df8d4cf81dd06544d99a4ea07ce6e9ce15b3a74bf124f9a09e606a2e1d37c5b",
+  "rubric": "# First-impression craft rubric\n\nA reusable 5-point rubric for evaluating the design craft of any product landing page or signed-out state.\n\n## When to use\n\nApply this rubric when you want to assess whether a page makes a strong first impression through design quality alone, independent of content strategy or conversion goals.\n\nEstablish a craft baseline once per comparable page version. Promise, trust, audience, and other evaluations should reference it rather than request the same six scores again. Revisit only affected craft dimensions when captured evidence changes materially; use a new baseline when the page, rendering context, or rubric is not comparable.\n\n## Dimensions\n\n| # | Dimension | Weight | Question | 5 (best) | 1 (worst) |\n|---|-----------|--------|----------|-----------|-----------|\n| 1 | Visual hierarchy | 1x | Can you identify the primary message and action within 3 seconds? | Instant | Buried |\n| 2 | Information density | 1x | Is every element earning its space? | Nothing to remove | Noise competes with signal |\n| 3 | Readability | 1x | Do typography, contrast, and sentence length support scanning? | Effortless | Labored |\n| 4 | Coherence | 2x | Does the page feel like one designed thing? | Unified | Assembled from parts |\n| 5 | Durability | 1x | Would this design hold if content changed by 30%? | Resilient | Brittle |\n| 6 | Intentionality | 1x | Can you tell why every design decision was made? | Every choice has a reason | Arbitrary or defaulted |\n\n## Scoring guide\n\nCoherence is weighted 2x. Max score: 35.\n\n- **29-35:** Exceptional craft. Study and reference.\n- **22-28:** Solid craft with specific areas to sharpen.\n- **15-21:** Functional but lacking intentionality.\n- **7-14:** Needs structural rethinking.\n\n## How to apply\n\n1. Open the page cold (no prior context, clear cache if possible).\n2. Score each dimension independently, 1-5.\n3. Write one sentence per dimension noting what earned or cost the score.\n4. Sum the total. Use the scoring guide to frame the verdict.\n5. End with two lists: patterns worth borrowing, and anti-patterns to avoid.\n\nFor subsequent lenses, link the baseline and its evidence. For a changed-dimension review, record the prior score, new score, and observed change for each reassessed dimension. Preserve unaffected scores as inherited context, not new judgments. Keep AI scores distinct from human overrides, and never transfer scores between page versions without comparing the evidence.\n\n---\n\n*This is a living rubric. Adjust dimensions, weights, or scoring anchors as your evaluation practice evolves.*\n",
+  "captureContextHash": "4b899014cf36f7c1e52fb0b2d2a03b9b14e4b155da082a400f8553f97b021c6f",
+  "captureContext": {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "mobileViewport": {
+      "width": 390,
+      "height": 844
+    },
+    "deviceScaleFactor": 2,
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
+    "locale": "en-US",
+    "timezoneId": "America/Los_Angeles",
+    "colorScheme": "light",
+    "evidenceVersion": 1,
+    "browserVersion": "156.0.8078.4"
+  },
+  "evidenceHash": "5eb1efc9bf62422e19ac4c46f3c39038c0d00ed6f690dff178165af1427c240f",
+  "issueTitle": "LangChain LangGraph signed-out page: trust architecture",
+  "issueBody": "### Bet title\n\nLangChain LangGraph signed-out page: trust architecture\n\n### Primary lens\n\nTrust architecture\n\n### Target page\n\nhttps://www.langchain.com/langgraph\n\n### Evaluator class\n\nDesign quality (craft, coherence, accessibility)\n\n### Evidence type\n\nRubric-scored (criteria checklist)\n\n### Design relevance\n\nCompare how agent platforms present their promise, build trust, and earn a first impression for cold, signed-out visitors.\n\n### Suggested evaluation approach\n\nChecked review across sequence, specificity, social proof quality, friction to first action, and risk reduction.\n",
+  "links": {
+    "pageText": "screenshots/2026-W45_langchain-langgraph-signed-out-page-trust-architecture_41899564877_1/page-text.txt",
+    "pageHtml": "screenshots/2026-W45_langchain-langgraph-signed-out-page-trust-architecture_41899564877_1/page-content.html",
+    "aboveTheFold": "screenshots/2026-W45_langchain-langgraph-signed-out-page-trust-architecture_41899564877_1/above-the-fold.png",
+    "fullPage": "screenshots/2026-W45_langchain-langgraph-signed-out-page-trust-architecture_41899564877_1/full-page.png",
+    "midPage": "screenshots/2026-W45_langchain-langgraph-signed-out-page-trust-architecture_41899564877_1/mid-page.png",
+    "mobile": "screenshots/2026-W45_langchain-langgraph-signed-out-page-trust-architecture_41899564877_1/mobile.png"
+  },
+  "model": "gpt-5-mini",
+  "ai": {
+    "summaryMarkdown": "Quick summary. The LangGraph signed-out page still delivers a clear hero, prominent CTAs, and strong social proof (logos and customer quotes) that establish a credible first impression for technical audiences. Compared with the prior baseline, the page appears functionally unchanged in layout and headline hierarchy, but noisy placeholder dumps and repeated filler visible in the captured render weaken information density and make the page feel less polished. Patterns worth borrowing: a focused hero with short supporting copy and two clear CTAs; a visible trust band of logos and named testimonials; consistent dark theme and restrained color accents that support a technical brand. Anti-patterns to avoid: leaving visible placeholder or dump text in production; allowing cookie or modal UI to obscure important CTAs or trust signals; overusing a monospace code font for general body copy which reduces scanning speed.",
+    "primary": {
+      "noteMarkdown": "",
+      "inconclusive": false,
+      "items": [
+        {
+          "name": "Sequence",
+          "score": 4,
+          "rationale": "The content follows a sensible order: hero headline and CTAs first, followed by trust logos, then feature sections and FAQs — the navigation and flow make it easy to understand what the product is and where to go next."
+        },
+        {
+          "name": "Specificity",
+          "score": 3,
+          "rationale": "The page highlights concrete capabilities (streaming, memory, human-in-the-loop, MIT license) but many claims are brief and high level rather than calling out metrics, example use cases, or concrete success criteria."
+        },
+        {
+          "name": "Social proof quality",
+          "score": 4,
+          "rationale": "A trust band of recognizable company logos and three named quotes (with roles) signal credible enterprise adoption and lend authority to the offering."
+        },
+        {
+          "name": "Friction to first action",
+          "score": 4,
+          "rationale": "Primary CTAs are visible in the hero (Start building, Read the docs) and the nav provides direct product and docs links; a cookie/privacy widget is present but does not fully block the primary actions in the hero."
+        },
+        {
+          "name": "Risk reduction",
+          "score": 3,
+          "rationale": "Risk-mitigating details exist (open source license, FAQ, observability/controls) but the page lacks deeper trust artifacts such as security badges, clear SLA or TOS callouts near the conversion points, or short case studies with measurable outcomes."
+        }
+      ]
+    },
+    "craft": {
+      "evaluationMode": "delta",
+      "referenceStatus": "reference",
+      "summaryMarkdown": "Delta summary vs baseline. The hero, primary messaging, and trust band remain intact from the baseline, so visual hierarchy is preserved. However, the captured render shows increased visible placeholder and dump text across lower sections and more prominent cookie/opt-out UI in the viewport; these issues materially reduce information density, coherence, durability, and apparent intentionality compared with the baseline evidence. Keep the hero structure and trust band, and remove any leftover placeholder text from production builds; ensure privacy banners are visually subordinate and do not obscure CTAs.",
+      "scores": [
+        {
+          "name": "Visual hierarchy",
+          "score": 4,
+          "rationale": "The hero headline, short supporting copy, and two CTAs are visually prominent and findable within seconds, supported by a large decorative waveform that frames the right side of the area."
+        },
+        {
+          "name": "Information density",
+          "score": 2,
+          "rationale": "The page contains large regions of repeated filler and dumped strings visible in the screenshots and text capture, which create visual noise and compete with the product signal."
+        },
+        {
+          "name": "Readability",
+          "score": 3,
+          "rationale": "Headlines and CTAs read clearly on the high-contrast dark background, but the site includes JetBrains Mono and some small or dense blocks of text that make longer paragraphs and footer content harder to scan comfortably."
+        },
+        {
+          "name": "Coherence",
+          "score": 3,
+          "rationale": "Visible placeholder dumps and scattered filler weaken the feeling of a single, polished design system even though hero and trust elements remain consistent."
+        },
+        {
+          "name": "Durability",
+          "score": 3,
+          "rationale": "The presence of visible placeholder and hardcoded filler suggests brittle content handling that could break or expose debugging artifacts when copy or data changes."
+        },
+        {
+          "name": "Intentionality",
+          "score": 2,
+          "rationale": "Design decisions feel less deliberate where production-facing placeholder content and odd character sequences appear; that undermines trust in craftsmanship even though hero choices remain purposeful."
+        }
+      ],
+      "totalScore": 20,
+      "maxScore": 35,
+      "reassessedDimensions": [
+        "Information density",
+        "Coherence",
+        "Durability",
+        "Intentionality"
+      ],
+      "changes": [
+        {
+          "name": "Information density",
+          "priorScore": 3,
+          "score": 2,
+          "rationale": "The page contains large regions of repeated filler and dumped strings visible in the screenshots and text capture, which create visual noise and compete with the product signal.",
+          "changeEvidence": "Baseline score 3. New score 2. Evidence: current full-page and mid-page screenshots show repeated 'word word ...' blocks and sequences like 'mmMwWLliI0fiflO&1' visibly interspersed through the lower page; HTML/text capture includes the same filler blocks. This increases noise and reduces the sense that every element earns its space."
+        },
+        {
+          "name": "Coherence",
+          "priorScore": 4,
+          "score": 3,
+          "rationale": "Visible placeholder dumps and scattered filler weaken the feeling of a single, polished design system even though hero and trust elements remain consistent.",
+          "changeEvidence": "Baseline score 4. New score 3. Evidence: baseline noted a generally unified dark theme with some filler; current captures show the same theme but with expanded, clearly visible placeholder content across multiple sections and footer, making the page feel assembled rather than fully finished."
+        },
+        {
+          "name": "Durability",
+          "priorScore": 4,
+          "score": 3,
+          "rationale": "The presence of visible placeholder and hardcoded filler suggests brittle content handling that could break or expose debugging artifacts when copy or data changes.",
+          "changeEvidence": "Baseline score 4. New score 3. Evidence: HTML snapshot and page text reveal long repeated placeholder strings and debugging-like tokens; these indicate fragility if content pipelines or CMS outputs unexpected values, reducing confidence the design will hold under content changes."
+        },
+        {
+          "name": "Intentionality",
+          "priorScore": 3,
+          "score": 2,
+          "rationale": "Design decisions feel less deliberate where production-facing placeholder content and odd character sequences appear; that undermines trust in craftsmanship even though hero choices remain purposeful.",
+          "changeEvidence": "Baseline score 3. New score 2. Evidence: baseline flagged some questionable font and filler choices; current capture shows explicit placeholder dumps and non-lexical tokens in visible areas plus a cookie UI placed over content, reinforcing the impression of accidental or unfinished decisions."
+        }
+      ],
+      "noMaterialChangeExplanation": "",
+      "provenance": {
+        "baselineReportPath": "weekly-eval-bets/2026-W45_langchain-langgraph-signed-out-page-trust-architecture_41899564877_1.md",
+        "baselineCaptureDir": "weekly-eval-bets/screenshots/2026-W45_langchain-langgraph-signed-out-page-trust-architecture_41899564877_1",
+        "baselineEvidenceHash": "5eb1efc9bf62422e19ac4c46f3c39038c0d00ed6f690dff178165af1427c240f",
+        "comparedToReportPath": "weekly-eval-bets/2026-W45_langchain-langgraph-signed-out-page-first-impression-craft_41530577000_1.md",
+        "comparedToCaptureDir": "weekly-eval-bets/screenshots/2026-W45_langchain-langgraph-signed-out-page-first-impression-craft_41530577000_1",
+        "comparedToEvidenceHash": "fab3b80062db345f3fe434f9a4c0ab4a017ddbbb777af8e210341f0cb5650882",
+        "exactReuseSourceReportPath": null
+      }
+    }
+  }
+}
