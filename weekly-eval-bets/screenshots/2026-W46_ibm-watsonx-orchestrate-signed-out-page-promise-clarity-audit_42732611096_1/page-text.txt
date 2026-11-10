@@ -1,0 +1,303 @@
+Home
+Products
+watsonx Orchestrate
+IBM watsonx Orchestrate
+
+A comprehensive agent management platform to build and manage all your AI agents in one control plane.
+
+Start free trial
+Insights on the agentic control plane
+Buy on:
+Overview
+Features
+Use cases
+Case studies
+Pricing
+Resources
+Book a live demo
+OVERVIEW
+
+More agents shouldn't mean more chaos
+
+Orchestrate everything
+
+All your agents, working together seamlessly.
+
+Create total visibility
+
+Create a clear view of agents, owners, dependencies, activity and cost across the enterprise.
+
+Set the rules
+
+Apply consistent access, policy and guardrails across agents, tools and workflows.
+
+Control cost and risk
+
+Trace activity, evaluate performance and intervene before small failures become enterprise problems.
+
+Scale what works
+
+Turn successful pilots into reusable, governed capabilities that can operate across business units.
+
+IBM named a Leader by industry analysts
+Report
+IBM named a Leader in AI agent management
+The first Gartner® Magic Quadrant™ for AI Agent Management Platforms names IBM a Leader as enterprises move agentic AI into production.
+Report
+IBM named a Leader in agentic AI platform software
+The IDC MarketScape names IBM a Leader and shows how watsonx Orchestrate governs and scales AI agents across platforms, models and environments.
+Built for the leaders responsible for AI at scale
+IT leaders
+
+Reduce complexity, connect fragmented AI initiatives and give IT one place to orchestrate, govern and scale agents across the enterprise.
+
+Information security leaders
+
+Apply consistent controls across a growing agentic portfolio, with better visibility into access, activity, policy and risk.
+
+AI leaders
+
+Move faster from experimentation to production by giving teams the freedom to build while maintaining the governance and operational oversight needed to scale.
+
+FEATURES
+
+Bring every agent under control
+
+Discover, connect and orchestrate agents across your enterprise. Govern how they operate, measure performance and optimize business value.
+
+Discover more AI agents
+
+Connect supported third-party agent environments, automatically scan for agents and bring them into the watsonx Orchestrate control plane, including agents running in environments such as Amazon Bedrock.
+
+Orchestrate AI agents and workflows
+Evaluate AI agent quality
+Govern all of your AI agents
+Control costs
+Mitigate risk
+See watsonx Orchestrate in action
+See how a control plane approach provides the visibility and governance needed to scale agents with confidence
+ 
+Bring distributed agents into one view
+Apply policy and oversight consistently
+Follow activity from request to result
+Explore the interactive demo 
+USE CASES
+
+Start where work gets stuck
+
+With watsonx Orchestrate, you can build whatever you want. Target high-friction work and change how your organization operates.
+
+Explore the AI agent builder 
+Customer service
+
+Give service agents the context and tools to take action, complete work and escalate exceptions. 
+
+Faster case resolution
+Consistent service quality
+Better context across handoffs
+Explore AI agents for customer service 
+HR and employee service
+
+Coordinate policy questions, onboarding, access requests and employee transactions across HR systems.
+
+Faster employee support
+Lower service center workload
+Consistent policy application
+Explore AI agents for HR 
+Procurement
+
+Automate reconciliation, supplier checks, approvals and exception handling across finance and procurement.
+
+Shorter processing cycles
+Improved control and visibility
+Fewer manual exceptions
+Explore AI agents for procurement 
+Knowledge and content
+
+Ground answers in the SOPs, manuals, sites and repositories teams already use, with every answer traced to its source. 
+
+Faster access to knowledge
+Answers traced to source
+Less duplicated research
+Explore AI knowledge agents 
+Finance
+
+Automate expense reviews, invoice processing, reconciliations and financial approvals across finance operations.
+
+
+Streamlined financial workflows
+Improved financial accuracy
+Lower operational costs
+Explore AI agents for finance 
+Sales
+
+Help sellers research accounts, prepare for meetings, generate proposals and follow up with customers faster.
+
+
+More time for selling
+Faster deal progression
+Improved seller productivity
+Explore AI agents for sales 
+IT
+
+Resolve employee issues, automate service requests and accelerate troubleshooting across IT environments.
+
+
+Faster issue resolution
+Lower support workload
+Improved employee experience
+CASE STUDIES
+
+Real work. Measurable results.
+
+Organizations are connecting systems, coordinating complex work and turning AI into repeatable execution.
+
+Riyadh Air
+59
+workstreams integrated across a growing parter ecosystem
+UFC
+3x
+estimated increase in the volume of insights generated
+Recording Academy
+80%
+increase in ticketing efficiency
+Keep your stack. Add control.
+
+Don't throw away what you have. Connect and manage all your agents from one place. Introduce one control plane without forcing every workload into the same vendor environment.
+
+Built for a heterogeneous, hybrid enterprise.
+
+Your choice of environment
+Supports multiple clouds (IBM Cloud, AWS and more) or on-premise deployment
+
+All of your chosen AI agents
+Manage all your agents from one central control plane
+
+Built to support open standards
+Connect through APIs and open standards like A2A and MCP
+
+Book a live demo 
+PRICING
+
+Find the right plan for you
+
+IBM watsonx Orchestrate pricing scales with how you run AI across teams, environments and workloads. Deploy on cloud or on premises and expand as demand grows, with transparent pricing that keeps you in control of cost.
+
+See full watsonx Orchestrate pricing details 
+Pricing plans
+Trial
+Free trial
+Try and explore watsonx Orchestrate for a 30-day free period by using the watsonx Orchestrate trial access.
+Agent building/orchestration
+Intuitive chat interface
+Tools/integrations catalog
+Control plane
+Evaluation/observability
+Most popular
+Essentials
+Starting at
+$578.00
+USD Per month*
+Buy now
+Buy on:
+Design, orchestrate and govern AI agents for real work, with built-in security and control.
+Agent building/orchestration
+Workflow and doc processing
+Agents and tools catalog
+Custom tool creation
+Core AI and LLMs
+Security and access control
+Control plane
+Standard
+Starting at
+$6,360.00
+USD Per month*
+Buy now
+Buy on:
+Everything in Essentials, with expanded capacity and ready-to-use domain agents to scale automation across more teams.
+Essentials plan, plus:
+Higher usage limits
+Higher document volumes
+Higher message throughput
+Higher concurrent usage
+Higher capacity ceilings
+Control plane
+Premium
+Contact us
+Everything in Standard, with data isolation for sensitive workflows and regulated environments.
+Standard plan, plus:
+Data isolation
+Dedicated data space
+End-to-end protection
+HIPAA-ready option
+Enterprise-grade scale
+Control plane
+
+*Prices shown are indicative, may vary by country, exclude any applicable taxes and duties, and are subject to product offering availability in a locale.
+
+RESOURCES
+
+Find the support you need
+
+Explore webinars, videos, blogs and more resources to learn more about how Orchestrate delivers value.
+
+View all resources 
+Integrations
+Integration catalog for watsonx Orchestrate
+
+Browse the apps watsonx Orchestrate connects with, from Salesforce and Workday to Slack, and find the setup documentation for each one.
+
+Agent catalog
+Prebuilt AI agents and tools for watsonx Orchestrate
+
+A preview of ready to use agents from IBM and partners, organized by domain, including sales, HR, procurement, IT and customer care.
+
+Product demos
+Video and interactive demos of watsonx Orchestrate
+
+A collection of short demos showing prebuilt agents for HR, sales and procurement, agent governance, agentic workflows and more.
+
+Partner
+Agent Connect
+
+Learn how to become a part of the ecosystem and offer you own specialized agents in the watsonx Orchestrate agent catalog.
+
+Buyer's guide
+2026 Buyer’s Guide for Smarter Agentic AI Solutions
+
+Why building AI agents is only the start, and what it takes to manage, govern and optimize them at scale.
+
+Analyst report
+Omdia: Unlocking Enterprise Value from AI Agents with a Unified Control Plane
+
+This paper examines why AI agent management has become a critical capability for enterprises and outlines the core requirements of an effective AI agent control plane.
+
+Webinar
+On demand webinar: The strategy of AI interoperability
+
+Learn a practical blueprint for managing a connected multi‑agent ecosystem across departments.
+
+Analyst report
+2025 Gartner® Magic Quadrant™ for AI Application Development Platforms
+
+IBM has been recognized as a Leader, underscoring our commitment to delivering trusted, enterprise-grade Al that supports developers.
+
+See your agent estate under control
+
+Bring one priority workflow, or one growing area of agent sprawl. See how watsonx Orchestrate could connect, govern and scale it.
+
+Book a live demo
+Start free trial
+More ways to explore
+Documentation
+Support
+Developers
+Community
+Idea portal
+Partners
+About cookies on this site
+Our websites require some cookies to function properly (required). In addition, other cookies may be used with your consent to analyze site usage, improve the user experience and for advertising.
+For more information, please review your cookie preferences  options. By visiting our website, you agree to our processing of information as described in IBM’s privacy statement. 
+To provide a smooth navigation, your cookie preferences will be shared across the IBM web domains listed here.
+Accept All
+More options
