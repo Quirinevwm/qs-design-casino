@@ -67,7 +67,7 @@ See the [archived lesson and operating boundary](../design-process/weekly-eval-b
 
 Each evaluation scores its named lens. Craft is a shared baseline for comparable page evidence, not a mandatory secondary review: later lenses reference the baseline, and material changes trigger only affected-dimension reassessment. AI scores, human overrides, and role-specific audience validation remain distinct. See the [scoring process](../design-process/weekly-eval-bet-process.md#craft-once-per-comparable-page-version).
 
-The permanent production rollout defaults are **gpt-5-mini** via Microsoft Foundry, **full evidence** (not compact), a strict lens- and craft-mode-specific Responses schema (`text.format` with `json_schema` and `strict: true`), trusted developer scoring policy, and `max_output_tokens=8192`, including reasoning tokens. Each completed evaluation records its scoring model; existing reports, human ratings, and historical attribution remain unchanged.
+The permanent production rollout defaults are **gpt-5-mini** via Microsoft Foundry, **full evidence** (not compact), a strict lens- and craft-mode-specific Responses schema (`text.format` with `json_schema` and `strict: true`), trusted developer scoring policy, and `max_output_tokens=16384`, including reasoning tokens. This is an upper limit, not a target response length. Each completed evaluation records its scoring model; existing reports, human ratings, and historical attribution remain unchanged.
 
 New reports display all four captured screenshots inline with captions. Page text and HTML remain linked source files. This changes only the report presentation: the model already receives the screenshots, so embedding them does not require another evaluation or add image tokens.
 
@@ -82,7 +82,7 @@ Production scoring reuses the bounded request helper: each request plus response
 | Interim deployment attempt | gpt-5.6-sol-q | Returned service errors; no evaluation published |
 | Interim deployment attempt | gpt-6-astra-q | Returned capacity errors; no evaluation published |
 | Prior configuration | gpt-6.1-sol | Historical attribution preserved |
-| Current configuration | gpt-5-mini | Full evidence, strict schema, 8192-token output budget |
+| Current configuration | gpt-5-mini | Full evidence, strict schema, 16384-token output budget |
 
 The Mon-Thu 04:15 `America/Los_Angeles` schedule, serialized concurrency, and Friday human review remain unchanged. Every mode checks that the selected issue is open with `status:ready` before diagnostics or scoring. Publication requires a validated evaluation committed and pushed successfully; issue comments and labels change only after confirmed push. See the [recovery boundary](../design-process/weekly-eval-bet-process.md#recovery-boundary) before retrying a failed evaluation.
 
@@ -94,7 +94,7 @@ To test a separate connection, add `test_connection=true`. This selector default
 
 Dry runs make real, billable calls. They recapture the target page using the full evidence and scoring pipeline, not byte-identical evidence from a failed historical run. Minimal diagnostics and full scoring use the selected deployment. No report or sidecar is written to production paths, nothing is committed, and no issue comments or labels change.
 
-To test a bounded output allowance without trimming any input evidence, add `test_max_output_tokens=8192`. This includes reasoning tokens, not just the final report. The manual dry-run-only input accepts integers from 512 to 32768; its default of `0` omits the API parameter as a deployment-default control. It does not remove production's fixed 8192-token budget. An incomplete response, including one that exhausts this allowance, fails without publishing partial scores. A smaller allowance may help admission estimates, but does not guarantee backend capacity.
+To test a bounded output allowance without trimming any input evidence, add `test_max_output_tokens=16384`. This includes reasoning tokens, not just the final report. The manual dry-run-only input accepts integers from 512 to 32768; its default of `0` omits the API parameter as a deployment-default control. It does not remove production's fixed 16384-token budget. An incomplete response, including one that exhausts this allowance, fails without publishing partial scores. A smaller allowance may help admission estimates, but does not guarantee backend capacity.
 
 Production always uses the strict schema and developer scoring policy, even when `test_structured_output=false`. In manual dry runs, `test_structured_output=true` tests that contract; the default `false` retains the older nonstrict dry-run control. The policy treats issue and page content as untrusted evidence, keeps primary and craft scores separate, and requires empty `primary.items` for craft-only evaluations. Full evidence remains unchanged unless compact is selected separately. Report validation still rejects invalid scores, duplicate dimensions, and unsupported narrative content; refusals and incomplete responses fail. Strict dry runs record `json_schema` in request diagnostics and candidate metadata.
 

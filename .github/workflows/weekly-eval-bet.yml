@@ -409,7 +409,7 @@ jobs:
 
             const retryDelaysSeconds = [30, 60];
             const transientStatuses = new Set([429, 500, 502, 503, 504]);
-            const outputBudget = dryRun ? Number(process.env.TEST_MAX_OUTPUT_TOKENS || 0) : 8192;
+            const outputBudget = dryRun ? Number(process.env.TEST_MAX_OUTPUT_TOKENS || 0) : 16384;
             const modelContent = compactEvidence
               ? require(path.resolve('.eval-diagnostics-tools/.github/scripts/eval-evidence-profile.cjs')).compactEvidenceContent(requestContent)
               : requestContent;

@@ -281,7 +281,7 @@ function scoringFixture(t) {
       const bounded = !isDryRun || maxOutputTokens !== 0;
       const structured = !isDryRun || structuredOutput;
       assert.deepEqual(Object.keys(request).sort(), ['input', 'model', ...(bounded ? ['max_output_tokens'] : []), ...(structured ? ['text'] : [])].sort(), 'Production always uses strict output and the bounded allowance; dry-run controls remain independent');
-      if (bounded) assert.equal(request.max_output_tokens, isDryRun ? Number(maxOutputTokens) : 8192);
+      if (bounded) assert.equal(request.max_output_tokens, isDryRun ? Number(maxOutputTokens) : 16384);
       const images = request.input[0].content.filter(item => item.type === 'input_image');
       assert.equal(images.length, expectedImages);
       for (const image of images) {
@@ -455,7 +455,7 @@ test('scheduled and manual production use full strict mini requests and only ori
     const result = await score({ eventName });
     const request = result.requests[0];
     assert.equal(request.model, 'gpt-5-mini');
-    assert.equal(request.max_output_tokens, 8192);
+    assert.equal(request.max_output_tokens, 16384);
     assert.equal(request.text.format.strict, true);
     assert.equal(request.text.format.type, 'json_schema');
     assert.equal(request.text.format.schema.additionalProperties, false);
@@ -477,7 +477,7 @@ test('scheduled and manual production use full strict mini requests and only ori
     assert.equal(result.metadata.outcome, 'validated');
     const [attempt] = result.metadata.attempts;
     assert.equal(attempt.evidence_profile, 'full');
-    assert.equal(attempt.max_output_tokens, 8192);
+    assert.equal(attempt.max_output_tokens, 16384);
     assert.equal(attempt.response_format, 'json_schema');
     assert.equal(attempt.text_chars, request.input.reduce((sum, item) =>
       sum + item.content.filter(part => part.type === 'input_text').reduce((chars, part) => chars + part.text.length, 0), 0));
@@ -720,14 +720,14 @@ test('output budget override is validated before requests and only applies to ma
     });
     assert.throws(() => validateScoringInputs(env), /test_max_output_tokens must be/);
   }
-  for (const value of [0, 512, 8192, 32768]) {
+  for (const value of [0, 512, 8192, 16384, 32768]) {
     validateScoringInputs(selectedEnvironment('Validate scoring inputs', {
       inputs: { dry_run: true, test_max_output_tokens: value },
     }));
   }
   await assert.rejects(scoringFixture(t).score({ maxOutputTokens: 8192 }), /only with dry_run=true/);
   const scheduled = await scoringFixture(t).score({ eventName: 'schedule', maxOutputTokens: 8192 });
-  assert.equal(scheduled.requests[0].max_output_tokens, 8192);
+  assert.equal(scheduled.requests[0].max_output_tokens, 16384);
   assert.equal(scheduled.outputs.evaluation, 'complete');
 });
 
@@ -873,7 +873,7 @@ test('production retries honor millisecond hints and retain sanitized service er
     assert.equal(result.outputs.evaluation, undefined);
     assert.equal(result.metadata.outcome, 'failed');
     assert.equal(result.metadata.attempts.length, 3);
-    assert.equal(result.metadata.attempts[0].max_output_tokens, 8192);
+    assert.equal(result.metadata.attempts[0].max_output_tokens, 16384);
     assert.equal(result.metadata.attempts[0].response_format, 'json_schema');
     assert.match(result.failures.join(), /rate_limit_exceeded: Capacity unavailable/);
     assert.doesNotMatch(result.summary + JSON.stringify(result.metadata) + result.failures.join(), /scoring\.example|fake-test-key|\/projects\/test|Dry-run/);
@@ -906,18 +906,24 @@ test('production retry hints cannot exceed two minutes or overflow timers', asyn
   assert.equal(bounded.outputs.evaluation, 'complete');
 });
 
-test('a bounded incomplete response reports its reason and never publishes partial scores', async (t) => {
-  const result = await scoringFixture(t).score({
-    dryRun: true, maxOutputTokens: 8192,
-    replies: [{ body: {
-      status: 'incomplete', incomplete_details: { reason: 'max_output_tokens' },
-      output: [{ type: 'message', content: [{ type: 'output_text', text: JSON.stringify(baselineResponse) }] }],
-    } }],
-  });
-  assert.match(result.failures.join(), /max_output_tokens/);
-  assert.equal(result.outputs.evaluation, undefined);
-  assert.equal(result.markdown, null);
-  assert.deepEqual(result.writes, []);
+test('bounded production and dry-run responses never publish scores when the output limit is exhausted', async (t) => {
+  for (const options of [{ dryRun: false }, { dryRun: true, maxOutputTokens: 8192 }, { dryRun: true, maxOutputTokens: 16384 }]) {
+    const result = await scoringFixture(t).score({
+      ...options,
+      replies: [{ body: {
+        status: 'incomplete', incomplete_details: { reason: 'max_output_tokens' },
+        output: [{ type: 'message', content: [{ type: 'output_text', text: JSON.stringify(baselineResponse) }] }],
+      } }],
+    });
+    const expectedBudget = options.dryRun ? options.maxOutputTokens : 16384;
+    assert.equal(result.requests[0].max_output_tokens, expectedBudget);
+    assert.equal(result.metadata.attempts[0].max_output_tokens, expectedBudget);
+    assert.equal(result.metadata.outcome, 'failed');
+    assert.match(result.failures.join(), /max_output_tokens/);
+    assert.equal(result.outputs.evaluation, undefined);
+    assert.equal(result.markdown, null);
+    assert.deepEqual(result.writes, []);
+  }
 });
 
 test('production and dry-run retries retain the 30/60-second policy and the identical full payload', async (t) => {
