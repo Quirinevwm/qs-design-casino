@@ -1,0 +1,293 @@
+Invite friends to subscribe. Get 1 reset card each.
+Invite friends
+×
+Product
+▾
+Go
+Team
+Arena
+Pricing
+Resources
+▾
+Community
+▾
+107.2K+
+Download
+Log in
+The First Collaborative Design Agent Workspace
+
+One design system brings your brand to every creation. Use the agent you know and create work that exceeds expectations with your team.
+
+Download OpenDesign
+Join Discord
+
+From Prompt to Prototype, With Your Team in the Loop
+
+Four steps from idea to on-brand work.
+Start With Your Agent or OpenDesign Cloud
+Sign in to OpenDesign Cloud and start right away, or connect Claude Code, Codex, Cursor, or another coding agent already on your computer.
+Describe It and Generate a Prototype
+Share and Comment With Your Team
+Let Your Agent Revise, Then Ship
+See What You Can Make With OpenDesign
+Websites
+App UI
+Dashboards
+Slides
+Graphics
+View All
+Inside the OpenDesign App
+
+Core Features Today. More on the Way.
+
+Design Systems
+Choose from 150+ open-source design systems, or create your own from a website, a GitHub repo, or a Figma file. Colors, type, spacing, and components then shape every prototype, page, and deck your agent makes.
+Editing
+Skills Community
+Team Collaboration
+
+Works with the coding agents you already use
+
+Your Setup, Your Choice
+Claude
+Codex
+Gemini
+Cursor
+GitHub Copilot
+OpenCode
+Devin
+Hermes
+Pi
+Kimi
+Qwen
+Grok
+DeepSeek
+Qoder
+Kilo
+Aider
+Trae
+Mistral Vibe
+MiMo
+Antigravity
+Reasonix
+Claude
+Codex
+Gemini
+Cursor
+GitHub Copilot
+OpenCode
+Devin
+Hermes
+Pi
+Kimi
+Qwen
+Grok
+DeepSeek
+Qoder
+Kilo
+Aider
+Trae
+Mistral Vibe
+MiMo
+Antigravity
+Reasonix
+Local CLI
+
+Run OpenDesign through a coding agent installed on your computer, such as Claude Code or Codex.
+
+No OpenDesign account required
+Your agent must be installed and signed in
+Your agent's subscription or API usage still applies
+Connect Your Coding Agent
+BYOK
+
+Connect a model provider with your own API key and call its models directly.
+
+No OpenDesign account required
+Add your API key, endpoint, and model, then run a connection test
+Your provider bills the usage. No OpenDesign credits are used.
+Set Up BYOK
+Hosted
+
+Sign in to OpenDesign Cloud and use hosted models. Nothing to install, no keys to manage.
+
+OpenDesign account required
+Usage draws on your plan's monthly model credits
+Free covers local agents and BYOK. Paid plans add hosted model credits.
+Compare OpenDesign Plans
+Free to Start. Plans for Individuals and Teams.
+Free
+
+The full desktop app, with your local coding agent or your own API key. No account required.
+
+Download for Windows
+
+Plus, Pro, and Max
+
+Hosted models on OpenDesign Cloud with monthly model credits, plus publishing and share links. Pick the level that fits how much you make.
+
+Compare Plans
+Team
+
+A shared workspace for projects, design systems, and plugins, with owner, admin, and member roles. Priced per seat.
+
+See Team Pricing
+Open Source
+
+Open Source, Built in Public Under Apache-2.0
+
+Star us
+04
+05
+06
+07
+08
+09
+
+107.2K+
+GitHub Stars
+
+443
+Contributors
+
+431+
+Plugins
+
+152+
+Design Systems
+
+21
+Coding Agents
+Built With OpenDesign: Studios and Teams
+Read All OpenDesign Customer Stories
+“I create whatever I need, then I hand it off to my preferred CLI. It flows really nicely.”
+
+Stuart Gardoll
+Founder, Connect I/O
+
+“OpenDesign is our unfair advantage.”
+
+Ikigai One
+cybersecurity and IT services
+
+“It's not just a beautiful landing page. It has so much more.”
+
+Avinash Radjkoemar
+Owner, Hotel Palacio
+
+“An idea can become reality very quickly.”
+
+Chris Wenn
+Sound designer & educator
+
+“Using OpenDesign allowed me to create branding content and micro-pages simultaneously while focusing on my hardware artwork.”
+
+Seungki Kim
+Founder & Designer, FABOR
+
+Download OpenDesign.
+
+Built open. Run local. Connect freely. Design your way.
+
+
+Download
+· Windows
+
+Star on GitHub
+FAQS
+Is OpenDesign free?
++
+Does OpenDesign run on macOS and Windows?
++
+Do I need an account or an API key?
++
+Do I need to know how to code?
++
+Where do my files and data go?
++
+What can I export from OpenDesign?
++
+Can I use OpenDesign with my team?
++
+English
+
+EXPLORE
+Motion
+Arena
+CoRouter
+Codex Plugin
+Codex Slides
+Changelog
+SOLUTIONS
+Prototype
+Dashboard
+Slides
+Image
+AI wireframe generator
+AI UI generator
+AI prototype generator
+AI landing page generator
+AI Website Builder
+All Solutions →
+AGENTS
+Claude Code
+Codex
+Cursor
+Gemini CLI
+OpenCode
+All agents →
+COMPARE
+Claude Design
+Figma
+Lovable
+Bolt
+v0
+Framer
+Google Stitch
+Penpot
+Cursor
+Canva
+Webflow
+Replit
+Uizard
+Base44
+All Comparisons →
+TOOLS
+HTML Anything
+HTML Video
+Design to code
+Figma to code
+Screenshot to code
+HTML to PPT
+All Tools →
+LIBRARY
+Templates
+Systems
+Skills
+Prompt
+LEARN
+Help Center
+Tutorials
+Blog
+Stories
+COMMUNITY
+Showcase
+Contributors
+Ambassadors
+Events
+COMPANY
+About
+Careers
+Terms
+Privacy Policy
+Refund Policy
+FAQ
+GET OPENDESIGN
+Download
+Pricing
+© 2026 Powerformer, Inc. · Apache-2.0
+Privacy Policy
+·
+Terms
+·
+Refund Policy
